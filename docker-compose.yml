@@ -1,0 +1,8 @@
+version: "3.0"
+services:
+  webapp:
+    build:
+      context: webapp
+    image: sunteen-reg.ut9.me:5000/workshop/main-parcel
+    ports:
+        - 3333:3100

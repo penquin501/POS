@@ -1,0 +1,84 @@
+{
+  "name": "all-new-parcel",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/vue-fontawesome": "^0.1.8",
+    "@vue/cli": "^3.11.0",
+    "axios": "^0.19.0",
+    "before-unload": "^2.0.0",
+    "bootstrap": "^4.0.0-alpha.6",
+    "bootstrap-vue": "^2.1.0",
+    "bootstrap4": "0.0.1-security",
+    "core-js": "^2.6.5",
+    "jquery": "^3.4.1",
+    "moment-timezone": "^0.5.27",
+    "nativescript-camera": "^4.5.0",
+    "nativescript-imagepicker": "^7.0.0",
+    "popper.js": "^1.16.0",
+    "query-string": "^6.8.3",
+    "router": "^1.3.3",
+    "sweet-modal-vue": "^2.0.0",
+    "v-img": "^0.2.0",
+    "v-slim-dialog": "0.0.9",
+    "v-viewer": "^1.4.2",
+    "vue": "^2.6.10",
+    "vue-cookie": "^1.1.4",
+    "vue-croppa": "^1.3.8",
+    "vue-frame": "^1.0.7",
+    "vue-html-to-paper": "^1.1.1",
+    "vue-img-view": "^1.0.3",
+    "vue-js-toggle-button": "^1.3.2",
+    "vue-material": "^1.0.0-beta-11",
+    "vue-moment": "^4.0.0",
+    "vue-prevent-unload": "^0.2.3",
+    "vue-router": "^3.1.3",
+    "vue-web-cam": "^1.6.0",
+    "vue-zoomer": "^0.3.4",
+    "vuejs-dialog": "^1.4.1",
+    "vuejs-paginate": "^2.1.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-eslint": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "vue-friendly-iframe": "^0.16.0",
+    "vuejs-paginator-axios": "^2.0.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}

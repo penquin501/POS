@@ -1,0 +1,81 @@
+const app = require('express').Router();
+// const escpos = require('escpos');
+const moment = require('moment');
+const request = require('request');
+const genBillingNoServices = require('../services/genBillNoServices.js');
+
+app.get('/printBillPdf', (req, res) => {
+    let bill = req.query.bill;
+
+    genBillingNoServices.getReceipt(bill).then(function (data) {
+        var dataJson = {
+            "member_code": data[0].member_code
+        }
+        request({
+                url: "https://apidev.whatitems.com/parcel/select/member/api",
+                method: "POST",
+                body: dataJson,
+                json: true
+            },
+            (err, res2, body) => {
+                genBillingNoServices.getType(bill).then(function (data2) {
+                    var timestamp = parseInt(data[0].timestamp);
+                    var dateConvert = formatDateToThai(parseInt(timestamp))
+                    var datatest = {
+                        'data': data,
+                        'member_code': res2.body.memberInfo.firstname + " " + res2.body.memberInfo.lastname,
+                        'datatime': dateConvert,
+                        'data2': data2
+                    };
+                    console.log("dateConvert===========", dateConvert)
+                    res.render('bill.twig', datatest);
+                });
+            })
+
+    });
+
+})
+
+app.get('/printMemberBillPdf', (req, res) => {
+    let member_code = req.query.member_code
+    let branch_id = req.query.branch_id
+    genBillingNoServices.getReceiptMember(member_code, branch_id).then(function (data) {
+        var dataJson = {
+            "member_code": member_code
+        }
+        request({
+                url: "https://apidev.whatitems.com/parcel/select/member/api",
+                method: "POST",
+                body: dataJson,
+                json: true
+            },
+            (err, res2, body) => {
+                var member_name = res2.body.memberInfo.firstname + " " + res2.body.memberInfo.lastname
+
+                genBillingNoServices.getMemberBillType(member_code, branch_id).then(function (data2) {
+                    var timestamp = parseInt(data[0].timestamp);
+                    var dateConvert = formatDateToThai(parseInt(timestamp))
+                    var datatest = {
+                        'data': data,
+                        'member_code': member_name,
+                        'datatime': dateConvert,
+                        'data2': data2
+                    };
+                    res.render('billMember.twig', datatest);
+                })
+            })
+    })
+
+
+})
+
+function formatDateToThai(date) {
+    moment.locale('th')
+    var year = moment(date).format("YYYY");
+    var time = moment(date).format("hh");
+    var timeSec = moment(date).format("mm");
+    var time2 = parseInt(time) + 7
+    var year2 = parseInt(year) + 543;
+    return moment(date).format(" Do MMMM " + year2 + " " + time2 +":"+ timeSec);
+}
+module.exports = app;

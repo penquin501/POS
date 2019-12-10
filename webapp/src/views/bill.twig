@@ -1,0 +1,512 @@
+
+
+<html>
+	<head>
+		<title>printA4</title>
+		{% block css %}
+			<meta charset="utf-8">
+			<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+			{# <link href="{{ asset('css/styleA4test.css') }}" rel="stylesheet" type="text/css"/> #}
+			<style>
+				@charset "utf-8";
+				/* CSS Document */
+				@page {
+					size: A4 portrait;
+				}
+				@page port {
+					size: A4 portrait;
+				}
+				@page land {
+					size: A4 portrait;
+				}
+				.land {
+					filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+				}
+				td,
+				th {
+					background: white;
+					font-size: 11pt;
+					margin: 1.4cm 0.4cm 1.3cm;
+					border-width: 1px;
+					border-color: #eee;
+				}
+
+				.body-foot {
+					text-align: center;
+					text-align: center;
+				}
+				.boxfooter {
+					display: block;
+					margin-top: 8cm;
+					text-align: center;
+				}
+				.text-footer {
+					margin-top: 0;
+					margin-bottom: 0;
+				}
+				.box-header {
+					display: block;
+					text-align: center;
+					margin-bottom: 2mm;
+				}
+				.text-nor {
+					font-weight: normal;
+				}
+				.text-row {
+					margin-top: 2mm;
+				}
+
+				.box-sumbox {
+					display: inline-block;
+					width: 9cm;
+					height: 1.5cm;
+					text-align: left;
+					border: 1px solid blue;
+				}
+				.flex-container {
+					display: flex;
+					flex-wrap: nowrap;
+
+				}
+
+				.flex-container > .box-first {
+					width: 30cm;
+					text-align: left;
+					line-height: 35px;
+					font-size: 16px;
+				}
+
+				.flex-container > .box-one {
+					width: 15cm;
+					text-align: left;
+					line-height: 35px;
+					font-size: 16px;
+				}
+				.flex-container > .box-two {
+					width: 15cm;
+					text-align: right;
+					line-height: 35px;
+					font-size: 16px;
+				}
+				.flex-container > .box-tree {
+					width: 15cm;
+					text-align: right;
+					line-height: 35px;
+					font-size: 16px;
+				}
+				.flex-container > .box-four {
+					width: 15cm;
+					text-align: right;
+					line-height: 35px;
+					font-size: 16px;
+				}
+
+				.flex-container > .box-last {
+					width: 5cm;
+					text-align: right;
+					line-height: 35px;
+					font-size: 16px;
+				}
+				div.a {
+					display: inline-block;
+					width: 5cm;
+					height: 1.5cm;
+					text-align: left;
+
+
+				}
+				div.b {
+					display: inline-block;
+					width: 2cm;
+					height: 1.5cm;
+					text-align: left;
+
+				}
+				div.c {
+					display: inline-block;
+					width: 15cm;
+					height: 1.5cm;
+					text-align: right;
+				}
+				div.a1 {
+					display: inline-block;
+					width: 1cm;
+					height: 1.5cm;
+					text-align: right;
+				}
+				.fixde {
+					display: none;
+
+
+				}
+
+				table {
+					color: #333;
+					background: white;
+					border: 1px solid grey;
+					font-size: 12pt;
+					border-collapse: collapse;
+				}
+				table thead th,
+				table tfoot th {
+					color: #777;
+					background: rgba(0, 0, 0, 0.1);
+				}
+				table caption {
+					padding: 0.5em;
+				}
+				table th,
+				table td {
+					padding: 0.5em;
+					border: 1px solid lightgrey;
+				}
+				/* Zebra Table Style */
+				[data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+					background: rgba(0, 0, 0, 0.05);
+				}
+				[data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+					background: rgba(255, 255, 255, 0.05);
+				}
+				/* Dark Style */
+				[data-table-theme*=dark] {
+					color: #ddd;
+					background: #333;
+					font-size: 12pt;
+					border-collapse: collapse;
+				}
+				[data-table-theme*=dark] thead th,
+				[data-table-theme*=dark] tfoot th {
+					color: #aaa;
+					background: rgba(255, 255, 255, 0.15);
+				}
+				[data-table-theme*=dark] caption {
+					padding: 0.5em;
+				}
+				[data-table-theme*=dark] th,
+				[data-table-theme*=dark] td {
+					padding: 0.5em;
+					border: 1px solid grey;
+				}
+				@media all {
+					/* .page-break { display:none; }
+  .page-break-no{ display:none; } */
+					.page-break {
+						display: block;
+						height: 0;
+						page-break-before: always;
+					}
+					.page-break-no {
+						display: block;
+						height: 0;
+						page-break-after: avoid;
+					}
+				}
+				@media print {
+					.print-header {
+						font-size: 20px;
+					}
+					div.a1 {
+						display: inline-block;
+						width: 1cm;
+						height: 1.5cm;
+						text-align: right;
+					}
+
+					div.a {
+						display: inline-block;
+						width: 5cm;
+						height: 1.5cm;
+						text-align: left;
+
+
+					}
+					div.b {
+						display: inline-block;
+						width: 2cm;
+						height: 1.5cm;
+						text-align: left;
+
+					}
+					div.c {
+						display: inline-block;
+						width: 12cm;
+						height: 1.5cm;
+						text-align: right;
+					}
+
+					.fixde {
+						display: block;
+						width: 100%;
+						height: 10cm;
+						position: fixed;
+						bottom: 0;
+						color: black;
+						padding: 0;
+
+					}
+					.body-foot {
+						text-align: center;
+						text-align: center;
+					}
+					.boxfooter {
+						display: block;
+						margin-top: 8cm;
+						text-align: center;
+					}
+					.text-footer {
+						margin-top: 0;
+						margin-bottom: 0;
+					}
+					.box-header {
+						display: block;
+						text-align: center;
+						margin-bottom: 2mm;
+					}
+					.text-nor {
+						font-weight: normal;
+					}
+					.text-row {
+						margin-top: 2mm;
+					}
+
+					.box-sumbox {
+						display: inline-block;
+						width: 9cm;
+						height: 1.5cm;
+						text-align: left;
+						border: 1px solid blue;
+					}
+					.flex-container {
+						display: flex;
+						flex-wrap: nowrap;
+						background-color: DodgerBlue;
+					}
+
+					.flex-container > .box-first {
+						width: 30cm;
+						text-align: left;
+						line-height: 35px;
+						font-size: 16px;
+					}
+
+					.flex-container > .box-one {
+						width: 18cm;
+						text-align: left;
+						line-height: 35px;
+						font-size: 16px;
+					}
+					.flex-container > .box-two {
+						width: 15cm;
+						text-align: right;
+						line-height: 35px;
+						font-size: 16px;
+					}
+					.flex-container > .box-tree {
+						width: 15cm;
+						text-align: right;
+						line-height: 35px;
+						font-size: 16px;
+					}
+					.flex-container > .box-four {
+						width: 15cm;
+						text-align: right;
+						line-height: 35px;
+						font-size: 16px;
+					}
+					.flex-container > .box-last {
+						width: 5cm;
+						text-align: right;
+						line-height: 35px;
+						font-size: 16px;
+					}
+
+					.page-break {
+						display: block;
+						height: 1.5cm;
+						page-break-before: always;
+					}
+					.page-break-no {
+						display: block;
+						height: 1.5cm;
+						page-break-after: avoid;
+					}
+				}
+			</style>
+		{% endblock %}
+	</head>
+
+	{% block body %}
+		<body class="page">
+			<div class="page-break-no"></div>
+			<div class="box-header">
+				<b class="print-header">ใบบันทึกข้อมูลการจัดส่งพัสดุ</b>
+			</div>
+			<div class="a1"></div>
+			<div class="a">
+				<b>สาขา</b>
+				&nbsp; &nbsp; &nbsp;
+				<label class="text-nor">{{data[0].branch_name}}</label>
+				<p class="text-row">
+					<b>ลูกค้า</b>
+					&nbsp; &nbsp; &nbsp;
+					<label class="text-nor">{{ member_code }}</label>
+				</p>
+			</div>
+			{# <div class="b"></div> #}
+			<div class="c">
+				<b>วันที่ทำรายการ</b>
+				&nbsp; &nbsp; &nbsp;
+				<label class="text-nor">{{ datatime  }}</label>
+				<p class="text-row">
+					<b>เลขที่</b>
+					&nbsp; &nbsp; &nbsp;
+					<label class="text-nor">{{ data[0].billing_no  }}</label>
+				</p>
+			</div>
+
+
+			{# data1 #}
+			<table width="90%" style="   margin-top:20px;" align="center" border="1" cellspacing="0" cellpadding="0">
+				{% for result in data %}
+					{% if  loop.index % 20 == 1  %}
+						<thead>
+							<tr>
+								<th>ลำดับ</th>
+								<th>เลขจัดส่ง</th>
+								<th style="width:20%;">ผู้รับ</th>
+								<th>ขนาด</th>
+								<th>รหัสไปรษณีย์</th>
+								<th>ประเภท</th>
+								<th>COD</th>
+								<th>ราคา</th>
+							</tr>
+						</thead>
+					{% endif %}
+					<tbody>
+						<tr>
+							<td style="text-align:center;">{{ loop.index }}</td>
+							<td style="text-transform: uppercase; text-align:center;">{{ result.tracking }}</td>
+							<td>{{ result.receiver_name }}</td>
+							<td style="text-align:center;">{{ result.alias_size }}</td>
+							<td style="text-align:center;">{{ result.zipcode }}</td>
+							<td style="text-align:center;">{{ result.parcel_type }}</td>
+							<td style="text-align:right;">{{ result.cod_value }}</td>
+							<td style="text-align:right;">{{ result.size_price }}</td>
+						</tr>
+					</tbody>
+					{% if loop.index % 20 == 0  or  loop.last %}
+					</tbody>
+				</table>
+				<div class="box-printhead"></div>
+
+
+				
+				<table width="90%" style="   margin-top:20px;" align="center" border="1" cellspacing="0" cellpadding="0">
+					{% if not loop.last %}
+						<div class="page-break"></div>
+					{% endif %}
+					{% if loop.last %}
+
+						{# data2 #}
+						<div class="flex-container">
+							<div class="box-first"></div>
+							<div class="box-one">
+								<label>เก็บเงินปลายทาง</label>
+							</div>
+							<div class="box-two">
+
+								{% if data2.length == 1 %}
+                  					{% if data2[0].parcel_type == "NORMAL" %}
+										<label>0</label>
+									{% elseif data2[0].parcel_type == "COD" %}
+										<label>{{ data2[0].cType }}</label>
+									{% endif %}
+								{% endif %}
+
+								{% if data2.length == 2 %}
+									{% if data2[0].parcel_type == "COD" %}
+										<label>{{ data2[0].cType }}</label>
+									{% elseif data2[0].parcel_type == "NORMAL" %}
+										<label>0</label>
+									{% endif %}
+								{% endif %}
+
+							</div>
+							<div class="box-tree">
+								<label>รายการ</label>
+							</div>
+							<div class="box-last"></div>
+						</div>
+						<div class="flex-container">
+							<div class="box-first"></div>
+							<div class="box-one">
+								<label>จัดส่งปกติ</label>
+							</div>
+							<div class="box-two">
+
+							    {% if data2.length == 1 %}
+								  {% if data2[0].parcel_type == "NORMAL" %}
+									<label>{{ data2[0].cType }}</label>
+									{% elseif data2[0].parcel_type == "COD" %}
+									<label>0</label>
+								  {% endif %}
+								{% endif %}
+
+								{% if data2.length == 2 %}
+									{% if data2[1].parcel_type == "COD" %}
+										<label>0</label>
+									{% elseif data2[1].parcel_type == "NORMAL" %}
+										<label>{{ data2[1].cType }}</label>
+									{% endif %}
+								{% endif %}
+							</div>
+							<div class="box-tree">
+								<label>รายการ</label>
+							</div>
+							<div class="box-last"></div>
+						</div>
+						<div class="flex-container">
+							<div class="box-first"></div>
+							<div class="box-one">
+								<b>เก็บเงินปลายทางรวม</b>
+							</div>
+							<div class="box-two">
+								{% if data2[0].parcel_type == 'COD' %}
+									<label>{{data2[0].sumCOD }}</label>
+								{% else %}
+									<label>0</label>
+								{% endif %}
+							</div>
+							<div class="box-tree">
+								<b>บาท</b>
+							</div>
+							<div class="box-last"></div>
+						</div>
+
+						<div class="flex-container">
+							<div class="box-first"></div>
+							<div class="box-tree">
+								<b>รวมเงินชำระสุทธิ
+									<b>
+										{{result.total }}
+									</b>
+									บาท</b>
+							</div>
+							<div class="box-last"></div>
+						</div>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+		</body>
+	</html>
+</table>
+<div class="fixde" width="100%" style="text-align:center; border:0; cellspacing:0; cellpadding:0;margin-top: 55cm;">
+	<div class="boxfooter">
+		<p class="text-footer">______________________________________________________________________________________</p>
+		<p class="text-footer">สามารถตรวจสอบสถานะสินค้าผ่านบริการของ DHL ได้โดยตรง</p>
+		<p class="text-footer">https://www.dhl.co.th/th/ecommerce/business_customers/tracking.html</p>
+	</div>
+</div></body>{% endblock %}{% block javascript %}<script>
+$(document).ready(function () {
+window.print();
+});</script>{% endblock %}</body></html>
