@@ -47,21 +47,20 @@ app.post("/keyin", jsonParser, (req, res) => {
       keyinService.checkDataReceiver(barcode_orig).then(function(dataReceiver) {
         
         if (dataReceiver == false) {
-          keyinService.saveBillingItemTemp(barcode_orig,label_zipcode,label_parcel_type,source).then(function(data) {});
+          // keyinService.saveBillingItemTemp(barcode_orig,label_zipcode,label_parcel_type,source).then(function(data) {});
           keyinService.saveBillingReceiverTemp(barcode_orig,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
         } else {
-            let parcelTypeReceiver = dataReceiver[0].parcel_type;
-            let zipcodeReceiver = dataReceiver[0].zipcode;
-            let sourceReceiver = dataReceiver[0].remark;
-        if ((parcelTypeReceiver == label_parcel_type && zipcodeReceiver == label_zipcode) || sourceReceiver == null) {
-            
-          keyinService.updateBillingItem(barcode_orig,label_zipcode,label_parcel_type,source).then(function(data) {});
+            // let parcelTypeReceiver = dataReceiver[0].parcel_type;
+            // let zipcodeReceiver = dataReceiver[0].zipcode;
+            // let sourceReceiver = dataReceiver[0].remark;
+        // if ((parcelTypeReceiver == label_parcel_type && zipcodeReceiver == label_zipcode) || sourceReceiver == null) {
+          // keyinService.updateBillingItem(barcode_orig,label_zipcode,label_parcel_type,source).then(function(data) {});
           keyinService.updateReceiver(barcode_orig,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
-        } else {
-          keyinService.saveBillingItemTemp(barcode_orig,label_zipcode,label_parcel_type,source).then(function(data) {});
-          keyinService.saveBillingReceiverTemp(barcode_orig,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
+        // } else {
+          // keyinService.saveBillingItemTemp(barcode_orig,label_zipcode,label_parcel_type,source).then(function(data) {});
+          // keyinService.saveBillingReceiverTemp(barcode_orig,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
+        // } 
         }
-    }
       });
     });
 

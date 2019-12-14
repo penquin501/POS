@@ -505,7 +505,7 @@
                       v-on:keypress="inputCheckName"
                       v-model="listTracking.inputName"
                       placeholder="ชื่อและนามสกุล ผู้รับ"
-                      maxlength="40"
+                      maxlength="100"
                       id="receiverName"
                       autofocus
                     />
@@ -3685,17 +3685,20 @@ export default {
       localStorage.removeItem("finalDataSave");
       localStorage.removeItem("dataCount");
     },
-    inputCheckName($event) {
-      var englishAlphabetAndWhiteSpace = /[A-Za-z | 0-9 กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์ | . ]/;
+    inputCheckName($event) {    
+      var englishAlphabetAndWhiteSpace = /[a-zA-Z0-9กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์]/;
       var key = String.fromCharCode(event.which);
-      if (
-        event.keyCode == 8 ||
-        event.keyCode == 37 ||
-        event.keyCode == 39 ||
-        englishAlphabetAndWhiteSpace.test(key)
-      ) {
-        return true;
-      }
+        var ew = event.which;
+        if(ew == 32)
+            return true;
+        if(48 <= ew && ew <= 57)
+            return true;
+        if(65 <= ew && ew <= 90)
+            return true;
+        if(97 <= ew && ew <= 122)
+            return true;
+        if(englishAlphabetAndWhiteSpace.test(key))
+            return true;
       $event.preventDefault();
     }
   },

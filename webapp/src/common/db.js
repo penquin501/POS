@@ -1,9 +1,11 @@
 var mysql = require('mysql');
-var connection = mysql.createConnection({
+var connection = mysql.createPool({
+    connectionLimit : 10,
     host: '178.128.80.22',
     user: 'parceldev',
     password: '123456',
-    database: 'parcel'
+    database: 'parcel',
+    debug    :  false
 });
 
 var connection2;
