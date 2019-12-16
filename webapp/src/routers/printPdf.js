@@ -27,7 +27,6 @@ app.get('/printBillPdf', (req, res) => {
                         'datatime': dateConvert,
                         'data2': data2
                     };
-                    console.log("dateConvert===========", dateConvert)
                     res.render('bill.twig', datatest);
                 });
             })

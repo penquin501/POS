@@ -1,11 +1,11 @@
 const app = require("express").Router();
 const genBillingNoServices = require("../services/genBillNoServices.js");
-const connection = require("../common/db945.js");
+// const connection = require("../common/db945.js");
 const request = require("request");
 const moment = require("moment");
 const bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
-moment.locale('th')
+moment.locale("th");
 
 app.get("/getPhoneNo", jsonParser, (req, res) => {
   let phoneno = req.query.phoneno;
@@ -33,7 +33,7 @@ app.post("/parcelPrice", (req, res) => {
       let district = data[0].district_code;
       let code;
       let districtConvert = parseInt(district[0] + district[1]);
-      if(zipcode=='13180'){
+      if (zipcode == "13180") {
         code = "upc";
       } else if (districtConvert >= 10 && districtConvert < 14) {
         code = "bkk";
@@ -54,8 +54,8 @@ app.get("/checkSenderMember", (req, res) => {
 
   let trackings = [];
   var trackingItem = {
-      tracking: tracking
-    };
+    tracking: tracking
+  };
   trackings.push(trackingItem);
   var data2 = {
     trackingList: trackings
@@ -68,32 +68,37 @@ app.get("/checkSenderMember", (req, res) => {
       json: true
     },
     (err, res2, body) => {
-      if(res2.body.status != true){
-        res.json({status:res2.body.status});
+      if (res2.body.status != true) {
+        res.json({ status: res2.body.status });
       } else {
-        genBillingNoServices.checkSenderMember(tracking).then(function(dataCapture) {
-          genBillingNoServices.checkTrackingBillItem(tracking).then(function(dataBillItem) {
-            let phoneCapture;
-            if (dataCapture == false) {
-              status = "Error_Not_In_Capture_Data";
-            } else {
-              phoneCapture=dataCapture[0].phone_number;
-              if (phoneCapture != phone_number) {
-                status = "Error_Phone_Not_Match";
-              } else if (dataBillItem == false) {
-                status = "Error_Tracking_Cannot_Use";
-              } else {
-                status = "Success";
-              }
-              var output = {
-                status: status
-              };
-              res.json(output);
-            }
-          })
-        })
+        genBillingNoServices
+          .checkSenderMember(tracking)
+          .then(function(dataCapture) {
+            genBillingNoServices
+              .checkTrackingBillItem(tracking)
+              .then(function(dataBillItem) {
+                let phoneCapture;
+                if (dataCapture == false) {
+                  status = "Error_Not_In_Capture_Data";
+                } else {
+                  phoneCapture = dataCapture[0].phone_number;
+                  if (phoneCapture != phone_number) {
+                    status = "Error_Phone_Not_Match";
+                  } else if (dataBillItem == false) {
+                    status = "Error_Tracking_Cannot_Use";
+                  } else {
+                    status = "Success";
+                  }
+                  var output = {
+                    status: status
+                  };
+                  res.json(output);
+                }
+              });
+          });
       }
-    })
+    }
+  );
 });
 
 app.post("/genBillingNumber", (req, res) => {
@@ -115,10 +120,37 @@ app.get("/getReceipt", (req, res) => {
 
   genBillingNoServices.getReceipt(bill).then(function(data) {
     genBillingNoServices.getType(bill).then(function(data2) {
-      res.json({
-        data: data,
-        data2: data2
-      });
+      var dataJson = {
+        member_code: data[0].member_code
+      };
+      request(
+        {
+          url: "https://apidev.whatitems.com/parcel/select/member/api",
+          method: "POST",
+          body: dataJson,
+          json: true
+        },
+        (err, res2, body) => {
+          if (data == false || data2 == false) {
+            res.json({
+              status: "ERROR_NO_BILL_NO"
+            });
+          } else {
+            res.json({
+              status: "SUCCESS",
+              billing_no: data[0].billing_no,
+              total: data[0].total,
+              member_code: data[0].member_code,
+              member_name: res2.body.memberInfo.firstname + " " +res2.body.memberInfo.lastname,
+              branch_id: data[0].branch_id,
+              brancd_name: data[0].brancd_name,
+              timestamp: data[0].timestamp,
+              listTracking: data,
+              summary: data2
+            });
+          }
+        }
+      );
     });
   });
 });

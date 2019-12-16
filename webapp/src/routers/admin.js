@@ -1,6 +1,6 @@
 const app = require('express').Router();
 const adminService = require('../services/adminService.js');
-const connection = require('../common/db945.js');
+// const connection = require('../common/db945.js');
 const request = require('request');
 const moment = require('moment');
 const bodyParser = require('body-parser')

@@ -388,7 +388,11 @@
 							<td style="text-transform: uppercase; text-align:center;">{{ result.tracking }}</td>
 							<td>{{ result.receiver_name }}</td>
 							<td style="text-align:center;">{{ result.alias_size }}</td>
-							<td style="text-align:center;">{{ result.zipcode }}</td>
+							{% if  result.bRzipcode == null  %}
+							<td style="text-align:center;">{{ result.bItemZipcode }}</td>
+							{% else %}
+							<td style="text-align:center;">{{ result.bRzipcode }}</td>
+							{% endif %}
 							<td style="text-align:center;">{{ result.parcel_type }}</td>
 							<td style="text-align:right;">{{ result.cod_value }}</td>
 							<td style="text-align:right;">{{ result.size_price }}</td>

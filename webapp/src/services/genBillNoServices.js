@@ -1,4 +1,4 @@
-const connection945 = require('../common/db945.js');
+// const connection945 = require('../common/db945.js');
 const connection = require('../common/db.js');
 const bodyParser = require('body-parser');
 const request = require('request');
@@ -6,14 +6,14 @@ const moment = require('moment');
 moment.locale('th')
 
 module.exports = {
-    getPhoneno: (phoneno) => {
-        return new Promise(function (resolve, reject) {
-            let sql = "SELECT id,merid FROM global_authen WHERE phoneno =" + phoneno + " "
-            connection945.query(sql, (error, results, fields) => {
-                resolve(results);
-            });
-        })
-    },
+    // getPhoneno: (phoneno) => {
+    //     return new Promise(function (resolve, reject) {
+    //         let sql = "SELECT id,merid FROM global_authen WHERE phoneno =" + phoneno + " "
+    //         connection945.query(sql, (error, results, fields) => {
+    //             resolve(results);
+    //         });
+    //     })
+    // },
     getUsername: (username) => {
         return new Promise(function (resolve, reject) {
             let sql = "SELECT member_id,merid FROM parcel_member where username=" + username + " "
@@ -90,8 +90,8 @@ module.exports = {
     },
     getReceipt: (bill) => {
         return new Promise(function (resolve, reject) {
-            let sql = "SELECT b.billing_no,b.total,b.member_code,b.branch_id,bInfo.branch_name,b.timestamp,bItem.tracking,bItem.size_price,bItem.parcel_type,s.alias_size,br.receiver_name,br.province_name,br.zipcode,bItem.cod_value " +
-                "FROM billing b " +
+            let sql = "SELECT b.billing_no,b.total,b.member_code,b.branch_id,bInfo.branch_name,b.timestamp,bItem.tracking,bItem.size_price,bItem.parcel_type,bItem.zipcode as bItemZipcode,s.alias_size,br.receiver_name,br.province_name,br.zipcode as bRzipcode,bItem.cod_value "+
+                "FROM billing b "+
                 "JOIN billing_item bItem ON b.billing_no=bItem.billing_no " +
                 "JOIN billing_receiver_info br ON bItem.tracking=br.tracking " +
                 "JOIN size_info s ON bItem.size_id=s.size_id " +
