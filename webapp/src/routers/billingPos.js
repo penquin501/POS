@@ -83,7 +83,8 @@ app.post("/addReceiver", jsonParser, (req, res) => {
       };
 
       request({
-          url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
+          // url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
+          url: "https://www.945api.com/parcel/check/tracking/list/api",
           method: "POST",
           body: data2,
           json: true
@@ -147,7 +148,8 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
     trackingList: trackings
   };
   request({
-      url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
+      // url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
+      url: "https://www.945api.com/parcel/check/tracking/list/api",
       method: "POST",
       body: data2,
       json: true
@@ -222,7 +224,7 @@ app.get("/checkTracking", (req, res) => {
     trackingList: trackings
   };
   request({
-      url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
+      url: "https://www.945api.com/parcel/check/tracking/list/api",
       method: "POST",
       body: data2,
       json: true
@@ -336,7 +338,7 @@ function sendDataToMainServer(dataAuthen, dataBill) {
     };
     // console.log("dataAll", JSON.stringify(dataAll));
     request({
-        url: "https://dev.945holding.com/webservice/restful/parcel/order_record/v11/data",
+        url: "https://www.945holding.com/webservice/restful/parcel/order_record/v11/data",
         method: "POST",
         body: dataAll,
         json: true,

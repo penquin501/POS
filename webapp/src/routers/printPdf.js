@@ -12,7 +12,8 @@ app.get('/printBillPdf', (req, res) => {
             "member_code": data[0].member_code
         }
         request({
-                url: "https://apidev.whatitems.com/parcel/select/member/api",
+                // url: "https://apidev.whatitems.com/parcel/select/member/api",
+                url: "https://www.945api.com/parcel/select/member/api",
                 method: "POST",
                 body: dataJson,
                 json: true
@@ -43,7 +44,8 @@ app.get('/printMemberBillPdf', (req, res) => {
             "member_code": member_code
         }
         request({
-                url: "https://apidev.whatitems.com/parcel/select/member/api",
+                // url: "https://apidev.whatitems.com/parcel/select/member/api",
+                url: "https://www.945api.com/parcel/select/member/api",
                 method: "POST",
                 body: dataJson,
                 json: true

@@ -261,6 +261,13 @@
                       style="text-align:center;"
                     >{{ item.firstname }} {{ item.lastname }}</td>
                     <td style="text-align:center;">
+                     <button
+                        style="margin-bottom: 0px;margin-right: 5px;"
+                        type="button btn-success"
+                        class="btn btn-success"
+                        v-on:click="printTaxInvoice(item.billing_no)"
+                      >ใบกำกับภาษี</button>
+
                       <button
                         style="margin-bottom: 0px;margin-right: 5px;"
                         type="button btn-primary"
@@ -665,13 +672,28 @@
     </div>
     </div>
     <router-view />
+
+
+
+
+    <!-- Modal HTML -->
+     <sweet-modal icon="success" ref="processprint">กำลังดำเนินการพิมพ์ใบเสร็จ</sweet-modal>
+      <sweet-modal icon="error" ref="processprintTax">ไม่มีใบกำกับภาษี</sweet-modal>
+
+
+
   </div>
 </template>
 <script>
 var moment = require("moment");
+const queryString = require("query-string");
+// Vue.use(PreventUnload);
+import QueryString from "query-string";
+import { SweetModal, SweetModalTab } from "sweet-modal-vue";
 export default {
   props: ["value"],
   components: {
+    SweetModal
   },
   data: function() {
     return {
@@ -733,6 +755,7 @@ export default {
       state: {
         isSending: false
       },
+     urlInVoice:  ["https://secure.peakengine.com/Pdf?emi=NjM0MDE=&eti=MTY5OTYzOQ==&eii=Mw=="],
     };
   },
 
@@ -756,7 +779,7 @@ export default {
       };
       axios
         .post(
-          "https://apidev.whatitems.com/parcel/list/member/api",
+          "https://www.945api.com/parcel/list/member/api",
           JSON.stringify(data)
         )
         .then(function(response) {
@@ -793,7 +816,7 @@ export default {
     },
     getDataBank(index) {
       axios
-        .get("https://apidev.whatitems.com/parcel/agent/bank/name")
+        .get("https://www.945api.com/parcel/agent/bank/name")
         .then(resultsDataBank => {
           this.dataBank = resultsDataBank.data;
           // console.log("databank", this.dataBank);
@@ -857,7 +880,7 @@ export default {
       //  console.log("ยิงหา",dataCheck);
              axios
         .post(
-          "https://apidev.whatitems.com/parcel/check/member/api",
+          "https://www.945api.com/parcel/check/member/api",
           JSON.stringify(dataCheck)
         )
         .then(resultMember => {      
@@ -892,7 +915,7 @@ export default {
        };
       axios
         .post(
-          "https://apidev.whatitems.com/parcel/select/img/url/api",
+          "https://www.945api.com/parcel/select/img/url/api",
           JSON.stringify(data)
         )
         .then(resultMember => {  
@@ -1028,28 +1051,41 @@ export default {
         });
     },
      printBillHistory(bill) {
-        this.state.isSending = true;
+        this.$refs.processprint.open();
       axios
-        .get("https://pos.945.report/printBill/printBillAll?bill=" + bill)
+        .get("http://localhost/thermal/new_print.php?bill=" + bill)
         .then(resultStatus => {
-          // console.log("status", resultStatus.data);
 
-          setTimeout(function(){
-          this.state.isSending = false;
-       }.bind(this),3000);
-    
-          // this.state.isSending = false; 
-  
-          // this.state.isSending = false;
-
-
-          // if (resultStatus.data == "success") {
-          //   $("#confirmModal").modal();
-          // } else {
-          //   console.log("พิมไม่ผ่าน");
-          // }
         })
-        .catch(error => {});
+        .catch(error => {
+          console.log(error);
+        });
+        setTimeout(function(){
+          this.$refs.processprint.close();
+         }.bind(this),3000);
+    
+    },
+    printTaxInvoice(bill){
+     const data = {
+        bill_no: bill,
+      };
+        axios
+        .post("https://www.945api.com/parcel/tax/bill/api" , JSON.stringify(data))
+        .then((res) => {
+          if(res.data.status == "ERROR_NO_TAX_BILL"){
+             this.$refs.processprintTax.open();
+          }else{
+           var link = res.data.peak_url_receipt_webview;
+           window.open(link);
+          }
+         setTimeout(function(){
+          this.$refs.processprintTax.close();
+         }.bind(this),3000);
+
+          })
+        .catch((err) => {
+          console.log("AXIOS ERROR: ", err);
+        })
     },
 
     btnRegister() {
@@ -1078,6 +1114,7 @@ export default {
       this.$cookie.delete("billNo");
       this.$cookie.delete("carrierId");
       this.$cookie.delete("memberCode");
+      localStorage.clear();
       
       var path = window.location.href.replace(/(\#.*)/, "");
       window.location.href = path;
@@ -1097,7 +1134,7 @@ export default {
       // console.log("datattttt",JSON.stringify(data));
       axios
         .post(
-          "https://apidev.whatitems.com/parcel/list/member/api",
+          "https://www.945api.com/parcel/list/member/api",
           JSON.stringify(data)
         )
         .then(function(response) {
@@ -1135,7 +1172,7 @@ export default {
     },
     getDataBank(index) {
       axios
-        .get("https://apidev.whatitems.com/parcel/agent/bank/name")
+        .get("https://www.945api.com/parcel/agent/bank/name")
         .then(resultsDataBank => {
           this.dataBank = resultsDataBank.data;
           // console.log("databank", this.dataBank);
@@ -1178,7 +1215,7 @@ export default {
         // console.log("datamember", datamember);
         axios
           .post(
-            "https://apidev.whatitems.com/parcel/agent/update/cod/register/api",
+            "https://www.945api.com/parcel/agent/update/cod/register/api",
             JSON.stringify(datamember)
           )
           .then(function(response) {

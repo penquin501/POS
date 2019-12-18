@@ -1694,7 +1694,9 @@ Vue.use(PreventUnload);
 
 Vue.use(SlimDialog);
 export default {
-  components: { PreventUnload },
+  components: { 
+    PreventUnload,
+   },
   props: ["value"],
   data: function() {
     return {
@@ -2487,11 +2489,11 @@ export default {
       this.dataSaveQuickLink = headerQuickLink;
       this.dataSaveQuickLink.items = subQuickLink;
 
-      // console.log("ก่อนยิง quickLinkAddData", this.dataSaveQuickLink);
-      // console.log(
-      //   "ก่อนยิง this.quickLinkAddData",
-      //   JSON.stringify(this.dataSaveQuickLink)
-      // );
+      console.log("ก่อนยิง quickLinkAddData", this.dataSaveQuickLink);
+      console.log(
+        "ก่อนยิง this.quickLinkAddData",
+        JSON.stringify(this.dataSaveQuickLink)
+      );
 
       // console.log("dataSaveQuickLink",  this.dataSaveQuickLink);
       // console.log("dataSaveQuickLink Stringify",    JSON.stringify(this.dataSaveQuickLink));
@@ -2502,7 +2504,7 @@ export default {
           this.dataSaveQuickLink
         )
         .then(response => {
-          // console.log("response---", response.data.status);
+          console.log("response---", response.data.status);
           this.quickLinkBillingNo = response.data.billing_no;
           this.$cookie.set("quickLinkBillingNo", this.quickLinkBillingNo, 1);
           this.view = "quickLinkDataPrint";
@@ -2605,11 +2607,11 @@ export default {
       // console.log("dataCheck", dataCheck);
       axios
         .post(
-          "https://apidev.whatitems.com/parcel/check/member/api",
+          "https://www.945api.com/parcel/check/member/api",
           JSON.stringify(dataCheck)
         )
         .then(resultMember => {
-          // console.log("resultMember", resultMember.data);
+          console.log("resultMember", resultMember.data);
           if (resultMember.data.status == "ERROR_NOT_FOUND") {
             this.$dialogs.alert(
               "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
@@ -3362,7 +3364,7 @@ export default {
     },
 
     successCreateBill() {
-      // console.log("finaldata", this.finalDataSave);
+      console.log("finaldata", this.finalDataSave);
       axios
         .post(
           "https://pos.945.report/billingPos/addReceiver",
@@ -3486,34 +3488,24 @@ export default {
       }
     },
     print() {
-      // console.log("billNo", this.billNo);
+       $("#confirmModal").modal();
       axios
         .get(
-          "https://pos.945.report/printBill/printBillAll?bill=" + this.billNo
+          "http://localhost/thermal/new_print.php?bill=" + this.billNo
         )
         .then(resultStatus => {
-          // console.log("status", resultStatus);
-          if (resultStatus.data == "success") {
-            $("#confirmModal").modal();
-          } else {
-            // console.log("พิมไม่ผ่าน");
-          }
+            // $("#confirmModal").modal();
         });
     },
     printQuicklink() {
-      // console.log("billQuiklink", this.quickLinkBillingNo);
+       $("#confirmModal").modal();
       axios
         .get(
-          "https://pos.945.report/printBill/printBillAll?bill=" +
+          "http://localhost/thermal/new_print.php?bill=" +
             this.quickLinkBillingNo
         )
         .then(resultStatus => {
-          // console.log("status", resultStatus.data);
-          if (resultStatus.data == "success") {
-            $("#confirmModal").modal();
-          } else {
-            // console.log("พิมไม่ผ่าน");
-          }
+            // $("#confirmModal").modal();
         })
         .catch(error => {});
     },

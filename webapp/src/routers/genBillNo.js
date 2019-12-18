@@ -62,7 +62,8 @@ app.get("/checkSenderMember", (req, res) => {
   };
   request(
     {
-      url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
+      // url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
+      url: "https://www.945api.com/parcel/check/tracking/list/api",
       method: "POST",
       body: data2,
       json: true
@@ -125,7 +126,8 @@ app.get("/getReceipt", (req, res) => {
       };
       request(
         {
-          url: "https://apidev.whatitems.com/parcel/select/member/api",
+          // url: "https://apidev.whatitems.com/parcel/select/member/api",
+          url: "https://www.945api.com/parcel/select/member/api",
           method: "POST",
           body: dataJson,
           json: true
