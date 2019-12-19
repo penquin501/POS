@@ -29,5 +29,4 @@ app.post('/addCapture', jsonParser, (req, res) => {
 
 })
 
-
 module.exports = app;

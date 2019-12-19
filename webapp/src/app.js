@@ -18,9 +18,8 @@ const genBillNo = require('./routers/genBillNo');
 const quicklink = require('./routers/quicklink');
 const keyin = require('./routers/keyin');
 const printBill = require('./routers/printBill');
-const member = require('./routers/member');
-const admin = require('./routers/admin');
 const printPdf = require('./routers/printPdf');
+
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -33,8 +32,6 @@ app.use('/genBillNo', genBillNo)
 app.use('/quicklink', quicklink)
 app.use('/keyin', keyin)
 app.use('/printBill', printBill)
-app.use('/member', member)
-app.use('/admin', admin)
 app.use('/printPdf', printPdf)
 
 app.get("/*", function(req, res) {

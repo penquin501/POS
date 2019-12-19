@@ -7,38 +7,17 @@ const bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 moment.locale('th')
 
-app.get("/checkMember", jsonParser, (req, res) => {
-  let memberCode = req.query.member_code;
-  var regexPhone = /66\d{9}$/;
-  // var strQuery = "SELECT parcel_member_info.*,bank_info.bank_name FROM parcel_member_info LEFT JOIN bank_info ON parcel_member_info.bank_id = bank_info.bank_id where ";
-  var strQuery =
-    "SELECT member_id as member_code, merid as branch_id,firstname as first_name, lastname as last_name,phoneregis as phone, bankacc as bank_account_no,bank_acc_name,bank_issue as bank_name FROM parcel_member WHERE ";
-  if (memberCode.length == 13) {
-    strQuery = strQuery + "citizenid ='" + memberCode + "'";
-  } else if (memberCode.match(regexPhone)) {
-    strQuery = strQuery + "phoneregis ='" + memberCode + "'";
-  } else {
-    strQuery = strQuery + "member_id ='" + memberCode + "'";
-  }
-  billingPosService.getMemberCode(strQuery).then(function (data) {
-    if (data == false) {
-      res.send(false);
-    } else {
-      res.json(data);
-    }
-  });
-});
 app.get("/checkZipcode", (req, res) => {
   let zipcode = req.query.zipcode;
   billingPosService.getZipcode(zipcode).then(function (data) {
     if (data == false) {
-      // res.status(404).send('Not Found')
       res.send(false);
     } else {
       res.json(data);
     }
   });
 });
+
 app.post("/addReceiver", jsonParser, (req, res) => {
   var billing_no;
   let user_id = req.body.user_id;
@@ -65,7 +44,6 @@ app.post("/addReceiver", jsonParser, (req, res) => {
       json: true
     },
     (err, res2, body) => {
-      console.log(res2.body);
       billing_no = res2.body;
 
       var data = {
@@ -91,12 +69,10 @@ app.post("/addReceiver", jsonParser, (req, res) => {
         },
         (err, res3, body) => {
           if (res3.body.status != true) {
-            // console.log("error",res2.body.status);
             res.json({
               status: res3.body.status
             });
           } else {
-
             billingPosService.saveDataBilling(user_id, mer_authen_level, member_code, carrier_id, billing_no, branch_id, total, img_url).then(function (data) {});
             for (i = 0; i < listTracking.length; i++) {
               let track = listTracking[i].tracking;
@@ -121,7 +97,7 @@ app.post("/addReceiver", jsonParser, (req, res) => {
               let remark = address.remark;
 
               billingPosService.saveDataBillingItem(billing_no, track, zipcode, size_id, size_price, parcel_type, cod_value, source).then(function (data) {});
-              billingPosService.saveDataBillingReceive(track, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark).then(function (data) {});
+              billingPosService.saveDataBillingReceiver(track, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark).then(function (data) {});
               billingPosService.updateDataBillingItemTemp(billing_no, track).then(function (data) {});
             }
             sendDataToMainServer(dataJson, data);
@@ -155,9 +131,7 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
       json: true
     },
     (err, res2, body) => {
-      console.log("res2", res2.body.status);
       if (res2.body.status != true) {
-        // console.log("error",res2.body.status);
         res.json({
           status: res2.body.status
         });
@@ -187,7 +161,7 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
           let remark = address.remark;
 
           billingPosService.saveDataBillingItemTemp(billing_no_temp, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source).then(function (data) {});
-          billingPosService.saveDataBillingReceiveTemp(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark).then(function (data) {});
+          billingPosService.saveDataBillingReceiverTemp(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark).then(function (data) {});
         }
         res.end("Complete.....");
       }

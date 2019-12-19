@@ -23,9 +23,6 @@ app.get('/printBillAll', (req, res) => {
                 json: true
             },
             (err, res2, body) => {
-                console.log(dataReceipt)
-                // billing_no = res2.body
-                // console.log(res2.body.memberInfo.firstname)
                 var member_name = res2.body.memberInfo.firstname + " " + res2.body.memberInfo.lastname
                 var billing_no = dataReceipt[0].billing_no;
                 var total = dataReceipt[0].total;
@@ -34,7 +31,6 @@ app.get('/printBillAll', (req, res) => {
                 var branch_id = dataReceipt[0].branch_id;
                 var branch_name = dataReceipt[0].branch_name;
                 var timestamp = dataReceipt[0].timestamp;
-                console.log("test")
                     for (i = 0; i < dataReceipt.length; i++) {
                         var tracking = dataReceipt[i].tracking;
                         var size_price = dataReceipt[i].size_price;
@@ -45,7 +41,6 @@ app.get('/printBillAll', (req, res) => {
                         var zipcode = dataReceipt[i].zipcode;
                         var cod_value = dataReceipt[i].cod_value;
                         var count = dataReceipt.length
-                        console.log("test2",count)
                         genBillingNoServices.savePrintBill(billing_no, total, first_name, member_code, branch_id, branch_name, timestamp, tracking, size_price, parcel_type, alias_size, receiver_name, province_name, zipcode, cod_value, count).then(function (data) {});
                     }
 

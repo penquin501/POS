@@ -7,22 +7,6 @@ const bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 moment.locale("th");
 
-app.get("/getPhoneNo", jsonParser, (req, res) => {
-  let phoneno = req.query.phoneno;
-  console.log("==========", phoneno);
-  genBillingNoServices.getPhoneno(phoneno).then(function(data) {
-    res.json(data);
-  });
-  // genBillingNoServices.getCapture(phoneno).then(function(data) {
-  //     res.json(data);
-  // });
-});
-app.get("/getUsername", (req, res) => {
-  let username = req.query.username;
-  genBillingNoServices.getUsername(username).then(function(data) {
-    res.json(data);
-  });
-});
 app.post("/parcelPrice", (req, res) => {
   let zipcode = req.body.zipcode;
   let size_name = req.body.size_name;
@@ -72,12 +56,8 @@ app.get("/checkSenderMember", (req, res) => {
       if (res2.body.status != true) {
         res.json({ status: res2.body.status });
       } else {
-        genBillingNoServices
-          .checkSenderMember(tracking)
-          .then(function(dataCapture) {
-            genBillingNoServices
-              .checkTrackingBillItem(tracking)
-              .then(function(dataBillItem) {
+        genBillingNoServices.checkSenderMember(tracking).then(function(dataCapture) {
+            genBillingNoServices.checkTrackingBillItem(tracking).then(function(dataBillItem) {
                 let phoneCapture;
                 if (dataCapture == false) {
                   status = "Error_Not_In_Capture_Data";
@@ -105,14 +85,11 @@ app.get("/checkSenderMember", (req, res) => {
 app.post("/genBillingNumber", (req, res) => {
   let branch_id = req.body.branch_id;
   let user_id = req.body.user_id;
-  let dateNow = new Date().toLocaleString("en-US", {
-    timeZone: "Asia/Bangkok"
-  });
+  let dateNow = new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"});
   let dateBillingNo = moment(dateNow).format("YYMMDDHHmmss", true);
   let randomNo = Math.floor(Math.random() * (999 - 111)) + 111;
-  console.log("test", randomNo);
-  let billing_no =
-    branch_id + "-" + user_id + "-" + dateBillingNo + "-" + randomNo;
+
+  let billing_no = branch_id + "-" + user_id + "-" + dateBillingNo + "-" + randomNo;
   res.json(billing_no);
 });
 
@@ -120,9 +97,10 @@ app.get("/getReceipt", (req, res) => {
   let bill = req.query.bill;
 
   genBillingNoServices.getReceipt(bill).then(function(data) {
+    // console.log("router data",data.billingInfo[0].member_code);
     genBillingNoServices.getType(bill).then(function(data2) {
       var dataJson = {
-        member_code: data[0].member_code
+        member_code: data.billingInfo[0].member_code
       };
       request(
         {
@@ -140,14 +118,16 @@ app.get("/getReceipt", (req, res) => {
           } else {
             res.json({
               status: "SUCCESS",
-              billing_no: data[0].billing_no,
-              total: data[0].total,
-              member_code: data[0].member_code,
+              billing_no: data.billingInfo[0].billing_no,
+              total: data.billingInfo[0].total,
+              member_code: data.billingInfo[0].member_code,
               member_name: res2.body.memberInfo.firstname + " " +res2.body.memberInfo.lastname,
-              branch_id: data[0].branch_id,
-              brancd_name: data[0].brancd_name,
-              timestamp: data[0].timestamp,
-              listTracking: data,
+              branch_id: data.billingInfo[0].branch_id,
+              branch_name: data.billingInfo[0].branch_name,
+              timestamp: data.billingInfo[0].timestamp,
+              billing_date: data.billingInfo[0].billing_date.toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+
+              listTracking: data.billingItem,
               summary: data2
             });
           }

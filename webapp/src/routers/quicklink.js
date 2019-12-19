@@ -34,7 +34,6 @@ app.post('/quickLink', jsonParser, (req, res) => {
     },
     (err, res2, body) => {
         billing_no = res2.body
-        // console.log('items',items);
         if(!items.length && items==undefined){
             res.json({status:'error_no_items'});
         } else {

@@ -853,7 +853,7 @@
           </div>
           <div class="row">
             <div class="col-sm-12" style="margin-top: 15px;">
-              <table class="table table-striped">
+              <table class="table table-striped t-table">
                 <thead>
                   <tr>
                     <th scope="col" style="text-align: center ;">
@@ -1381,9 +1381,12 @@
             </div>
             <div class="modal-body" style=" overflow-x: auto;">
               <div class="row">
-                <div class="col-sm-5">
+                <div class="col-sm-6">
                   <div class="col-sm-5">
-                    <div class="panelborder panel-default" v-show="quickLinkBarcode">
+                    <div
+                      class="panelborder panel-default"
+                      v-show="quickLinkBarcode"
+                    >
                       <div class="panel-heading panelHeader" style=" text-align:center">
                         <b style="font-size: 24px;">เลขที่จัดส่ง</b>
                       </div>
@@ -1403,7 +1406,10 @@
                         />
                       </div>
                     </div>
-                    <div class="panelborder panel-default" v-show="quickLinkZipcode">
+                    <div
+                      class="panelborder panel-default"
+                      v-show="quickLinkZipcode"
+                    >
                       <div class="panel-heading panelHeader" style=" text-align:center">
                         <b style="font-size: 24px;">รหัสไปรษณีย์</b>
                       </div>
@@ -1429,184 +1435,212 @@
                         >{{ this.quickLinkProvince2 }}</p>
                       </div>
                     </div>
-                    <div class="panelborder panel-default" v-show="quickLinkTransport">
+
+
+                  </div>
+                  <div class="col-sm-7">
+                    <div
+                      class="panelborder panel-default"
+                      v-show="quickLinkTransport"
+                    >
                       <div class="panel-heading panelHeader" style=" text-align:center">
                         <b style="font-size: 24px;">การจัดส่ง</b>
                       </div>
                       <div class="panel-body">
-                        <button
-                          type="button"
-                          class="btn btn-primary btn-lg btn-block btn-normal"
-                          v-on:click="selectTypeQuicklink('NORMAL')"
-                        >
-                          <img src="../assets/img/email.png" height="35px" /> &nbsp;NORMAL
-                        </button>
-                        <button
-                          type="button"
-                          class="btn btn-success btn-lg btn-block btn-cod"
-                          v-on:click="selectTypeQuicklink('COD')"
-                          :disabled="isSendingTypeQuicklink"
-                        >
-                          <img src="../assets/img/hand.png" height="35px" /> &nbsp;COD
-                        </button>
-                        <input
-                          ref="inputcod"
-                          type="number"
-                          class="form-control"
-                          @keyup.enter="addquickLinkSize"
-                          oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(this.maxLength);"
-                          maxlength="5"
-                          @keypress="isNumber($event)"
-                          v-model="quickLinkCodValue"
-                          v-show="quickLinkInputCod"
-                          placeholder="ยอด COD"
-                          id="quickLinkInputCOD"
-                          v-bind:readonly="is_cod_readonly"
-                        />
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <button
+                              type="button"
+                              class="btn btn-primary btn-lg btn-block btn-normal"
+                              v-on:click="selectTypeQuicklink('NORMAL')"
+                            >
+                              <img src="../assets/img/email.png" height="26px" />
+                              <p style="margin-top: 0px;">NORMAL</p>
+                            </button>
+                          </div>
+                          <div class="col-sm-6">
+                            <button
+                              style="height: 51px;padding-top: 2px;"
+                              type="button"
+                              class="btn btn-success btn-lg btn-block btn-cod"
+                              v-on:click="selectTypeQuicklink('COD')"
+                              :disabled="isSendingTypeQuicklink"
+                            >
+                              <img src="../assets/img/hand.png" height="26px" />
+                              <p style="margin-top: 0px;margin-bottom: 0px;">COD</p>
+                            </button>
+                            <input
+                              ref="inputcod"
+                              type="number"
+                              class="form-control"
+                              @keyup.enter="addquickLinkSize"
+                               maxlength="5"
+                               onKeyPress="if(this.value.length==5) return false;"
+                              @keypress="isNumber($event)"
+                              v-model="quickLinkCodValue"
+                              v-show="quickLinkInputCod"
+                              placeholder="ยอด COD"
+                              id="quickLinkInputCOD"
+                              v-bind:readonly="is_cod_readonly"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-sm-7">
+
                     <div class="panelborder panel-default" v-show="quickLinkProduct">
                       <div class="panel-heading panelHeader" style=" text-align:center">
                         <b style="font-size: 22px; ">ขนาดพัสดุ</b>
                       </div>
                       <div class="panel-body">
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('mini')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >MINI</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('miniPlus')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >MINI+</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('s')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >S</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('sPlus')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >S+</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('m')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >M</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('mPlus')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >M+</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('l')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >L</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('xl')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >XL</button>
-                        <button
-                          type="button"
-                          v-on:click="quicklinkSizeBox('xxl')"
-                          class="btn btn-warning btn-lg btn-block btn-size"
-                        >XXL</button>
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('mini')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >MINI</button>
+                          </div>
+
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('miniPlus')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >MINI+</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('s')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >S</button>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('sPlus')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >S+</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('m')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >M</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('mPlus')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >M+</button>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('l')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >L</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('xl')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >XL</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('xxl')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                              style="padding-left: 5px;"
+                            >XXL</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
 
+
+
                   <div class="col-sm-12">
-                     <div class="col-sm-5" style="
-    padding-left: 0px;
-">
-                       <button
-                      v-show="quickLinkBtnRe"
-                      v-on:click="resetQuicklink"
-                      type="button"
-                      class="btn btn-danger btn-lg btn-block"
-                      :disabled="state.isSending"
-                    >
-                      <span style="font-size:20px; ">รีเซ็ทค่าเริ่มต้น</span>
-                    </button>
+                    <div class="col-sm-5" style="
+                      padding-left: 0px;">
+                      <button
+                        v-show="quickLinkBtnRe"
+                        v-on:click="resetQuicklink"
+                        type="button"
+                        class="btn btn-danger btn-lg btn-block"
+                        :disabled="state.isSending"
+                      >
+                        <span style="font-size:20px; ">รีเซ็ทค่าเริ่มต้น</span>
+                      </button>
+                    </div>
 
-                  
-                   </div>
-              <div class="col-sm-7" style="
-    padding-right: 0px;
-">
-
-                  <button
-                      v-show="quickLinkBtnAdd"
-                      v-on:click="checkValidation"
-                      type="button"
-                      class="btn btn-info btn-lg btn-block"
-                      :disabled="state.isSending"
-                    >
-                      <span style="font-size:20px;">เพิ่ม</span>
-                    </button>
-                   
-                   </div>
-
+                    <div class="col-sm-7" style="padding-right: 0px;">
+                      <button
+                        v-show="quickLinkBtnAdd"
+                        v-on:click="checkValidation"
+                        type="button"
+                        class="btn btn-info btn-lg btn-block"
+                        :disabled="state.isSending"
+                      >
+                        <span style="font-size:20px;">เพิ่ม</span>
+                      </button>
+                    </div>
                   </div>
-                  
-                  <!-- <div class="col-sm-12">
-                    <button
-                      v-show="quickLinkBtnRe"
-                      v-on:click="resetQuicklink"
-                      type="button"
-                      class="btn btn-danger btn-lg btn-block"
-                      :disabled="state.isSending"
-                    >
-                      <span style="font-size:20px; ">รีเซ็ทค่าเริ่มต้น</span>
-                    </button>
-                  </div> -->
-
-
                 </div>
 
-                <div class="col-sm-7">
+                <!-- ตาราง -->
+                <div class="col-sm-6">
                   <div style="text-align: right">
                     <label style="font-size:20px;">จำนวนรายการ</label>
                     <b style="font-size:28px;">&nbsp;{{ this.quickLinkCountAll}}</b>
                     <label style="font-size:20px;">&nbsp;ชิ้น</label>
                   </div>
-                  <table class="table table-striped table-bordered">
-                    <thead>
-                      <tr>
-                        <th scope="col" style="text-align:center; font-size:20px;">เลขที่จัดส่ง</th>
-                        <th scope="col" style="text-align:center; font-size:20px;">รหัสไปรษณีย์</th>
-                        <th scope="col" style="text-align:center; font-size:20px;">การจัดส่ง</th>
-                        <th scope="col" style="text-align:center; font-size:20px;">มูลค่า COD</th>
-                        <th scope="col" style="text-align:center; font-size:20px;">ขนาดพัสดุ</th>
-                      </tr>
-                    </thead>
-                    <tbody style="text-align: center">
-                      <tr v-for="(item, index) in quickLinkAddData" :key="item.id">
-                        <td
-                          style="font-size:18px; text-transform: uppercase; text-align:center;"
-                        >{{ quickLinkAddData[index].tracking }}</td>
-                        <td
-                          style="font-size:18px;"
-                        >{{ quickLinkAddData[index].province_name }} {{ quickLinkAddData[index].zipcode }}</td>
-                        <td
-                          style="font-size:18px; text-transform: uppercase;"
-                        >{{ quickLinkAddData[index].parcel_type }}</td>
-                        <td style="text-align:right;">{{ quickLinkAddData[index].cod_value }}.00</td>
-                        <td
-                          style="font-size:18px; text-transform: uppercase; "
-                        >{{ quickLinkAddData[index].select_size }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <div style="height: 350px; overflow: auto;">
+                    <table class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th scope="col" style="text-align:center; font-size:16px;">เลขที่จัดส่ง</th>
+                          <th scope="col" style="text-align:center; font-size:16px;">รหัสไปรษณีย์</th>
+                          <th scope="col" style="text-align:center; font-size:16px;">การจัดส่ง</th>
+                          <th scope="col" style="text-align:center; font-size:16px;">มูลค่า COD</th>
+                          <th scope="col" style="text-align:center; font-size:16px;">ขนาดพัสดุ</th>
+                        </tr>
+                      </thead>
+                      <tbody style=" height:50px;overflow-y:scroll;">
+                        <tr v-for="item in reverseItems" :key="item.id">
+                          <td
+                            style="font-size:14px; text-transform: uppercase; text-align:center;"
+                          >{{ item.tracking }}</td>
+                          <td
+                            style="font-size:14px;"
+                          >{{ item.province_name }} {{ item.zipcode }}</td>
+                          <td
+                            style="font-size:14px; text-transform: uppercase;text-align:center;"
+                          >{{ item.parcel_type }}</td>
+                          <td style="text-align:right;">{{ item.cod_value }}.00</td>
+                          <td
+                            style="font-size:14px; text-transform: uppercase;text-align:center;"
+                          >{{ item.select_size }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
+
             <div class="modal-footer">
               <div class="col-md-8"></div>
               <div class="col-md-2"></div>
@@ -1694,9 +1728,9 @@ Vue.use(PreventUnload);
 
 Vue.use(SlimDialog);
 export default {
-  components: { 
-    PreventUnload,
-   },
+  components: {
+    PreventUnload
+  },
   props: ["value"],
   data: function() {
     return {
@@ -1747,9 +1781,9 @@ export default {
         isSending: false
       },
       isSendingTypeQuicklink: false,
-      is_readonly : false,
-      is_track_readonly : false,
-      is_cod_readonly : false,
+      is_readonly: false,
+      is_track_readonly: false,
+      is_cod_readonly: false,
       dataphone: "",
       dataaddress: "",
       //page
@@ -1859,6 +1893,7 @@ export default {
       return this.uploadToServer();
     });
   },
+
   // ready: function() {
   //   console.log("ready");
   //   window.addEventListener("beforeunload", this.leaving);
@@ -2027,16 +2062,16 @@ export default {
       this.quickLinkCreatebill = false;
       this.quickLinkDataDetail = true;
     },
-    checkQuickLinkTracking(quickLinkTracking) {  
+    checkQuickLinkTracking(quickLinkTracking) {
       this.is_readonly = false;
-      if(!this.quickLinkTracking){
+      if (!this.quickLinkTracking) {
         alert("กรุณากรอกเลข Tracking");
         this.is_track_readonly = false;
       }
       this.quickLinkDataDetail = false;
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       var tracking = this.quickLinkAddData;
-      this.$refs.quickLinkZipcode.focus();
+      // this.$refs.quickLinkZipcode.focus();
       // console.log("tracking", quickLinkTrackingKey);
       var quickLinkBarcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
       if (!quickLinkTrackingKey.match(quickLinkBarcodeReg)) {
@@ -2044,7 +2079,7 @@ export default {
         this.quickLinkTracking = "";
         this.is_track_readonly = false;
         return false;
-      } else if (tracking.length == 0) {     
+      } else if (tracking.length == 0) {
         this.checkQuickLinkTrackingApi(
           this.quickLinkTextPhone,
           quickLinkTrackingKey
@@ -2114,18 +2149,18 @@ export default {
             );
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
-          }
-          else {
+          } else {
             //response.data.status=="Success"
-            if(!this.quickLinkTracking){
-                this.is_track_readonly = false;
-            }else{
-                this.is_track_readonly = true;
-                this.is_readonly = false;
-                this.quickLinkZipcode = true;
+            if (!this.quickLinkTracking) {
+              this.is_track_readonly = false;
+            } else {
+              this.is_track_readonly = true;
+              this.is_readonly = false;
+              this.quickLinkZipcode = true;
+              $(document).ready(function() {
+                 $('#zCode').focus();
+              });
             }
-
-
           }
         })
         .catch(error => {
@@ -2148,7 +2183,6 @@ export default {
             this.quickLinkProvince2 = response.data[1].PROVINCE_NAME;
 
             this.quickLinkTransport = true;
-        
 
             // this.$refs.quickLinkKey.focus();
           } else {
@@ -2159,7 +2193,7 @@ export default {
             this.$refs.quickLinkZipcode.focus();
             this.quickLinkTransport = false;
 
-           this.is_readonly = false;
+            this.is_readonly = false;
           }
           // this.quickLinkTransport = true;
         })
@@ -2178,10 +2212,10 @@ export default {
         $(document).ready(function() {
           $("#quickLinkInputCOD").focus();
         });
+        this.is_cod_readonly = false;
         // this.$refs.inputcod.focus();
         this.quickLinkProduct = false;
         this.quickLinkInputCod = true;
-
       }
       this.quickLinkDataDetail = false;
       this.quickLinkTypeTransport = parcelType;
@@ -2190,7 +2224,8 @@ export default {
       this.intPriceCod = parseInt(this.quickLinkCodValue);
       if (this.intPriceCod == 0 || this.quickLinkCodValue == "") {
         alert("กรอกมูลค่า COD ให้ถูกต้อง");
-      } else if (this.intPriceCod > 10000) {
+        this.is_cod_readonly = false;
+      } else if (this.intPriceCod >= 10000) {
         alert("มูลค่า COD มีมูลค่าที่สูงมาก ยืนยันการกรอกมูลค่า");
         this.quickLinkProduct = true;
         this.is_cod_readonly = true;
@@ -2204,12 +2239,13 @@ export default {
       this.quickLinkBtnAdd = true;
     },
     checkValidation(event) {
+      this.is_cod_readonly = false;
       this.is_track_readonly = false;
       this.is_readonly = false;
       this.state.isSending = true;
       // this.btnDisable = true;
       this.quickLinkDataDetail = false;
-      this.quickLinkBtnRe      = false;
+      this.quickLinkBtnRe = false;
       this.intPriceCod = parseInt(this.quickLinkCodValue);
       if (!this.quickLinkTracking) {
         alert("กรอกข้อมูลให้ครบถ้วน");
@@ -2277,8 +2313,10 @@ export default {
             select_size: this.quickLinkSelectSize,
             province_name: this.quickLinkProvince1
           };
-          // console.log("dataShowInModal", dataShowInModal);
+          console.log("dataShowInModal", dataShowInModal);
           this.quickLinkAddData.push(dataShowInModal);
+          console.log("quickLinkAddData", this.quickLinkAddData);
+
           localStorage.setItem(
             "quickLinkAddData",
             JSON.stringify(this.quickLinkAddData)
@@ -2319,36 +2357,37 @@ export default {
           // console.log(error);
         });
     },
-    resetQuicklink(){
-          this.is_track_readonly = false;
-          this.is_readonly = false;
+    resetQuicklink() {
+      this.is_track_readonly = false;
+      this.is_readonly = false;
+      this.quickLinkBtnRe = false;
 
-          // Clear Data
-          this.quickLinkTracking = "";
-          this.quickLinkZipcode = "";
-          this.quickLinkTypeTransport = "";
-          this.quickLinkCodValue = 0;
-          this.quickLinkSelectSize = "";
-          this.quickLinkSizePrice = "";
-          this.quickLinkSizeId = "";
-          this.quickLinkProvince1 = "";
-          this.quickLinkProvince2 = "";
-          this.qlZipcode = "";
-          this.quickLinkZipcode = false;
-          this.quickLinkTransport = false;
-          this.quickLinkProduct = false;
-          this.quickLinkBtnAdd = false;
-          this.quickLinkInputCod = false;
-          this.$refs.barcode.focus();
+      // Clear Data
+      this.quickLinkTracking = "";
+      this.quickLinkZipcode = "";
+      this.quickLinkTypeTransport = "";
+      this.quickLinkCodValue = 0;
+      this.quickLinkSelectSize = "";
+      this.quickLinkSizePrice = "";
+      this.quickLinkSizeId = "";
+      this.quickLinkProvince1 = "";
+      this.quickLinkProvince2 = "";
+      this.qlZipcode = "";
+      this.quickLinkZipcode = false;
+      this.quickLinkTransport = false;
+      this.quickLinkProduct = false;
+      this.quickLinkBtnAdd = false;
+      this.quickLinkInputCod = false;
+      this.$refs.barcode.focus();
     },
     quickLinkAddDataInTable() {
       this.quickLinkDataDetail = false;
       this.quickLinkCreatebill = false;
       this.countquickLinkTotal = this.txtPrice + this.txtPrice;
-      if(this.quickLinkAddData){
+      if (this.quickLinkAddData) {
         this.view = "quickLinkDataExpress";
-      }else{
-       alert("กรุณาทำรายการด่วน");
+      } else {
+        alert("กรุณาทำรายการด่วน");
       }
     },
     removeRow: function(index) {
@@ -2424,11 +2463,10 @@ export default {
           "quickLinkCountAllinTable",
           JSON.stringify(quickLinkCountAllinTable)
         );
-      //  console.log(
-      //     "quickLinkCountAllinTable ][หลัง set",
-      //     quickLinkCountAllinTable
-      //   );
-        
+        //  console.log(
+        //     "quickLinkCountAllinTable ][หลัง set",
+        //     quickLinkCountAllinTable
+        //   );
       }
       this.quickLinkAddData.splice(index, 1);
     },
@@ -2497,7 +2535,7 @@ export default {
 
       // console.log("dataSaveQuickLink",  this.dataSaveQuickLink);
       // console.log("dataSaveQuickLink Stringify",    JSON.stringify(this.dataSaveQuickLink));
-    
+
       axios
         .post(
           "https://pos.945.report/quicklink/quickLink",
@@ -3145,222 +3183,215 @@ export default {
               console.log(error);
             });
 
-
-
           return true;
         }
-      }  else{
+      } else {
         // console.log("เงื่อนไขครั้งแรก กรณี tracking เข้ามาครั้งแรก");
-         axios
-            .get(
-              "https://pos.945.report/billingPos/checkTracking?tracking=" +
-                this.listTracking.inputTracking.toUpperCase()
-            )
-            .then(resultsCheckTracking => {
-              // console.log(
-              //   "---resultsCheckTracking---",
-              //   resultsCheckTracking.data
-              // );
-              if (resultsCheckTracking.data == true) {
-                // console.log("เลขผ่าน");
-                //ข้อมูลอยุ่ในตารางเตรียมบันทึก
-                this.view = "createBill8";
-                var imgUrl = "";
-                var remark = "";
-                var merid = parseInt(this.$cookie.get("merid"));
-                var userid = parseInt(this.$cookie.get("userid"));
-                // console.log("userid Int", userid);
-                var authenlevel = this.$cookie.get("authenlevel");
-                if (!this.fileNameUpload) {
-                  imgUrl =
-                    "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/5e508c1b_no-image-available.png";
-                } else {
-                  imgUrl =
-                    "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/" +
-                    this.fileNameUpload;
-                }
+        axios
+          .get(
+            "https://pos.945.report/billingPos/checkTracking?tracking=" +
+              this.listTracking.inputTracking.toUpperCase()
+          )
+          .then(resultsCheckTracking => {
+            // console.log(
+            //   "---resultsCheckTracking---",
+            //   resultsCheckTracking.data
+            // );
+            if (resultsCheckTracking.data == true) {
+              // console.log("เลขผ่าน");
+              //ข้อมูลอยุ่ในตารางเตรียมบันทึก
+              this.view = "createBill8";
+              var imgUrl = "";
+              var remark = "";
+              var merid = parseInt(this.$cookie.get("merid"));
+              var userid = parseInt(this.$cookie.get("userid"));
+              // console.log("userid Int", userid);
+              var authenlevel = this.$cookie.get("authenlevel");
+              if (!this.fileNameUpload) {
+                imgUrl =
+                  "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/5e508c1b_no-image-available.png";
+              } else {
+                imgUrl =
+                  "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/" +
+                  this.fileNameUpload;
+              }
 
-                if (!this.listTracking.inputRemark) {
-                  remark = "";
-                } else {
-                  remark = this.listTracking.inputRemark;
-                }
+              if (!this.listTracking.inputRemark) {
+                remark = "";
+              } else {
+                remark = this.listTracking.inputRemark;
+              }
+              var phone = this.memberPhone;
+              if (phone[0] + phone[1] == "66") {
+                this.memberPhone = this.changeDoubleSix(phone);
+              } else {
+                this.memberPhone = phone;
+              }
+              // console.log("phone66", this.memberPhone);
+
+              var merid = parseInt(this.$cookie.get("merid"));
+              var userid = parseInt(this.$cookie.get("userid"));
+              var authenlevel = this.$cookie.get("authenlevel");
+
+              if (this.memberCode) {
+                this.memberCode = this.memberCode;
+                this.memberFullName = this.memberFullName;
+                this.memberPhone = this.memberPhone;
+                this.memberAddress = this.memberAddress;
+              } else {
+                this.memberData = JSON.parse(
+                  localStorage.getItem("memberData")
+                );
+                this.memberCode = this.memberData.member_code;
+                this.memberFullName =
+                  this.memberData.first_name + "" + this.memberData.last_name;
+                this.memberAddress = this.memberData.address;
+                this.memberPhone = this.memberData.phone;
                 var phone = this.memberPhone;
                 if (phone[0] + phone[1] == "66") {
                   this.memberPhone = this.changeDoubleSix(phone);
                 } else {
                   this.memberPhone = phone;
                 }
-                // console.log("phone66", this.memberPhone);
-
-                var merid = parseInt(this.$cookie.get("merid"));
-                var userid = parseInt(this.$cookie.get("userid"));
-                var authenlevel = this.$cookie.get("authenlevel");
-
-                if (this.memberCode) {
-                  this.memberCode = this.memberCode;
-                  this.memberFullName = this.memberFullName;
-                  this.memberPhone = this.memberPhone;
-                  this.memberAddress = this.memberAddress;
-                } else {
-                  this.memberData = JSON.parse(
-                    localStorage.getItem("memberData")
-                  );
-                  this.memberCode = this.memberData.member_code;
-                  this.memberFullName =
-                    this.memberData.first_name + "" + this.memberData.last_name;
-                  this.memberAddress = this.memberData.address;
-                  this.memberPhone = this.memberData.phone;
-                  var phone = this.memberPhone;
-                  if (phone[0] + phone[1] == "66") {
-                    this.memberPhone = this.changeDoubleSix(phone);
-                  } else {
-                    this.memberPhone = phone;
-                  }
-                  // console.log("เบอร์", this.memberPhone);
-                }
-
-                var receiverInfo = {
-                  sender_name: this.memberFullName,
-                  sender_phone: this.memberPhone,
-                  sender_address: this.memberAddress,
-                  receiver_name: this.listTracking.inputName,
-                  phone: this.listTracking.inputPhoneNumber,
-                  receiver_address: this.listTracking.inputAddress,
-                  district_id: this.listTracking.address.DISTRICT_ID,
-                  district_name: this.listTracking.address.DISTRICT_NAME,
-                  amphur_id: this.listTracking.address.AMPHUR_ID,
-                  amphur_name: this.listTracking.address.AMPHUR_NAME,
-                  province_id: this.listTracking.address.PROVINCE_ID,
-                  province_name: this.listTracking.address.PROVINCE_NAME,
-                  zipcode: this.listTracking.address.zipcode,
-                  remark: remark
-                };
-
-                var billItem = {
-                  tracking: this.listTracking.inputTracking.toUpperCase(),
-                  size_id: this.checkSizeID,
-                  size_box: this.listTracking.sizeBox, //มีโชว์เฉพาะในตาราง
-                  size_price: this.checkSizePrice,
-                  parcel_type: this.listTracking.parcelType,
-                  cod_value: parseInt(this.listTracking.cod_value),
-                  address: receiverInfo
-                };
-                var datainTablePOS = {
-                  user_id: userid,
-                  branch_id: merid,
-                  mer_authen_level: authenlevel,
-                  member_code: this.memberCode,
-                  carrier_id: this.idCard,
-                  courier_image: imgUrl,
-                  total: this.totalSum,
-                  listTracking: [billItem]
-                };
-                var that = this;
-                // that.datalistPOS.push({ ...datainTablePOS });
-                that.datalistPOS.push(Object.assign({}, datainTablePOS));
-
-                localStorage.setItem(
-                  "datalistPOS",
-                  JSON.stringify(this.datalistPOS)
-                );
-
-                // console.log(
-                //   "this.เงื่อนไขมีข้อมุลในตาราง...datalistPOS",
-                //   this.datalistPOS
-                // );
-
-                var objSavebase = {
-                  user_id: userid,
-                  branch_id: merid,
-                  mer_authen_level: authenlevel,
-                  member_code: this.memberCode,
-                  carrier_id: this.idCard,
-                  courier_image: imgUrl,
-                  total: this.totalSum,
-                  listTracking: []
-                };
-                var objSavesub = {
-                  tracking: this.listTracking.inputTracking.toUpperCase(),
-                  size_id: this.checkSizeID,
-                  size_price: this.checkSizePrice,
-                  parcel_type: this.listTracking.parcelType,
-                  cod_value: parseInt(this.listTracking.cod_value),
-                  address: receiverInfo
-                };
-
-                this.finalObject.push(objSavesub);
-                // this.finalObject.push(objSavesub);
-
-                this.finalDataSave = objSavebase;
-                this.finalDataSave.listTracking = this.finalObject;
-
-                localStorage.setItem(
-                  "finalDataSave",
-                  JSON.stringify(this.finalDataSave)
-                );
-
-                // console.log("finalDataSave1", this.finalDataSave);
-                // localStorage.setItem("dataCount", JSON.stringify(this.dataCount));
-
-                if (this.listTracking.parcelType == "COD") {
-                  this.countCOD++;
-                  this.countAll++;
-                }
-                if (this.listTracking.parcelType == "NORMAL") {
-                  this.countNormal++;
-                  this.countAll++;
-                }
-
-                // console.log("ยอดรวม", this.countAll);
-                // console.log("ยอดCOD", this.countCOD);
-                // console.log("ยอดNORMAL", this.countNormal);
-
-                var dataCount = {
-                  count_all: this.countAll,
-                  count_cod: this.countCOD,
-                  count_normal: this.countNormal
-                };
-
-                this.dataCount.push(dataCount);
-
-                // console.log("Count 3 อัน", this.dataCount);
-                // localStorage.setItem(
-                //   "dataCount",
-                //   JSON.stringify(this.dataCount)
-                // );
-                //ส่งข้อมูลเข้าตาราง Temp ยังไม่ได้เวฟลงจริง
-                axios
-                  .post(
-                    "https://pos.945.report/billingPos/addReceiverTemp",
-                    datainTablePOS
-                  )
-                  .then(function(response) {
-                    // console.log(
-                    //   "API addReceiverTemp เงื่อนไขมีข้อมูลในตาราง",
-                    //   response.data
-                    // );
-                    this.state.isSending = false;
-                  })
-                  .catch(function(error) {
-                    console.log(error);
-                  });
-              } else {
-                alert(
-                  "ไม่สามารถใช้เลขที่จัดส่งนี้ได้ เลขจัดส่งถูกใช้งานไปแล้ว"
-                );
-                this.state.isSending = false;
-                this.listTracking.inputTracking = "";
-                this.$refs.focusTDZ.focus();
+                // console.log("เบอร์", this.memberPhone);
               }
-            })
-            .catch(error => {
-              console.log(error);
-            });
 
-            
-      }  
-      
+              var receiverInfo = {
+                sender_name: this.memberFullName,
+                sender_phone: this.memberPhone,
+                sender_address: this.memberAddress,
+                receiver_name: this.listTracking.inputName,
+                phone: this.listTracking.inputPhoneNumber,
+                receiver_address: this.listTracking.inputAddress,
+                district_id: this.listTracking.address.DISTRICT_ID,
+                district_name: this.listTracking.address.DISTRICT_NAME,
+                amphur_id: this.listTracking.address.AMPHUR_ID,
+                amphur_name: this.listTracking.address.AMPHUR_NAME,
+                province_id: this.listTracking.address.PROVINCE_ID,
+                province_name: this.listTracking.address.PROVINCE_NAME,
+                zipcode: this.listTracking.address.zipcode,
+                remark: remark
+              };
+
+              var billItem = {
+                tracking: this.listTracking.inputTracking.toUpperCase(),
+                size_id: this.checkSizeID,
+                size_box: this.listTracking.sizeBox, //มีโชว์เฉพาะในตาราง
+                size_price: this.checkSizePrice,
+                parcel_type: this.listTracking.parcelType,
+                cod_value: parseInt(this.listTracking.cod_value),
+                address: receiverInfo
+              };
+              var datainTablePOS = {
+                user_id: userid,
+                branch_id: merid,
+                mer_authen_level: authenlevel,
+                member_code: this.memberCode,
+                carrier_id: this.idCard,
+                courier_image: imgUrl,
+                total: this.totalSum,
+                listTracking: [billItem]
+              };
+              var that = this;
+              // that.datalistPOS.push({ ...datainTablePOS });
+              that.datalistPOS.push(Object.assign({}, datainTablePOS));
+
+              localStorage.setItem(
+                "datalistPOS",
+                JSON.stringify(this.datalistPOS)
+              );
+
+              // console.log(
+              //   "this.เงื่อนไขมีข้อมุลในตาราง...datalistPOS",
+              //   this.datalistPOS
+              // );
+
+              var objSavebase = {
+                user_id: userid,
+                branch_id: merid,
+                mer_authen_level: authenlevel,
+                member_code: this.memberCode,
+                carrier_id: this.idCard,
+                courier_image: imgUrl,
+                total: this.totalSum,
+                listTracking: []
+              };
+              var objSavesub = {
+                tracking: this.listTracking.inputTracking.toUpperCase(),
+                size_id: this.checkSizeID,
+                size_price: this.checkSizePrice,
+                parcel_type: this.listTracking.parcelType,
+                cod_value: parseInt(this.listTracking.cod_value),
+                address: receiverInfo
+              };
+
+              this.finalObject.push(objSavesub);
+              // this.finalObject.push(objSavesub);
+
+              this.finalDataSave = objSavebase;
+              this.finalDataSave.listTracking = this.finalObject;
+
+              localStorage.setItem(
+                "finalDataSave",
+                JSON.stringify(this.finalDataSave)
+              );
+
+              // console.log("finalDataSave1", this.finalDataSave);
+              // localStorage.setItem("dataCount", JSON.stringify(this.dataCount));
+
+              if (this.listTracking.parcelType == "COD") {
+                this.countCOD++;
+                this.countAll++;
+              }
+              if (this.listTracking.parcelType == "NORMAL") {
+                this.countNormal++;
+                this.countAll++;
+              }
+
+              // console.log("ยอดรวม", this.countAll);
+              // console.log("ยอดCOD", this.countCOD);
+              // console.log("ยอดNORMAL", this.countNormal);
+
+              var dataCount = {
+                count_all: this.countAll,
+                count_cod: this.countCOD,
+                count_normal: this.countNormal
+              };
+
+              this.dataCount.push(dataCount);
+
+              // console.log("Count 3 อัน", this.dataCount);
+              // localStorage.setItem(
+              //   "dataCount",
+              //   JSON.stringify(this.dataCount)
+              // );
+              //ส่งข้อมูลเข้าตาราง Temp ยังไม่ได้เวฟลงจริง
+              axios
+                .post(
+                  "https://pos.945.report/billingPos/addReceiverTemp",
+                  datainTablePOS
+                )
+                .then(function(response) {
+                  // console.log(
+                  //   "API addReceiverTemp เงื่อนไขมีข้อมูลในตาราง",
+                  //   response.data
+                  // );
+                  this.state.isSending = false;
+                })
+                .catch(function(error) {
+                  console.log(error);
+                });
+            } else {
+              alert("ไม่สามารถใช้เลขที่จัดส่งนี้ได้ เลขจัดส่งถูกใช้งานไปแล้ว");
+              this.state.isSending = false;
+              this.listTracking.inputTracking = "";
+              this.$refs.focusTDZ.focus();
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
     },
 
     successCreateBill() {
@@ -3488,24 +3519,22 @@ export default {
       }
     },
     print() {
-       $("#confirmModal").modal();
+      $("#confirmModal").modal();
       axios
-        .get(
-          "http://localhost/thermal/new_print.php?bill=" + this.billNo
-        )
+        .get("http://localhost/thermal/new_print.php?bill=" + this.billNo)
         .then(resultStatus => {
-            // $("#confirmModal").modal();
+          // $("#confirmModal").modal();
         });
     },
     printQuicklink() {
-       $("#confirmModal").modal();
+      $("#confirmModal").modal();
       axios
         .get(
           "http://localhost/thermal/new_print.php?bill=" +
             this.quickLinkBillingNo
         )
         .then(resultStatus => {
-            // $("#confirmModal").modal();
+          // $("#confirmModal").modal();
         })
         .catch(error => {});
     },
@@ -3622,7 +3651,7 @@ export default {
       var sizeName = valueSize.replace("Plus", "+");
       this.quickLinkSelectSize = sizeName;
       this.quickLinkBtnAdd = true;
-      this.quickLinkBtnRe  = true;
+      this.quickLinkBtnRe = true;
     },
     isNumber: function(evt) {
       evt = evt ? evt : window.event;
@@ -3677,25 +3706,23 @@ export default {
       localStorage.removeItem("finalDataSave");
       localStorage.removeItem("dataCount");
     },
-    inputCheckName($event) {    
+    inputCheckName($event) {
       var englishAlphabetAndWhiteSpace = /[a-zA-Z0-9กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์]/;
       var key = String.fromCharCode(event.which);
-        var ew = event.which;
-        if(ew == 32)
-            return true;
-        if(48 <= ew && ew <= 57)
-            return true;
-        if(65 <= ew && ew <= 90)
-            return true;
-        if(97 <= ew && ew <= 122)
-            return true;
-        if(englishAlphabetAndWhiteSpace.test(key))
-            return true;
+      var ew = event.which;
+      if (ew == 32) return true;
+      if (48 <= ew && ew <= 57) return true;
+      if (65 <= ew && ew <= 90) return true;
+      if (97 <= ew && ew <= 122) return true;
+      if (englishAlphabetAndWhiteSpace.test(key)) return true;
       $event.preventDefault();
     }
   },
 
   computed: {
+   reverseItems() {
+        return this.quickLinkAddData.slice().reverse();
+      },
     quickLinkTotalSum: function() {
       return this.quickLinkAddData.reduce(function(quickLinkTotal, item) {
         return quickLinkTotal + item.size_price;
@@ -3983,6 +4010,9 @@ body p {
 table {
   overflow-y: scroll;
   background-color: #a5b1ff;
+}
+.t-table {
+  height: 100px !important;
 }
 tbody {
   background-color: #e1e5ff;
