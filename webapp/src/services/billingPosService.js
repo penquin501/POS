@@ -57,7 +57,6 @@ module.exports = {
         var dateTimestamp = new Date();
         var dateTimestamp2 = +dateTimestamp
         // var dateTimeString = moment(new Date).format("YYYY-MM-DD HH:mm:ss", true);
-
         var sql="INSERT INTO billing(user_id,mer_authen_level,member_code,carrier_id,billing_date,billing_no,branch_id,total,timestamp,img_url) VALUES (?,?,?,?,?,?,?,?,?,?)"
         var data = [user_id,mer_authen_level,member_code,carrier_id,new Date(), billing_no, branch_id, total,dateTimestamp2, img_url];
 
@@ -92,7 +91,7 @@ module.exports = {
     saveDataBillingItemTemp: (billing_no_temp, tracking,zipcode, size_id, size_price, parcel_type, cod_value,source) => {
         
         var sql="INSERT INTO billing_item_temp(billing_no, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source) VALUES (?, ?,?, ?, ?, ?, ?, ?)"
-        var data = [billing_no, tracking,zipcode, size_id, size_price, parcel_type, cod_value, source];
+        var data = [billing_no_temp, tracking,zipcode, size_id, size_price, parcel_type, cod_value, source];
 
         return new Promise(function(resolve, reject) {
             connection.query(sql, data, (err, results) => {
@@ -150,7 +149,10 @@ module.exports = {
     },
     listBilling: (branchId) => {
 
-        var sql="SELECT b.billing_no,b.timestamp,m.firstname,m.lastname FROM billing b JOIN parcel_member m ON b.member_code=m.member_id WHERE (DATE(b.billing_date)>= DATE_ADD(CURRENT_DATE(), INTERVAL -3 MONTH) AND Date(b.billing_date)<= CURRENT_DATE())AND b.branch_id= ? ORDER BY b.billing_date DESC";
+        var sql="SELECT b.billing_no,b.timestamp,m.firstname,m.lastname "+
+        "FROM billing b JOIN parcel_member m ON b.member_code=m.member_id "+
+        "WHERE (DATE(b.billing_date)>= DATE_ADD(CURRENT_DATE(), INTERVAL -3 MONTH) AND Date(b.billing_date)<= CURRENT_DATE())AND b.branch_id= ? "+
+        "ORDER BY b.billing_date DESC";
         var data = [branchId]
 
         return new Promise(function(resolve, reject) {
@@ -158,7 +160,7 @@ module.exports = {
                 if (!results.length) {
                     resolve(false)
                 } else {
-                    resolve(true);
+                    resolve(results);
                 }
             });
         })
@@ -225,6 +227,14 @@ module.exports = {
                 resolve(results)
             });
         });
-      }
-    
+      },
+      testData: () => {
+        var sql="INSERT INTO test(name, ts, qty,tss) VALUES (?, ?, ?,?)"
+        var data = ["hello2", new Date(), 1, +new Date()];
+        return new Promise(function(resolve, reject) {
+            connection.query(sql, data, (err, results) => {
+                resolve(results)
+            });
+        });
+    },
 }

@@ -1,5 +1,3 @@
-
-
 <html>
 	<head>
 		<title>printA4</title>
@@ -109,7 +107,7 @@
 				}
 				div.a {
 					display: inline-block;
-					width: 5cm;
+					width: 7cm;
 					height: 1.5cm;
 					text-align: left;
 
@@ -214,7 +212,7 @@
 
 					div.a {
 						display: inline-block;
-						width: 5cm;
+						width: 7cm;
 						height: 1.5cm;
 						text-align: left;
 
@@ -345,7 +343,7 @@
 			<div class="a">
 				<b>สาขา</b>
 				&nbsp; &nbsp; &nbsp;
-				<label class="text-nor">{{data[0].branch_name}}</label>
+				<label class="text-nor">{{ data.billingInfo[0].branch_name }}</label>
 				<p class="text-row">
 					<b>ลูกค้า</b>
 					&nbsp; &nbsp; &nbsp;
@@ -360,14 +358,14 @@
 				<p class="text-row">
 					<b>เลขที่</b>
 					&nbsp; &nbsp; &nbsp;
-					<label class="text-nor">{{ data[0].billing_no  }}</label>
+					<label class="text-nor">{{ data.billingInfo[0].billing_no  }}</label>
 				</p>
 			</div>
 
 
 			{# data1 #}
 			<table width="90%" style="   margin-top:20px;" align="center" border="1" cellspacing="0" cellpadding="0">
-				{% for result in data %}
+				{% for result in data.billingItem %}
 					{% if  loop.index % 20 == 1  %}
 						<thead>
 							<tr>
@@ -492,7 +490,7 @@
 							<div class="box-tree">
 								<b>รวมเงินชำระสุทธิ
 									<b>
-										{{result.total }}
+										{{ data.billingInfo[0].total }}
 									</b>
 									บาท</b>
 							</div>

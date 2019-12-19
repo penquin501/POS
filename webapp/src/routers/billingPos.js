@@ -250,6 +250,11 @@ app.get('/listDailyBilling', (req, res) => {
 
 });
 
+app.post("/test", jsonParser, (req, res) => {
+  billingPosService.testData().then(function (result) {});
+  res.end();
+});
+
 function sendDataToMainServer(dataAuthen, dataBill) {
   var orderlist = [];
   var paymentType = "";

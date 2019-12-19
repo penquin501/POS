@@ -9,7 +9,7 @@ app.get('/printBillPdf', (req, res) => {
 
     genBillingNoServices.getReceipt(bill).then(function (data) {
         var dataJson = {
-            "member_code": data[0].member_code
+            "member_code": data.billingInfo[0].member_code
         }
         request({
                 // url: "https://apidev.whatitems.com/parcel/select/member/api",
@@ -20,7 +20,7 @@ app.get('/printBillPdf', (req, res) => {
             },
             (err, res2, body) => {
                 genBillingNoServices.getType(bill).then(function (data2) {
-                    var timestamp = parseInt(data[0].timestamp);
+                    var timestamp = parseInt(data.billingInfo[0].timestamp);
                     var dateConvert = formatDateToThai(parseInt(timestamp))
                     var datatest = {
                         'data': data,

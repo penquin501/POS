@@ -97,7 +97,8 @@ app.get("/getReceipt", (req, res) => {
   let bill = req.query.bill;
 
   genBillingNoServices.getReceipt(bill).then(function(data) {
-    // console.log("router data",data.billingInfo[0].member_code);
+    // var dateTimeString = moment(data.billingInfo[0].billing_date).format("YYYY-MM-DD HH:mm:ss", true);
+
     genBillingNoServices.getType(bill).then(function(data2) {
       var dataJson = {
         member_code: data.billingInfo[0].member_code
@@ -125,7 +126,7 @@ app.get("/getReceipt", (req, res) => {
               branch_id: data.billingInfo[0].branch_id,
               branch_name: data.billingInfo[0].branch_name,
               timestamp: data.billingInfo[0].timestamp,
-              billing_date: data.billingInfo[0].billing_date.toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+              billing_date: moment(data.billingInfo[0].billing_date).format("YYYY-MM-DD HH:mm:ss", true),
 
               listTracking: data.billingItem,
               summary: data2
