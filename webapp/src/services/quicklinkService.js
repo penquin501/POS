@@ -80,8 +80,8 @@ module.exports = {
         var updateReceiver = "UPDATE billing_receiver_info SET sender_name=?,sender_phone=?,sender_address=? WHERE tracking=?"
         var dataUpdateReceiver=[sender_name,sender_phone,sender_address,tracking];    
 
-        // var updateBillNoBillingItem="UPDATE billing_item SET billing_no=? WHERE tracking=?"
-        // var dataUpdateBillingNoBillingItem=[billing_no,tracking];
+        var updateBillNoBillingItem="UPDATE billing_item SET billing_no=? WHERE tracking=?"
+        var dataUpdateBillingNoBillingItem=[billing_no,tracking];
 
         return new Promise(function(resolve, reject) {
             
@@ -92,7 +92,7 @@ module.exports = {
                     connection.query(updateBillingItem,dataUpdateBillingItem, (error, results, fields) => {});
                     connection.query(updateReceiver,dataUpdateReceiver, (error, results, fields) => {});
                 // } else { 
-                    // connection.query(updateBillNoBillingItem,dataUpdateBillingNoBillingItem, (error, results, fields) => {});
+                    connection.query(updateBillNoBillingItem,dataUpdateBillingNoBillingItem, (error, results, fields) => {});
 
                     // connection.query(saveBillingItemTemp, dataBillingTemp, (err, results) => {});
                     // connection.query(saveReceiverTemp, dataReceiverTemp, (err, results) => {});

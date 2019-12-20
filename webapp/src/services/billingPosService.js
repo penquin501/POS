@@ -176,7 +176,7 @@ module.exports = {
                 if (!results.length) {
                     resolve(false)
                 } else {
-                    resolve(true);
+                    resolve(results);
                 }
             });
         })
@@ -203,7 +203,7 @@ module.exports = {
                 if (!results.length) {
                     resolve(false)
                 } else {
-                    resolve(true);
+                    resolve(results);
                 }
             });
         });

@@ -76,7 +76,10 @@ module.exports = {
         })
     },
     getReceipt: (bill) => {
-        var sqlBilling="SELECT b.billing_no,b.total,b.member_code,b.branch_id,bInfo.branch_name,b.timestamp,b.billing_date FROM billing b JOIN branch_info bInfo ON b.branch_id=bInfo.branch_id WHERE billing_no=?";
+        var sqlBilling="SELECT b.billing_no,b.total,b.member_code,b.branch_id,bInfo.branch_name,b.timestamp,b.billing_date "+
+        "FROM billing b "+
+        "JOIN branch_info bInfo ON b.branch_id=bInfo.branch_id "+
+        "WHERE billing_no=?";
         var dataBilling=[bill];
 
         var sqlBillingItem = "SELECT bItem.tracking,bItem.size_price,bItem.parcel_type,bItem.zipcode as bItemZipcode,s.alias_size, gSize.product_name,"+

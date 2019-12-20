@@ -126,7 +126,7 @@ app.get("/getReceipt", (req, res) => {
               branch_id: data.billingInfo[0].branch_id,
               branch_name: data.billingInfo[0].branch_name,
               timestamp: data.billingInfo[0].timestamp,
-              billing_date: moment(data.billingInfo[0].billing_date).format("YYYY-MM-DD HH:mm:ss", true),
+              billing_date: moment(parseInt(data.billingInfo[0].timestamp)).format("YYYY-MM-DD HH:mm:ss", true),
 
               listTracking: data.billingItem,
               summary: data2

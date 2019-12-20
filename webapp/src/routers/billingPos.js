@@ -167,8 +167,6 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
       }
     }
   );
-
-  //   res.end("Complete.....");
 });
 
 app.get("/deleteReceiverTemp", (req, res) => {
@@ -250,8 +248,12 @@ app.get('/listDailyBilling', (req, res) => {
 
 });
 
-app.post("/test", jsonParser, (req, res) => {
+app.get("/test", jsonParser, (req, res) => {
   billingPosService.testData().then(function (result) {});
+  // let branch_id = req.query.branch_id
+  // billingPosService.listBillingWithOutMember(branch_id).then(function (data) {
+  //   console.log(JSON.stringify(data));
+  // });
   res.end();
 });
 
@@ -315,7 +317,6 @@ function sendDataToMainServer(dataAuthen, dataBill) {
         orderlist: orderlist
       }
     };
-    // console.log("dataAll", JSON.stringify(dataAll));
     request({
         url: "https://www.945holding.com/webservice/restful/parcel/order_record/v11/data",
         method: "POST",
@@ -327,7 +328,6 @@ function sendDataToMainServer(dataAuthen, dataBill) {
         }
       },
       (err, res, body) => {
-        // console.log(res.body);
         if (
           res.body.checkpass == "pass" &&
           res.body.bill_no == "data_varidated_pass"
