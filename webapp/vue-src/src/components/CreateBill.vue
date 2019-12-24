@@ -1206,7 +1206,6 @@
               </div>
               <div class="col-sm-6">
                 <button
-                  href="#myModal"
                   type="button"
                   v-on:click="insertQuiklink"
                   class="trigger-btn btn btn-success col-sm-4"
@@ -1470,8 +1469,8 @@
                               <p style="margin-top: 0px;margin-bottom: 0px;">COD</p>
                             </button>
                             <input
-                              ref="inputcod"
                               type="number"
+                              ref="inputcod"
                               class="form-control"
                               @keyup.enter="addquickLinkSize"
                                maxlength="5"
@@ -1629,7 +1628,9 @@
                           <td
                             style="font-size:14px; text-transform: uppercase;text-align:center;"
                           >{{ item.parcel_type }}</td>
+
                           <td style="text-align:right;">{{ item.cod_value }}.00</td>
+
                           <td
                             style="font-size:14px; text-transform: uppercase;text-align:center;"
                           >{{ item.select_size }}</td>
@@ -1712,6 +1713,9 @@
         </div>
       </div>
     </div>
+
+        <sweet-modal icon="success" ref="successavebill">บันทึกรายการสำเร็จ</sweet-modal>
+        <sweet-modal icon="error" ref="errorsavebill">ไม่สามารถบันทึกรายการได้ กรุณาตรวจสอบข้อมูลอีกครั้ง</sweet-modal>
   </div>
 </template>
 
@@ -1723,13 +1727,15 @@ const axios = require("axios");
 import "v-slim-dialog/dist/v-slim-dialog.css";
 import SlimDialog from "v-slim-dialog";
 import PreventUnload from "vue-prevent-unload";
+import { SweetModal, SweetModalTab } from "sweet-modal-vue";
 // Vue.component("vue-prevent-unload", PreventUnload);
 Vue.use(PreventUnload);
 
 Vue.use(SlimDialog);
 export default {
   components: {
-    PreventUnload
+    PreventUnload,
+    SweetModal
   },
   props: ["value"],
   data: function() {
@@ -2117,6 +2123,7 @@ export default {
         this.memberPhone = phone;
       }
       this.quickLinkDataDetail = false;
+      console.log("เลข Tracking ก่อนยิง",this.memberPhone , quickLinkTrackingKey);
       axios
         .get(
           "https://pos.945.report/genBillNo/checkSendermember?phone=" +
@@ -2126,7 +2133,10 @@ export default {
             quickLinkTrackingKey
         )
         .then(response => {
-          // console.log("---StatusQucklink---", response.data.status);
+          console.log("เลข Tracking หลังยิง",this.memberPhone , quickLinkTrackingKey);
+          console.log("---StatusQucklink  1---", response.data);
+          console.log("---StatusQucklink  1111---", response);
+          console.log("---StatusQucklink   2---", response.data.status);
           if (response.data.status == "Error_Not_In_Capture_Data") {
             alert(
               "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ"
@@ -2337,7 +2347,7 @@ export default {
           this.quickLinkTracking = "";
           this.quickLinkZipcode = "";
           this.quickLinkTypeTransport = "";
-          this.quickLinkCodValue = 0;
+          this.quickLinkCodValue = "";
           this.quickLinkSelectSize = "";
           this.quickLinkSizePrice = "";
           this.quickLinkSizeId = "";
@@ -2366,7 +2376,7 @@ export default {
       this.quickLinkTracking = "";
       this.quickLinkZipcode = "";
       this.quickLinkTypeTransport = "";
-      this.quickLinkCodValue = 0;
+      this.quickLinkCodValue = "";
       this.quickLinkSelectSize = "";
       this.quickLinkSizePrice = "";
       this.quickLinkSizeId = "";
@@ -2527,11 +2537,11 @@ export default {
       this.dataSaveQuickLink = headerQuickLink;
       this.dataSaveQuickLink.items = subQuickLink;
 
-      console.log("ก่อนยิง quickLinkAddData", this.dataSaveQuickLink);
-      console.log(
-        "ก่อนยิง this.quickLinkAddData",
-        JSON.stringify(this.dataSaveQuickLink)
-      );
+      // console.log("ก่อนยิง quickLinkAddData", this.dataSaveQuickLink);
+      // console.log(
+      //   "ก่อนยิง this.quickLinkAddData",
+      //   JSON.stringify(this.dataSaveQuickLink)
+      // );
 
       // console.log("dataSaveQuickLink",  this.dataSaveQuickLink);
       // console.log("dataSaveQuickLink Stringify",    JSON.stringify(this.dataSaveQuickLink));
@@ -2542,16 +2552,28 @@ export default {
           this.dataSaveQuickLink
         )
         .then(response => {
-          console.log("response---", response.data.status);
+          console.log("response---เลขบิลกลับมา", response.data);
           this.quickLinkBillingNo = response.data.billing_no;
-          this.$cookie.set("quickLinkBillingNo", this.quickLinkBillingNo, 1);
+          if(this.quickLinkBillingNo){
+            this.$refs.successavebill.open();
           this.view = "quickLinkDataPrint";
+          this.$cookie.set("quickLinkBillingNo", this.quickLinkBillingNo, 1);
+          }else{
+          this.$refs.errorsavebill.open();
+          this.view = "quickLinkDataExpress";
+          }
+          
           // this.getDataquickLinkPrintBill(this.quickLinkBillingNo);
           return this.quickLinkBillingNo;
         })
         .catch(function(error) {
           console.log(error);
         });
+
+        setTimeout(function(){
+          this.$refs.successavebill.close();
+           this.$refs.errorsavebill.close();
+         }.bind(this),3000);
     },
     getDataquickLinkPrintBill(billing) {
       var bill = this.quickLinkBillingNo;
@@ -2955,7 +2977,7 @@ export default {
       if (!this.listTracking.inputTracking) {
         this.$dialogs.alert("กรุณากรอกเลขที่จัดส่งให้ถูกต้อง", options);
         this.state.isSending = false;
-      } else if (!this.listTracking.inputTracking.match(barcodeReg)) {
+      }else if (!this.listTracking.inputTracking.match(barcodeReg)) {
         this.$dialogs.alert("เลขที่จัดส่งไม่ถูกต้อง", options).then(res => {
           this.$refs.focusTDZ.focus();
         });
@@ -3396,27 +3418,43 @@ export default {
 
     successCreateBill() {
       console.log("finaldata", this.finalDataSave);
+      var that = this;
       axios
         .post(
           "https://pos.945.report/billingPos/addReceiver",
-          this.finalDataSave
+          that.finalDataSave
         )
         .then(responseBillNo => {
-          // console.log("DATABILL", responseBillNo.data);
-          if (responseBillNo.data.status == "ERROR_TRACKING_DUPLICATED") {
-            alert(
-              "ไม่สามารถบันทึกข้อมูลได้เลข Tracking ซ้ำกันในตารางหรือมีอยู่ในระบบแล้ว"
-            );
-            this.view = "createBill8";
+          console.log("DATABILL", responseBillNo.data);
+          if(responseBillNo.data){
+             that.$refs.successavebill.open();
+             that.view = "createBill9"; //หน้าโชว์และมีเลขที่บิลส่งกลับมาพร้อมพิมพ์ใบเสร็จ
+             console.log("มีเลขบิล");
+             that.billNo = responseBillNo.data.billing_no;
+              that.$cookie.set("billNo", that.billNo, 1);
+          }else{
+            that.$refs.errorsavebill.open();
+            that.view = "createBill8";
+            //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
           }
-          this.billNo = responseBillNo.data.billing_no;
-          this.$cookie.set("billNo", this.billNo, 1);
+
+
+          // if (responseBillNo.data.status == "ERROR_TRACKING_DUPLICATED") {
+          //   alert(
+          //     "ไม่สามารถบันทึกข้อมูลได้เลข Tracking ซ้ำกันในตารางหรือมีอยู่ในระบบแล้ว"
+          //   );
+          //   this.view = "createBill8";
+          // }
+          // this.billNo = responseBillNo.data.billing_no;
+          // this.$cookie.set("billNo", this.billNo, 1);
+
+
           return this.billNo;
         })
         .catch(function(error) {
           console.log(error);
         });
-      this.view = "createBill9";
+     
     },
 
     deleteEvent: function(index) {

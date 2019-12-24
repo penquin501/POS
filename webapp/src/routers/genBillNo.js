@@ -3,6 +3,7 @@ const genBillingNoServices = require("../services/genBillNoServices.js");
 // const connection = require("../common/db945.js");
 const request = require("request");
 const moment = require("moment");
+const momentTimezone = require("moment-timezone");
 const bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 moment.locale("th");
@@ -126,8 +127,9 @@ app.get("/getReceipt", (req, res) => {
               branch_id: data.billingInfo[0].branch_id,
               branch_name: data.billingInfo[0].branch_name,
               timestamp: data.billingInfo[0].timestamp,
-              billing_date: moment(parseInt(data.billingInfo[0].timestamp)).format("YYYY-MM-DD HH:mm:ss", true),
-
+              // billing_date: moment(parseInt(data.billingInfo[0].timestamp)).format("YYYY-MM-DD HH:mm:ss", true),
+              billing_date_test: momentTimezone(data.billingInfo[0].billing_date).tz('Asia/Bangkok').format("YYYY-MM-DD HH:mm:ss", true),
+              billing_date: data.billingInfo[0].billing_date,
               listTracking: data.billingItem,
               summary: data2
             });

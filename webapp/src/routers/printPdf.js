@@ -21,7 +21,7 @@ app.get('/printBillPdf', (req, res) => {
             (err, res2, body) => {
                 genBillingNoServices.getType(bill).then(function (data2) {
                     var timestamp = parseInt(data.billingInfo[0].timestamp);
-                    var dateConvert = formatDateToThai(parseInt(timestamp))
+                    var dateConvert = formatDateToThai(parseInt(timestamp));
                     var datatest = {
                         'data': data,
                         'member_code': res2.body.memberInfo.firstname + " " + res2.body.memberInfo.lastname,
@@ -62,21 +62,16 @@ app.get('/printMemberBillPdf', (req, res) => {
                         'datatime': dateConvert,
                         'data2': data2
                     };
+
                     res.render('billMember.twig', datatest);
                 })
             })
     })
-
-
 })
 
 function formatDateToThai(date) {
-    moment.locale('th')
     var year = moment(date).format("YYYY");
-    var time = moment(date).format("hh");
-    var timeSec = moment(date).format("mm");
-    var time2 = parseInt(time) + 7
     var year2 = parseInt(year) + 543;
-    return moment(date).format(" Do MMMM " + year2 + " " + time2 +":"+ timeSec);
+    return moment(date).format(" Do MMMM " + year2 + " " + "H:mm");
 }
 module.exports = app;
