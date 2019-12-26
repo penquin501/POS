@@ -60,6 +60,7 @@ app.get("/checkSenderMember", (req, res) => {
         genBillingNoServices.checkSenderMember(tracking).then(function(dataCapture) {
             genBillingNoServices.checkTrackingBillItem(tracking).then(function(dataBillItem) {
                 let phoneCapture;
+
                 if (dataCapture == false) {
                   status = "Error_Not_In_Capture_Data";
                 } else {
@@ -71,11 +72,11 @@ app.get("/checkSenderMember", (req, res) => {
                   } else {
                     status = "Success";
                   }
-                  var output = {
-                    status: status
-                  };
-                  res.json(output);
                 }
+                var output = {
+                  status: status
+                };
+                res.json(output);
               });
           });
       }
