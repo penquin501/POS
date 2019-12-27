@@ -1,6 +1,7 @@
 <template>
   <div style="margin-top: 40px;">
     <div class="container">
+ 
       <div class="row" v-if="view == 'createBill'">
         <div style="text-align: center">
           <h2>Status : เปิดบิลใหม่</h2>
@@ -10,20 +11,26 @@
           class="panel panel-default"
           style="border-bottom-width: 0px;border-right-width: 0px;border-top-width: 0px;border-left-width: 0px;"
         >
+     
           <div class="panel-heading" style="text-align: center;  background-color:#291e9c;">
             <span style="font-size:18px">Member : รหัสสมาชิก</span>
           </div>
           <div class="panel-body" style="text-align: center">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
+             
               <input
+                type="text"
                 class="form-control"
                 maxlength="15"
                 placeholder="หมายเลขสมาชิก"
                 v-model="idmember"
+                v-on:keypress="onlyNumber"
                 ref="memberCode"
                 style="height:40px"
-              />
+                />
+
+       
             </div>
             <div class="col-sm-4"></div>
           </div>
@@ -48,7 +55,7 @@
                   v-on:keypress="onlyNumber"
                   id="idCardNumber"
                   style="height:40px"
-                />
+               />
               </div>
               <div class="col-sm-4"></div>
             </div>
@@ -1909,6 +1916,28 @@ export default {
   // },
 
   watch: {
+    idmember(){
+       var num = /^\s+$/;
+       var reg = new RegExp('^\\d+$');
+      //  console.log(reg.test(this.idCard));
+       if(!reg.test(this.idmember)) {
+         alert("กรุณากรอกให้ถูกต้อง");
+         this.idmember = "";
+       }
+      this.idmember = this.idmember.replace(/\s+/g, '');
+      // console.log('card => ', this.idCard);
+    },
+    idCard() {
+       var num = /^\s+$/;
+       var reg = new RegExp('^\\d+$');
+      //  console.log(reg.test(this.idCard));
+       if(!reg.test(this.idCard)) {
+         alert("กรุณากรอกให้ถูกต้อง");
+         this.idCard = "";
+       }
+      this.idCard = this.idCard.replace(/\s+/g, '');
+      // console.log('card => ', this.idCard);
+    },
     quickLinkZipcode(vShowQuickLinkZipcode) {
       if (vShowQuickLinkZipcode == true) {
         // $(document).ready(function() {
@@ -2061,6 +2090,15 @@ export default {
   },
 
   methods: {
+    onlyNumberKey($event){
+      var number = /[0-9]/;
+      let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+      if (keyCode < 48 || keyCode > 57) {
+        $event.preventDefault();
+      }
+      if (number.test(key)) return true;
+
+    },
     handler: function handler(event) {
       // console.log("ddddddeeee");
     },
@@ -2069,6 +2107,7 @@ export default {
       this.quickLinkDataDetail = true;
     },
     checkQuickLinkTracking(quickLinkTracking) {
+      console.log("เข้าฟังก์ชั่น");
       this.is_readonly = false;
       if (!this.quickLinkTracking) {
         alert("กรุณากรอกเลข Tracking");
@@ -2481,11 +2520,12 @@ export default {
       this.quickLinkAddData.splice(index, 1);
     },
     insertQuiklink() {
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       this.quickLinkDataDetail = false;
       this.quickLinkTotal = this.quickLinkTotalSum;
-      var merid = parseInt(this.$cookie.get("merid"));
-      var userid = parseInt(this.$cookie.get("userid"));
-      var authenlevel = this.$cookie.get("authenlevel");
+       var merid = parseInt(dataLogin.merid);
+      var userid = dataLogin.userid;
+      var authenlevel = dataLogin.authenlevel;
 
       // รูปหน้าบัตรประชาชน
       var imgUrl = "";
@@ -2562,7 +2602,6 @@ export default {
           this.$refs.errorsavebill.open();
           this.view = "quickLinkDataExpress";
           }
-          
           // this.getDataquickLinkPrintBill(this.quickLinkBillingNo);
           return this.quickLinkBillingNo;
         })
@@ -2603,8 +2642,22 @@ export default {
       }
     },
 
-    onlyNumber($event) {
+    filterNumber(e) {
       //console.log($event.keyCode); //keyCodes value
+      console.log('idNumber =>', this.idCard)
+      this.idCard = this.idCard.slice(0, 13);
+      e.target.value = e.target.value.replace(/[^0-9]+/g, '');
+    },
+
+    filterNumber2(e) {
+      //console.log($event.keyCode); //keyCodes value
+      console.log('idNumber2 =>', this.idCard)
+      this.idCard = this.idCard.slice(0, 13);
+      e.target.value = e.target.value.replace(/[^0-9]+/g, '');
+    },
+
+    onlyNumber($event) {
+
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;
       if (keyCode < 48 || keyCode > 57) {
         $event.preventDefault();
@@ -2628,60 +2681,93 @@ export default {
     },
 
     btnClickCreateBill() {
-      var meridGet = this.$cookie.get("merid");
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+      var meridGet = dataLogin.merid;
       var merid = meridGet;
       // console.log("merid", merid);
-
       var memberCode = this.idmember;
       var carrierId = this.idCard;
       this.$cookie.set("carrierId", carrierId, 1);
-
       var codeToCheck = "";
       const options = { okLabel: "ตกลง" };
-      if (memberCode.length == 0 || memberCode.length > 13) {
-        this.$dialogs.alert(
-          "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ถูกต้อง",
+
+      // เช็ค memberCode กรอกเบอร์โทร 10 หลัก และรหัสบัตรประชาชน 13 หลัก
+      if(memberCode.length == 0){
+         this.$dialogs.alert(
+          "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ครบถ้วน",
           options
         );
-      } else if (memberCode.length == 10) {
-        if (
+      } 
+      else if(memberCode.length == 10){
+          if (
           memberCode[0] + memberCode[1] == "06" ||
           memberCode[0] + memberCode[1] == "08" ||
           memberCode[0] + memberCode[1] == "09"
         ) {
           codeToCheck = this.changeZeroToDoubleSix(memberCode);
+          console.log("codeToCheck",codeToCheck);
           if (codeToCheck == undefined) {
             this.$dialogs.alert("กรุณากรอก เบอร์โทรศัพท์ ให้ถูกต้อง", options);
+          }else {
+          if(carrierId.length == 0 || carrierId.length != 13  || carrierId.length < 13){
+            this.$dialogs.alert("กรุณากรอก หมายเลขบัตรประชาชนผู้ส่ง ให้ครบ", options);
+          }else{
+            // alert("ส่งไปเช็ค");
+            this.checkMemberAndCarrier();
+              // ส่งไปเข้าไป
+             }  
           }
-        } else {
-          codeToCheck = memberCode;
-        }
-      } else {
-        codeToCheck = memberCode;
+        } else{
+          this.$dialogs.alert(
+          "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ครบถ้วน",
+          options
+            );
+          }
+      }else if(memberCode.length > 13){
+        this.$dialogs.alert(
+          "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ครบถ้วน",
+          options
+        );
       }
+      else if(carrierId.length == 0 || carrierId.length != 13  || carrierId.length < 13){
+        this.$dialogs.alert("กรุณากรอก หมายเลขบัตรประชาชนผู้ส่ง ให้ครบ", options);  
+      }else{
+        this.checkMemberAndCarrier();
+        //  alert("ส่งไปเช็ค");
+      }
+
+
+     
+    },
+    checkMemberAndCarrier(){
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+      var meridGet = dataLogin.merid;
+      var merid = meridGet;
+      var memberCode = this.idmember;
+      var carrierId = this.idCard;
+      var codeToCheck = "";
+      const options = { okLabel: "ตกลง" };
       const dataCheck = {
         merId: merid,
-        member_code: codeToCheck
+        member_code: memberCode
       };
-
-      // console.log("dataCheck", dataCheck);
       axios
         .post(
           "https://www.945api.com/parcel/check/member/api",
           JSON.stringify(dataCheck)
         )
         .then(resultMember => {
-          console.log("resultMember", resultMember.data);
+          // console.log("resultMember", resultMember.data);
           if (resultMember.data.status == "ERROR_NOT_FOUND") {
             this.$dialogs.alert(
               "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
               options
             );
-          } else if (carrierId.length == 0 || carrierId.length != 13) {
-            this.$dialogs.alert(
-              "กรุณากรอกรหัสบัตรประชาชนผู้นำส่งให้ถูกต้อง",
-              options
-            );
+          // } else if (carrierId.length == 0 || carrierId.length != 13) {
+          //   this.$dialogs.alert(
+          //     "กรุณากรอกรหัสบัตรประชาชนผู้นำส่งให้ถูกต้อง",
+          //     options
+          //   );
           } else {
             this.view = "createBill2";
             this.$cookie.set("carrierId", carrierId, 1);
@@ -2720,23 +2806,19 @@ export default {
           }
           this.memberData = resultMember.data;
           // console.log("memberData", this.memberData);
-
           this.memberCode = resultMember.data.member_code;
           this.$cookie.set("memberCode", memberCode, 1);
           this.memberFullName =
             resultMember.data.first_name + " " + resultMember.data.last_name;
           this.memberPhone = resultMember.data.phone;
           this.memberAddress = resultMember.data.address;
-
           // console.log(
           //   "member",
           //   this.memberFullName,
           //   this.memberPhone,
           //   this.memberAddress
           // );
-
           localStorage.setItem("memberData", JSON.stringify(resultMember.data));
-
           // this.quickLinkTextPhone = resultMember.data[0].phone;
           // this.dataFullName = resultMember.data[0].full_name;
           // this.dataphone = resultMember.data[0].phone;
@@ -2748,10 +2830,10 @@ export default {
           //   this.checkPhoneNumber = phoneNo;
           // }
         })
-
         .catch(function(error) {
           console.log(error);
         });
+    
     },
     changeZeroToDoubleSix(tels) {
       if (
@@ -3014,10 +3096,10 @@ export default {
                 this.view = "createBill8";
                 var imgUrl = "";
                 var remark = "";
-                var merid = parseInt(this.$cookie.get("merid"));
-                var userid = parseInt(this.$cookie.get("userid"));
-                // console.log("userid Int", userid);
-                var authenlevel = this.$cookie.get("authenlevel");
+                var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+                var merid = parseInt(dataLogin.merid);
+                var userid = parseInt(dataLogin.userid);
+                var authenlevel = dataLogin.authenlevel;
                 if (!this.fileNameUpload) {
                   imgUrl =
                     "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/5e508c1b_no-image-available.png";
@@ -3039,10 +3121,10 @@ export default {
                   this.memberPhone = phone;
                 }
                 // console.log("phone66", this.memberPhone);
-
-                var merid = parseInt(this.$cookie.get("merid"));
-                var userid = parseInt(this.$cookie.get("userid"));
-                var authenlevel = this.$cookie.get("authenlevel");
+                var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+                var merid = parseInt(dataLogin.merid);
+                var userid = parseInt(dataLogin.userid);
+                var authenlevel = dataLogin.authenlevel;
 
                 if (this.memberCode) {
                   this.memberCode = this.memberCode;
@@ -3222,13 +3304,14 @@ export default {
             if (resultsCheckTracking.data == true) {
               // console.log("เลขผ่าน");
               //ข้อมูลอยุ่ในตารางเตรียมบันทึก
+              var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
               this.view = "createBill8";
               var imgUrl = "";
               var remark = "";
-              var merid = parseInt(this.$cookie.get("merid"));
-              var userid = parseInt(this.$cookie.get("userid"));
+              var merid = parseInt(dataLogin.merid);
+              var userid = parseInt(dataLogin.userid);
               // console.log("userid Int", userid);
-              var authenlevel = this.$cookie.get("authenlevel");
+              var authenlevel = dataLogin.authenlevel;
               if (!this.fileNameUpload) {
                 imgUrl =
                   "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/5e508c1b_no-image-available.png";
@@ -3251,9 +3334,10 @@ export default {
               }
               // console.log("phone66", this.memberPhone);
 
-              var merid = parseInt(this.$cookie.get("merid"));
-              var userid = parseInt(this.$cookie.get("userid"));
-              var authenlevel = this.$cookie.get("authenlevel");
+              var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+              var merid = parseInt(dataLogin.merid);
+              var userid = parseInt(dataLogin.userid);
+              var authenlevel = dataLogin.authenlevel;
 
               if (this.memberCode) {
                 this.memberCode = this.memberCode;

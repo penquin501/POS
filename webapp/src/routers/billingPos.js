@@ -31,11 +31,11 @@ app.post("/addReceiver", jsonParser, (req, res) => {
   var source = "POS";
   let trackings = [];
 
-  if (user_id === null) {
+  if (user_id === null || user_id === null) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
-  } else if (branch_id === null) {
+  } else if (branch_id === null || branch_id === null) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
-  } else if (mer_authen_level === null) {
+  } else if (mer_authen_level === null || mer_authen_level === null) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
   } else {
     var dataJson = {

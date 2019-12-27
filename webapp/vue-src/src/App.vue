@@ -58,13 +58,15 @@ export default {
   },
 
   mounted: function() {
-    if (this.$cookie.get("username") != null) {
+    var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+    console.log("dataLogin",dataLogin);
+    if (dataLogin != null) {
       this.view = 2;
-      this.usernamelogin = this.$cookie.get("username");
-      this.userid = this.$cookie.get("userid");
-      this.mername = this.$cookie.get("mername");
-      this.merid = this.$cookie.get("merid");
-      this.authenlevel = this.$cookie.get("authenlevel");
+      // this.usernamelogin = this.$cookie.get("username");
+      // this.userid = this.$cookie.get("userid");
+      // this.mername = this.$cookie.get("mername");
+      // this.merid = this.$cookie.get("merid");
+      // this.authenlevel = this.$cookie.get("authenlevel");
     }
   },
 
@@ -108,18 +110,24 @@ export default {
               response.data.authencheck == "pass" &&
               response.data.userstatus == "active"
             ) {
-              this.$cookie.set("username", response.data.username, 1);
-              this.$cookie.set("userid", response.data.userid, 1);
-              this.$cookie.set("mername", response.data.mername, 1);
-              this.$cookie.set("merid", response.data.merid, 1);
-              this.$cookie.set("authenlevel", response.data.authenlevel, 1);
-              this.usernamelogin = this.$cookie.get("username");
-              this.userid = this.$cookie.get("userid");
-              this.mername = this.$cookie.get("mername");
-              this.merid = this.$cookie.get("merid");
-              this.authenlevel = this.$cookie.get("authenlevel");
+              // console.log("dataLogin", this.dataLogin);
+              var dataLogin = this.dataLogin;
+
+              localStorage.setItem("dataLogin",JSON.stringify(dataLogin));
+
+              // this.$cookie.set("username", response.data.username, 1);
+              // this.$cookie.set("userid", response.data.userid, 1);
+              // this.$cookie.set("mername", response.data.mername, 1);
+              // this.$cookie.set("merid", response.data.merid, 1);
+              // this.$cookie.set("authenlevel", response.data.authenlevel, 1);
+              // this.usernamelogin = this.$cookie.get("username");
+              // this.userid = this.$cookie.get("userid");
+              // this.mername = this.$cookie.get("mername");
+              // this.merid = this.$cookie.get("merid");
+              // this.authenlevel = this.$cookie.get("authenlevel");
               // login pass //
               this.view = 2;
+              // this.$router.push({path: '/parcel'});
               window.location.href = "/parcel";
               // window.location.reload();
             } else {

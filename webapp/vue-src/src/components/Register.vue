@@ -533,12 +533,17 @@ export default {
     },
 
     onlyNumber($event) {
+       var charCode = (evt.which) ? evt.which : event.keyCode
+         if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+            
+         return true;
       //console.log($event.keyCode); //keyCodes value
-      let keyCode = $event.keyCode ? $event.keyCode : $event.which;
-      if (keyCode < 48 || keyCode > 57) {
-        // 46 is dot
-        $event.preventDefault();
-      }
+      // let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+      // if (keyCode < 48 || keyCode > 57) {
+      //   // 46 is dot
+      //   $event.preventDefault();
+      
     },
     inputCheckFormatName($event) {
       var keyCode = $event.keyCode ? $event.keyCode : $event.which;
@@ -715,7 +720,8 @@ export default {
       }
     },
       saveRegister() {
-      var branch_id = this.$cookie.get("merid");
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+      var branch_id = dataLogin.merid;
       // console.log("branch_id", branch_id);
       var imgBankPath;
       var alaisName;
@@ -822,7 +828,7 @@ export default {
         // รอยิงส่งเซฟ
         axios
         .post(
-          "https://apidev.whatitems.com/parcel/agent/register/api",
+          "https://www.945api.com/parcel/agent/register/api",
           JSON.stringify(dataRegister)
         )
         .then(function(response) {

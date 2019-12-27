@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <nav
       class="navbar fixed-top navbar-light bg-light navbar-fixed-top"
       style="background-color:rgb(209, 213, 253) !important"
@@ -28,16 +27,10 @@
         </li>
       </ul>
     </nav>
-
-
-
-
-
-
     <div class="row">
       <div class="wrapper">
         <div class="side-bar">
-          <ul>
+          <ul >
             <li class="menu-head">
               <b style="font-size:18px">เมนู</b>
 
@@ -760,20 +753,27 @@ export default {
   },
 
   mounted: function() {
-    if (this.$cookie.get("username") != null){
-      this.usernamelogin = this.$cookie.get("username");
-    this.userid = this.$cookie.get("userid");
-    this.mername = this.$cookie.get("mername");
-    this.merid = this.$cookie.get("merid");
-    this.authenlevel = this.$cookie.get("authenlevel");
+    var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+    if (dataLogin != null){
+    this.usernamelogin = dataLogin.username;
+    // console.log('usernamelogin',this.usernamelogin);
+    this.userid = dataLogin.userid;
+    // console.log('userid',this.userid);
+    this.mername = dataLogin.mername;
+    // console.log('mername',this.mername);
+    this.merid = dataLogin.merid;
+    // console.log('merid',this.merid);
+    this.authenlevel = dataLogin.authenlevel;
+    // console.log('authenlevel',this.authenlevel);
     }
 
   },
 
   methods: {
     listlistMember(){
+       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
        var that = this;
-     var merid = this.$cookie.get("merid");
+       var merid = dataLogin.merid;
       const data = {
         branch_id: merid
       };
@@ -865,11 +865,12 @@ export default {
       // console.log("address", that.address);
     },
     getMember(membercode){
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       var that = this;
       $("#showDetailModal").modal();
       // console.log("list", that.memberId); 
       //ยิง API หา
-       var meridGet = this.$cookie.get("merid");
+       var meridGet = dataLogin.merid;
        var merid = meridGet;
        var codeToCheck = that.memberId;
       //  var citizenid =  that.citizenid ;
@@ -901,8 +902,9 @@ export default {
         });
     },
     getImageMember(membercode){
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       //ยิง API หา
-       var meridGet = this.$cookie.get("merid");
+       var meridGet = dataLogin.merid;
        var merid = meridGet;
        var memcode = membercode;
 
@@ -985,7 +987,24 @@ export default {
       this.$cookie.delete("billNo");
       this.$cookie.delete("quickLinkBillingNo");
 
-      localStorage.clear();
+
+      localStorage.removeItem("newbillkeydata");
+      localStorage.removeItem("memberData");
+      localStorage.removeItem("datalistPOS");
+      localStorage.removeItem("finalDataSave");
+      localStorage.removeItem("dataCount");
+
+
+      // ลบของ QuickLink
+      this.$cookie.delete("quickLinkBillingNo");
+      localStorage.removeItem("quickLinkdataCount");
+      localStorage.removeItem("quickLinkAddData");
+      localStorage.removeItem("quickLinkCountAllinTable");
+
+      // localStorage.removeItem(key);  ต้องลบ!!!!!!!
+
+      // localStorage.clear();
+
       window.location.href = "/parcel";
       // window.location.reload();
     },
@@ -1030,15 +1049,17 @@ export default {
     },
 
     listBillPre() {
-      var branchId = this.$cookie.get("merid");
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+      var branchId = dataLogin.merid;
       // console.log("branchId",branchId);
       axios
         .get(
           "https://pos.945.report/billingPos/listBillngNo?branch_id=" +
+          //  "http://127.0.0.1:3100/billingPos/listBillngNo?branch_id=" +
             branchId
         )
         .then((resultList) => {
-          // console.log("ListBill", resultList.data);
+          console.log("ListBill", resultList.data);
           this.listBill = resultList.data;
           this.time = parseInt(resultList.data[0].timestamp);
           var contime = moment(this.time);
@@ -1089,7 +1110,7 @@ export default {
     },
 
     btnRegister() {
-      this.merid = this.$cookie.get("merid");
+      this.merid = dataLogin.merid;
       // console.log("merid", this.merid);
       this.menuRegister = true;
       this.menuCreateBill = false;
@@ -1106,14 +1127,14 @@ export default {
       location.reload();
     },
     logoutParcel() {
-      this.$cookie.delete("username");
-      this.$cookie.delete("userid");
-      this.$cookie.delete("mername");
-      this.$cookie.delete("merid");
-      this.$cookie.delete("authenlevel");
-      this.$cookie.delete("billNo");
-      this.$cookie.delete("carrierId");
-      this.$cookie.delete("memberCode");
+      // this.$cookie.delete("username");
+      // this.$cookie.delete("userid");
+      // this.$cookie.delete("mername");
+      // this.$cookie.delete("merid");
+      // this.$cookie.delete("authenlevel");
+      // this.$cookie.delete("billNo");
+      // this.$cookie.delete("carrierId");
+      // this.$cookie.delete("memberCode");
       localStorage.clear();
       
       var path = window.location.href.replace(/(\#.*)/, "");
@@ -1125,8 +1146,9 @@ export default {
       window.location.href = path;
     },
     listMember() {
+     var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
      var that = this;
-     var merid = this.$cookie.get("merid");
+     var merid = dataLogin.merid;
       const data = {
         branch_id: merid
       };
