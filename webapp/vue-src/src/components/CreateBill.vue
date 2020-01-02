@@ -2117,9 +2117,9 @@ export default {
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       var tracking = this.quickLinkAddData;
       // this.$refs.quickLinkZipcode.focus();
-      // console.log("tracking", quickLinkTrackingKey);
+      
       var quickLinkBarcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
-      if (!quickLinkTrackingKey.match(quickLinkBarcodeReg)) {
+      if (quickLinkTrackingKey.match(quickLinkBarcodeReg) === null) {
         alert("กรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง");
         this.quickLinkTracking = "";
         this.is_track_readonly = false;
@@ -3059,7 +3059,8 @@ export default {
       if (!this.listTracking.inputTracking) {
         this.$dialogs.alert("กรุณากรอกเลขที่จัดส่งให้ถูกต้อง", options);
         this.state.isSending = false;
-      }else if (!this.listTracking.inputTracking.match(barcodeReg)) {
+      // }else if (!this.listTracking.inputTracking.match(barcodeReg)) {
+        }else if (this.listTracking.inputTracking.match(barcodeReg) === null) {
         this.$dialogs.alert("เลขที่จัดส่งไม่ถูกต้อง", options).then(res => {
           this.$refs.focusTDZ.focus();
         });
