@@ -152,4 +152,26 @@ app.get("/checkZipcode", (req, res) => {
   });
 });
 
+app.post("/status/bill/no/api", (req, res) => {
+  let billingNo = req.body.billingNo;
+  let countTrackingNo = req.body.countTrackingNo;
+  let trackingNoList=req.body.trackingNoList;
+  
+  genBillingNoServices.checkTrackingNo(billingNo).then(function(data) {
+
+    if(data[0].cTracking===countTrackingNo) {
+      status='SUCCESS'
+      for(i=0;i<trackingNoList.length;i++){
+        let tracking=trackingNoList[i].trackingNo;
+        genBillingNoServices.updateStatusInReceiver(status,tracking).then(function(data) {})
+      }
+    } else {
+      status='ERROR'
+      genBillingNoServices.updateResponseData(JSON.stringify(req.body),billingNo).then(function(data) {})
+    }
+    genBillingNoServices.updateStatusInBilling(status,billingNo).then(function(data) {})
+    res.end(status);
+  })
+});
+
 module.exports = app;

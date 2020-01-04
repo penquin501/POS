@@ -182,5 +182,43 @@ module.exports = {
         return new Promise(function (resolve, reject) {  
             connection.query(sql, data, (err, results) => {})
         })
-    }
+    },
+    checkTrackingNo: (billing_no) => {
+        var sql = "SELECT count(tracking) as cTracking FROM billing_item WHERE billing_no=?"
+        var data=[billing_no];
+        return new Promise(function (resolve, reject) {  
+            connection.query(sql, data, (err, results) => {
+                if(results.length!=0){
+                    resolve(results);
+                }
+            })
+        })
+    },
+    updateStatusInBilling: (status,billing_no) => {
+        var sql = "UPDATE billing SET status=?,sending_date=? WHERE billing_no=?"
+        var data=[status,new Date,billing_no];
+        return new Promise(function (resolve, reject) {  
+            connection.query(sql, data, (err, results) => {
+                resolve(results);
+            })
+        })
+    },
+    updateStatusInReceiver: (status,tracking) => {
+        var sql = "UPDATE billing_receiver_info SET status=?,sending_date=? WHERE tracking=?"
+        var data = [status, new Date(), tracking];
+        return new Promise(function (resolve, reject) {  
+            connection.query(sql, data, (err, results) => {
+                resolve(results);
+            })
+        })
+    },
+    updateResponseData: (raw_data,billing_no) => {
+        var sql = "UPDATE billing SET response_json=?,sending_date=? WHERE billing_no=?"
+        var data=[raw_data,new Date,billing_no];
+        return new Promise(function (resolve, reject) {  
+            connection.query(sql, data, (err, results) => {
+                resolve(results);
+            })
+        })
+    },
 }
