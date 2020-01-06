@@ -1410,6 +1410,13 @@
                           id="trackingfocus"
                           v-bind:readonly="is_track_readonly"
                         />
+                        <h5 v-show="nulltracking" style="color:red;">**กรุณากรอกเลขที่จัดส่ง</h5>
+                        <h5 v-show="trackingNoFormat" style="color:red;">**กรุณากรอกกรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง</h5>
+                        <h5 v-show="trackingNoCapture" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ</h5>
+                        <h5 v-show="trackingDuplicated" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว</h5>
+                        <h5 v-show="trackingPhoneNotMatch" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ใส่รหัสผู้ส่งไม่ถูกต้อง</h5>
+                        <h5 v-show="trackingCannotuse" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขที่จัดส่งนี้ทำรายการแล้ว</h5>
+
                       </div>
                     </div>
                     <div
@@ -1898,7 +1905,15 @@ export default {
       baseSixFour: "",
       btnCamera: "true",
       merid: "",
-      userid: ""
+      userid: "",
+
+      //errortracking
+      nulltracking:false,
+      trackingNoFormat:false,
+      trackingNoCapture:false,
+      trackingDuplicated:false,
+      trackingPhoneNotMatch:false,
+      trackingCannotuse:false,
     };
   },
   created: function() {
@@ -2107,24 +2122,40 @@ export default {
       this.quickLinkDataDetail = true;
     },
     checkQuickLinkTracking(quickLinkTracking) {
-      console.log("เข้าฟังก์ชั่น");
+      this.is_track_readonly = true;
       this.is_readonly = false;
-      if (!this.quickLinkTracking) {
-        alert("กรุณากรอกเลข Tracking");
-        this.is_track_readonly = false;
-      }
+
+         this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+      // if (!this.quickLinkTracking) {
+      //   this.nulltracking = true;
+      //   // alert("กรุณากรอกเลข Tracking");
+      //   this.is_track_readonly = false;
+      // }
       this.quickLinkDataDetail = false;
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       var tracking = this.quickLinkAddData;
       // this.$refs.quickLinkZipcode.focus();
-      
+
       var quickLinkBarcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
-      if (quickLinkTrackingKey.match(quickLinkBarcodeReg) === null) {
-        alert("กรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง");
-        this.quickLinkTracking = "";
+      if (quickLinkTrackingKey.match(quickLinkBarcodeReg) === null || this.quickLinkTracking == null) {
+        // alert("กรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง");
         this.is_track_readonly = false;
+        this.quickLinkTracking = "";
+         this.$refs.barcode.focus();
+        this.trackingNoFormat = true;
         return false;
-      } else if (tracking.length == 0) {
+      }else if (tracking.length == 0) {
+          this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
         this.checkQuickLinkTrackingApi(
           this.quickLinkTextPhone,
           quickLinkTrackingKey
@@ -2135,13 +2166,22 @@ export default {
           return v.tracking == quickLinkTrackingKey;
         }).length;
         if (result >= 1) {
-          alert("ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว");
+                  this.is_track_readonly = false;
+            this.quickLinkTracking = "";
+            this.$refs.barcode.focus();
+           this.trackingDuplicated = true;
+          // alert("ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว");
           this.quickLinkZipcode = false;
-          this.quickLinkTracking = "";
-          this.$refs.barcode.focus();
+
           this.is_track_readonly = false;
           return false;
         } else {
+          this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
           this.checkQuickLinkTrackingApi(
             this.quickLinkTextPhone,
             quickLinkTrackingKey
@@ -2151,6 +2191,13 @@ export default {
       }
     },
     checkQuickLinkTrackingApi(phone, tracking) {
+          this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       //ดึงmemberData ขึ้นมาเอาเบอร์โทร
       this.memberData = JSON.parse(localStorage.getItem("memberData"));
@@ -2172,37 +2219,69 @@ export default {
             quickLinkTrackingKey
         )
         .then(response => {
-          console.log("เลข Tracking หลังยิง",this.memberPhone , quickLinkTrackingKey);
-          console.log("---StatusQucklink  1---", response.data);
-          console.log("---StatusQucklink  1111---", response);
-          console.log("---StatusQucklink   2---", response.data.status);
           if (response.data.status == "Error_Not_In_Capture_Data") {
-            alert(
-              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ"
-            );
+            this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
+            this.trackingNoCapture = true;
+        
+            // alert(
+            //   "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ"
+            // );
+
+        
           } else if (response.data.status == "Error_Phone_Not_Match") {
-            alert("ไม่สามารถใช้ Tracking นี้ได้,ใส่รหัสผู้ส่งไม่ถูกต้อง");
-            this.quickLinkTracking = "";
-            this.$refs.barcode.focus();
+              this.is_track_readonly = false;
+              this.quickLinkTracking = "";
+              this.$refs.barcode.focus();
+              this.trackingPhoneNotMatch = true;
+            // alert("ไม่สามารถใช้ Tracking นี้ได้,ใส่รหัสผู้ส่งไม่ถูกต้อง");
+       
           } else if (response.data.status == "Error_Tracking_Cannot_Use") {
-            alert(
-              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
-            );
+            this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
+            this.trackingCannotuse = true;
+            // alert(
+            //   "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
+            // );
+      
           } else if (response.data.status == "ERROR_TRACKING_DUPLICATED") {
-            alert(
-              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
-            );
+             this.is_track_readonly = false;
+             this.quickLinkTracking = "";
+             this.$refs.barcode.focus();
+             this.trackingDuplicated = true;
+            // alert(
+            //   "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
+            // );
+           
+          } else if (response.data.status == "ERROR_TRACKING_WRONG_FORMAT") {
+            this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
-          } else {
-            //response.data.status=="Success"
+            this.trackingNoFormat = true;
+            // alert(
+            //   "กรุณากรอกเลขจัดส่งให้ถูกต้อง"
+            // );
+    
+          }else if (response.data.status == "Success") {
             if (!this.quickLinkTracking) {
               this.is_track_readonly = false;
+
+          this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
             } else {
+                    this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+
               this.is_track_readonly = true;
               this.is_readonly = false;
               this.quickLinkZipcode = true;
@@ -2211,6 +2290,19 @@ export default {
               });
             }
           }
+          // else {
+          //   //response.data.status=="Success"
+          //   if (!this.quickLinkTracking) {
+          //     this.is_track_readonly = false;
+          //   } else {
+          //     this.is_track_readonly = true;
+          //     this.is_readonly = false;
+          //     this.quickLinkZipcode = true;
+          //     $(document).ready(function() {
+          //        $('#zCode').focus();
+          //     });
+          //   }
+          // }
         })
         .catch(error => {
           this.errored = true;
@@ -2297,26 +2389,206 @@ export default {
       this.quickLinkBtnRe = false;
       this.intPriceCod = parseInt(this.quickLinkCodValue);
       if (!this.quickLinkTracking) {
-        alert("กรอกข้อมูลให้ครบถ้วน");
+        alert("กรอกข้อมูลให้ครบถ้วน1");
+         this.is_track_readonly = false;
+      this.is_readonly = false;
+      this.quickLinkBtnRe = false;
+     this.state.isSending = false;
+      // Clear Data
+      this.quickLinkTracking = "";
+      this.quickLinkZipcode = "";
+      this.quickLinkTypeTransport = "";
+      this.quickLinkCodValue = "";
+      this.quickLinkSelectSize = "";
+      this.quickLinkSizePrice = "";
+      this.quickLinkSizeId = "";
+      this.quickLinkProvince1 = "";
+      this.quickLinkProvince2 = "";
+      this.qlZipcode = "";
+      this.quickLinkZipcode = false;
+      this.quickLinkTransport = false;
+      this.quickLinkProduct = false;
+      this.quickLinkBtnAdd = false;
+      this.quickLinkInputCod = false;
+      this.$refs.barcode.focus();
       } else if (!this.qlZipcode) {
-        alert("กรอกข้อมูลให้ครบถ้วน");
+        alert("กรอกข้อมูลให้ครบถ้วน2");
+         this.is_track_readonly = false;
+      this.is_readonly = false;
+      this.quickLinkBtnRe = false;
+     this.state.isSending = false;
+      // Clear Data
+      this.quickLinkTracking = "";
+      this.quickLinkZipcode = "";
+      this.quickLinkTypeTransport = "";
+      this.quickLinkCodValue = "";
+      this.quickLinkSelectSize = "";
+      this.quickLinkSizePrice = "";
+      this.quickLinkSizeId = "";
+      this.quickLinkProvince1 = "";
+      this.quickLinkProvince2 = "";
+      this.qlZipcode = "";
+      this.quickLinkZipcode = false;
+      this.quickLinkTransport = false;
+      this.quickLinkProduct = false;
+      this.quickLinkBtnAdd = false;
+      this.quickLinkInputCod = false;
+      this.$refs.barcode.focus();
       } else if (!this.quickLinkTypeTransport) {
-        alert("กรอกข้อมูลให้ครบถ้วน");
+        alert("กรอกข้อมูลให้ครบถ้วน3");
+         this.is_track_readonly = false;
+      this.is_readonly = false;
+      this.quickLinkBtnRe = false;
+         this.state.isSending = false;
+      // Clear Data
+      this.quickLinkTracking = "";
+      this.quickLinkZipcode = "";
+      this.quickLinkTypeTransport = "";
+      this.quickLinkCodValue = "";
+      this.quickLinkSelectSize = "";
+      this.quickLinkSizePrice = "";
+      this.quickLinkSizeId = "";
+      this.quickLinkProvince1 = "";
+      this.quickLinkProvince2 = "";
+      this.qlZipcode = "";
+      this.quickLinkZipcode = false;
+      this.quickLinkTransport = false;
+      this.quickLinkProduct = false;
+      this.quickLinkBtnAdd = false;
+      this.quickLinkInputCod = false;
+      this.$refs.barcode.focus();
       } else if (!this.quickLinkSelectSize) {
-        alert("กรอกข้อมูลให้ครบถ้วน");
-      } else if (this.quickLinkTypeTransport == "NORMAL") {
+        alert("กรอกข้อมูลให้ครบถ้วน4");
+         this.is_track_readonly = false;
+         this.is_readonly = false;
+         this.quickLinkBtnRe = false;
+            this.state.isSending = false;
+      // Clear Data
+      this.quickLinkTracking = "";
+      this.quickLinkZipcode = "";
+      this.quickLinkTypeTransport = "";
+      this.quickLinkCodValue = "";
+      this.quickLinkSelectSize = "";
+      this.quickLinkSizePrice = "";
+      this.quickLinkSizeId = "";
+      this.quickLinkProvince1 = "";
+      this.quickLinkProvince2 = "";
+      this.qlZipcode = "";
+      this.quickLinkZipcode = false;
+      this.quickLinkTransport = false;
+      this.quickLinkProduct = false;
+      this.quickLinkBtnAdd = false;
+      this.quickLinkInputCod = false;
+      this.$refs.barcode.focus();
+      } 
+
+      else if (this.quickLinkTypeTransport == "NORMAL") {
         this.quickLinkCodValue = 0;
         this.addQuiklink();
       } else if (this.quickLinkTypeTransport == "COD") {
         if (this.intPriceCod == 0) {
           alert("กรอกมูลค่า COD");
-        } else if (this.intPriceCod > 10000) {
+        } else if(!this.intPriceCod){
+          alert("กรอกมูลค่า COD");
+
+         this.quickLinkBtnRe = true;
+         this.state.isSending = false;
+
+        }
+        else if (this.intPriceCod > 10000) {
           alert("มูลค่า COD มีมูลค่าที่สูงมาก ยืนยันการกรอกมูลค่า");
           this.addQuiklink();
         } else {
           this.addQuiklink();
         }
+      }else{
+      // check tracking
+      console.log("เข้า else check tracking");
+      var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
+      //ดึงmemberData ขึ้นมาเอาเบอร์โทร
+      this.memberData = JSON.parse(localStorage.getItem("memberData"));
+      this.memberPhone = this.memberData.phone;
+      var phone = this.memberPhone;
+      if (phone[0] + phone[1] == "66") {
+        this.memberPhone = this.changeDoubleSix(phone);
+      } else {
+        this.memberPhone = phone;
       }
+      this.quickLinkDataDetail = false;
+      console.log("เลข Tracking ก่อนยิง",this.memberPhone , quickLinkTrackingKey);
+      axios
+        .get(
+          "https://pos.945.report/genBillNo/checkSendermember?phone=" +
+            // "http://206.189.85.185:8100/genBillNo/checkSendermember?phone=" +
+            this.memberPhone +
+            "&tracking=" +
+            quickLinkTrackingKey
+        )
+        .then(response => {
+          if (response.data.status == "Error_Not_In_Capture_Data") {
+            alert(
+              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ"
+            );
+            // this.quickLinkTracking = "";
+            // this.$refs.barcode.focus();
+          } else if (response.data.status == "Error_Phone_Not_Match") {
+            alert("ไม่สามารถใช้ Tracking นี้ได้,ใส่รหัสผู้ส่งไม่ถูกต้อง");
+            // this.quickLinkTracking = "";
+            // this.$refs.barcode.focus();
+          } else if (response.data.status == "Error_Tracking_Cannot_Use") {
+            alert(
+              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
+            );
+            // this.quickLinkTracking = "";
+            // this.$refs.barcode.focus();
+          } else if (response.data.status == "ERROR_TRACKING_DUPLICATED") {
+            alert(
+              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
+            );
+            // this.quickLinkTracking = "";
+            // this.$refs.barcode.focus();
+          } else if (response.data.status == "ERROR_TRACKING_WRONG_FORMAT") {
+            alert(
+              "กรุณากรอกเลขจัดส่งให้ถูกต้อง"
+            );
+            // this.quickLinkTracking = "";
+            // this.$refs.barcode.focus();
+          }else if (response.data.status == "Success") {
+            alert("เลขถูกแล้ว");
+            // if (!this.quickLinkTracking) {
+            //   this.is_track_readonly = false;
+            // } else {
+            //   this.is_track_readonly = true;
+            //   this.is_readonly = false;
+            //   this.quickLinkZipcode = true;
+            //   $(document).ready(function() {
+            //      $('#zCode').focus();
+            //   });
+            // }
+          }
+        })
+        .catch(error => {
+          this.errored = true;
+        });
+      
+
+
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+
     },
     addQuiklink() {
       this.quickLinkDataDetail = false;

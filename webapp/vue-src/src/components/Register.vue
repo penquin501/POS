@@ -243,8 +243,8 @@
                     <option
                       v-bind:key="item.id"
                       v-for="(item  , index) in dataBank"
-                      v-bind:value="{ id: dataBank[index].id, text: dataBank[index].bank_th }"
-                    >{{ dataBank[index].bank_th }}</option>
+                      v-bind:value="{ id: dataBank[index].id, text: dataBank[index].bankTh }"
+                    >{{ dataBank[index].bankTh }}</option>
                   </select>
                 </div>
               </div>
@@ -484,6 +484,8 @@ export default {
     };
   },
   mounted: function() {
+    var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+    if (localStorage.dataLogin || dataLogin != null ){
     var dataRegisterRe = JSON.parse(localStorage.getItem("dataRegisterRE"));
     if (dataRegisterRe) {
       this.firstGetZipCode("101");
@@ -503,6 +505,10 @@ export default {
     this.firstGetZipCode("101");
     this.getDataBank();
     this.$refs.idCardCode.focus();
+
+   }else{
+     window.location.reload();
+    }
   },
 
   methods: {
@@ -536,7 +542,7 @@ export default {
        var charCode = (evt.which) ? evt.which : event.keyCode
          if (charCode > 31 && (charCode < 48 || charCode > 57))
             return false;
-            
+
          return true;
       //console.log($event.keyCode); //keyCodes value
       // let keyCode = $event.keyCode ? $event.keyCode : $event.which;
@@ -553,7 +559,7 @@ export default {
     },
     getDataBank(index) {
       axios
-        .get("https://pos.945.report/member/checkBank")
+        .get("https://www.945api.com/parcel/agent/bank/name")
         .then(resultsDataBank => {
           this.dataBank = resultsDataBank.data;
         })
@@ -591,7 +597,7 @@ export default {
       this.openZipCode = true;
     },
     clickOpen() {
-      this.openZipCode = false;
+      this.openZipCode = false;  
     },
 
     clickClose() {
