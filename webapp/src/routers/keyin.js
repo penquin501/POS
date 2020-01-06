@@ -7,7 +7,9 @@ var jsonParser = bodyParser.json();
 moment.locale('th')
 
 app.post("/keyin", jsonParser, (req, res) => {
+  
   let data = req.body;
+  console.log('key In for barcode : %s',data[0].barcode_orig);
   let rawData = JSON.stringify(data);
   let uid = data[0].uid;
   let ref = data[0].ref;
