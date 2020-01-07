@@ -2,6 +2,7 @@ const app = require('express').Router();
 // const escpos = require('escpos');
 const moment = require('moment');
 const request = require('request');
+const momentTimezone = require("moment-timezone");
 const genBillingNoServices = require('../services/genBillNoServices.js');
 
 app.get('/printBillPdf', (req, res) => {
@@ -20,8 +21,8 @@ app.get('/printBillPdf', (req, res) => {
             },
             (err, res2, body) => {
                 genBillingNoServices.getType(bill).then(function (data2) {
-                    var timestamp = parseInt(data.billingInfo[0].timestamp);
-                    var dateConvert = formatDateToThai(parseInt(timestamp));
+                    var timestamp = momentTimezone(data.billingInfo[0].billing_date).tz('Asia/Bangkok').format("YYYY-MM-DD HH:mm:ss", true);
+                    var dateConvert = formatDateToThai(timestamp);
                     var datatest = {
                         'data': data,
                         'member_code': res2.body.memberInfo.firstname + " " + res2.body.memberInfo.lastname,
@@ -54,12 +55,12 @@ app.get('/printMemberBillPdf', (req, res) => {
                 var member_name = res2.body.memberInfo.firstname + " " + res2.body.memberInfo.lastname
 
                 genBillingNoServices.getMemberBillType(member_code, branch_id).then(function (data2) {
-                    var timestamp = parseInt(data[0].timestamp);
-                    var dateConvert = formatDateToThai(parseInt(timestamp))
+                    // var timestamp = parseInt(data[0].timestamp);
+                    // var dateConvert = formatDateToThai(parseInt(timestamp))
                     var datatest = {
                         'data': data,
                         'member_code': member_name,
-                        'datatime': dateConvert,
+                        // 'datatime': dateConvert,
                         'data2': data2
                     };
 
@@ -74,4 +75,6 @@ function formatDateToThai(date) {
     var year2 = parseInt(year) + 543;
     return moment(date).format(" Do MMMM " + year2 + " " + "H:mm");
 }
+
+
 module.exports = app;
