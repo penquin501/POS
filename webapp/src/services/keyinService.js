@@ -41,11 +41,13 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
         if (err === null) {
-          if (!results.length) {
+          if (results.length == 0) {
             resolve(false);
           } else {
             resolve(results);
           }
+        } else {
+          console.log(err);
         }
       });
     });
@@ -189,10 +191,12 @@ module.exports = {
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
-        if (!results.length) {
-          resolve(false);
-        } else {
-          resolve(results);
+        if (err === null) {
+          if (results.length == 0) {
+            resolve(false);
+          } else {
+            resolve(results);
+          }
         }
       });
     });

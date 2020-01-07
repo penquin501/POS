@@ -87,8 +87,8 @@ app.get("/checkSenderMember", (req, res) => {
 app.post("/genBillingNumber", (req, res) => {
   let branch_id = req.body.branch_id;
   let user_id = req.body.user_id;
-  let dateNow = new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"});
-  let dateBillingNo = moment(dateNow).format("YYMMDDHHmmss", true);
+  // let dateNow = new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"});
+  let dateBillingNo = moment(new Date()).format("YYMMDDHHmmss", true);
   let randomNo = Math.floor(Math.random() * (999 - 111)) + 111;
 
   let billing_no = branch_id + "-" + user_id + "-" + dateBillingNo + "-" + randomNo;
