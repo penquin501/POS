@@ -97,12 +97,11 @@ module.exports = {
     var sqlBillingItem =
       "SELECT bItem.tracking,bItem.size_price,bItem.parcel_type,bItem.zipcode as bItemZipcode,s.alias_size, gSize.product_name," +
       "br.receiver_name,br.province_name,br.zipcode as bRzipcode,bItem.cod_value " +
-      "FROM billing b " +
-      "JOIN billing_item bItem ON b.billing_no=bItem.billing_no " +
+      "FROM billing_item bItem " +
       "JOIN billing_receiver_info br ON bItem.tracking=br.tracking " +
       "JOIN size_info s ON bItem.size_id=s.size_id " +
       "JOIN global_parcel_size gSize ON s.alias_size=gSize.alias_name AND s.location_zone=gSize.area AND bItem.parcel_type=gSize.type " +
-      "WHERE b.billing_no=?";
+      "WHERE bItem.billing_no=?";
     var dataBillItem = [bill];
 
     return new Promise(function(resolve, reject) {
