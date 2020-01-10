@@ -68,7 +68,7 @@ app.post("/quickLink", jsonParser, (req, res) => {
                 res.json({ status: res3.body.status });
               } else {
                 quicklinkService.saveQuicklinkBilling(user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url)
-                
+
                 let updateItem = async () => {
                   await items.forEach(async val => {
                     var trackingItem = val.tracking;
@@ -76,7 +76,7 @@ app.post("/quickLink", jsonParser, (req, res) => {
                     var parcelTypeItem = val.parcel_type.toUpperCase();
                     var sizePriceItem = val.size_price;
                     var codValueItem = val.cod_value;
-                    var sizeIdItem = val.size_id.size_id;
+                    var sizeIdItem = val.size_id;
 
                     await quicklinkService.checkTrackingBillingItem(billing_no,sender_name,sender_phone,sender_address,source,trackingItem,zipcodeItem,parcelTypeItem,sizePriceItem,codValueItem,sizeIdItem);
                   });

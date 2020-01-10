@@ -1240,7 +1240,7 @@
                 <div class="col-sm-6 col-md-6">
                   <b style="font-size:18px;">พัสดุทั้งหมด</b>
                 </div>
-                <div class="col-sm-6 col-md-6" style="text-align:right">{{quickLinkCountAll}}</div>
+                <div class="col-sm-6 col-md-6" style="text-align:right">{{quickLinkCountAllinTable}}</div>
               </div>
               <div class="row" style="padding-bottom: 10px;">
                 <div class="col-sm-6 col-md-6">
@@ -1273,8 +1273,7 @@
 
         <div class="col-sm-12">
           <div
-            style="text-align: center ; margin-top: 15px; font-weight: bold; font-size: 20px; margin-bottom: 15px;"
-          >
+            style="text-align: center ; margin-top: 15px; font-weight: bold; font-size: 20px; margin-bottom: 15px;">
             <b>เลขที่บิลใบเสร็จ : {{quickLinkBillingNo}}</b>
           </div>
           <table class="table table-striped">
@@ -1289,14 +1288,12 @@
                 <th scope="col" style="text-align: center;">
                   <b style="font-size:18px">ขนาดพัสดุ</b>
                 </th>
-
                 <th scope="col" style="text-align: center;">
                   <b style="font-size:18px">มูลค่า COD</b>
                 </th>
                 <th scope="col" style="text-align: center;">
                   <b style="font-size:18px">ปลายทางจัดส่ง</b>
                 </th>
-
                 <th scope="col" style="text-align: center;">
                   <b style="font-size:18px">ค่าจัดส่ง</b>
                 </th>
