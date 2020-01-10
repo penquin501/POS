@@ -1099,7 +1099,7 @@
                     <b style="font-size:18px;">พัสดุทั้งหมด</b>
                   </div>
                   <div class="col-sm-6 col-md-6" style="text-align:right">
-                    <span style="font-size:22px">{{quickLinkCountAll}}</span>
+                    <span style="font-size:22px">{{quickLinkCountAllinTable}}</span>
                   </div>
                 </div>
                 <div class="row" style="padding-bottom: 10px;">
@@ -1428,11 +1428,11 @@
                       </div>
                       <div class="panel-body">
                         <input
-                          v-on:keypress="onlyNumberKey"
                           type="number"
                           ref="quickLinkZipcode"
                           class="form-control"
                           maxlength="5"
+                           @keypress="isNumber($event)"
                           @keyup.enter="addquickLinkZipcode"
                           onKeyPress="if(this.value.length==5) return false;"
                           v-model="qlZipcode"
@@ -1618,7 +1618,7 @@
                 <div class="col-sm-6">
                   <div style="text-align: right">
                     <label style="font-size:20px;">จำนวนรายการ</label>
-                    <b style="font-size:28px;">&nbsp;{{ this.quickLinkCountAll}}</b>
+                    <b style="font-size:28px;">&nbsp;{{ this.quickLinkCountAllinTable}}</b>
                     <label style="font-size:20px;">&nbsp;ชิ้น</label>
                   </div>
                   <div style="height: 350px; overflow: auto;">
@@ -1923,14 +1923,6 @@ export default {
     });
   },
 
-  // ready: function() {
-  //   console.log("ready");
-  //   window.addEventListener("beforeunload", this.leaving);
-  //   // window.beforeunload = this.leaving;
-  //   // window.onblur = this.leaving;
-  //   //window.onmouseout = this.leaving;
-  // },
-
   watch: {
     idmember(){
        var num = /^\s+$/;
@@ -1967,9 +1959,7 @@ export default {
   mounted: function() {
     var databill = this.$cookie.get("billNo");
     var databillQuickLink = this.$cookie.get("quickLinkBillingNo");
-    // console.log("DATABILL", databill);
     if (databill) {
-      // alert("มีเลขบิลPOS");
       this.billNo = databill;
       this.dataCount = JSON.parse(localStorage.getItem("dataCount"));
       var array = this.dataCount;
@@ -1982,26 +1972,19 @@ export default {
       this.view = "createBill9";
     } else if (databillQuickLink) {
       this.quickLinkBillingNo = databillQuickLink;
-      // alert("มีเลขบิลQucikLink");
       this.quickLinkAddData = JSON.parse(
         localStorage.getItem("quickLinkAddData")
       );
       this.quickLinkdataCount = JSON.parse(
         localStorage.getItem("quickLinkdataCount")
       );
-
       var array = this.quickLinkdataCount;
       var lastCountData = array[array.length - 1];
       this.quickLinkCountCOD = lastCountData.quickcount_cod;
       this.quickLinkCountNormal = lastCountData.quickcount_normal;
-      this.quickLinkCountAll = lastCountData.quickcount_all;
-
       this.quickLinkCountAllinTable = localStorage.getItem(
         "quickLinkCountAllinTable"
       );
-
-      // console.log("Dataที่ดึงออกมา", this.quickLinkdataCount);
-      // console.log("จำนวนในตาราง", this.quickLinkCountAllinTable);
       this.newbillkeydata = JSON.parse(localStorage.getItem("newbillkeydata"));
       this.memberData = JSON.parse(localStorage.getItem("memberData"));
       this.idCard = this.newbillkeydata[1];
@@ -2014,9 +1997,6 @@ export default {
       JSON.parse(localStorage.getItem("datalistPOS")) == null &&
       JSON.parse(localStorage.getItem("finalDataSave")) == null
     ) {
-      // alert(
-      //   "มีnewbillkeydata memberData สร้างบิลผู้ส่งเดิม ยังไม่เลือกทำรายการและรีเฟชร"
-      // );
       this.newbillkeydata = JSON.parse(localStorage.getItem("newbillkeydata"));
       this.idCard = this.newbillkeydata[1];
       this.memberData = JSON.parse(localStorage.getItem("memberData"));
@@ -2027,7 +2007,6 @@ export default {
       JSON.parse(localStorage.getItem("quickLinkAddData")) != null &&
       JSON.parse(localStorage.getItem("quickLinkdataCount")) != null
     ) {
-      // alert("มีnewbillkeydata --มี quickLinkAddData-- ไม่มีdatalistPOS ");
       //ดึงข้อมูลออกมา
       this.quickLinkAddData = JSON.parse(
         localStorage.getItem("quickLinkAddData")
@@ -2045,15 +2024,10 @@ export default {
       this.quickLinkCountAllinTable = localStorage.getItem(
         "quickLinkCountAllinTable"
       );
-
-      // console.log("Dataที่ดึงออกมา", this.quickLinkdataCount);
-      // console.log("จำนวนในตาราง", this.quickLinkCountAllinTable);
       this.newbillkeydata = JSON.parse(localStorage.getItem("newbillkeydata"));
       this.memberData = JSON.parse(localStorage.getItem("memberData"));
       this.idCard = this.newbillkeydata[1];
-      // quickLinkDataExpress = true;
       this.view = "quickLinkDataExpress";
-      // $("#shortModal").modal();
     } else if (
       JSON.parse(localStorage.getItem("newbillkeydata")) != null &&
       JSON.parse(localStorage.getItem("memberData")) != null &&
@@ -2061,9 +2035,6 @@ export default {
       JSON.parse(localStorage.getItem("finalDataSave")) != null &&
       JSON.parse(localStorage.getItem("dataCount")) != null
     ) {
-      // alert(
-      //   "มีnewbillkeydata --มี datalistPOS-- มี finalDataSave ไม่มีquickLinkAddData"
-      // );
       var that = this;
       that.idCard = that.$cookie.get("carrierId");
       // เพิ่ม finalObject ใน finalDataSave
@@ -2100,21 +2071,11 @@ export default {
     ) {
       // alert("ไม่มีnewbillkeydata datalistPOS");
     }
-
     this.webcamProps = Object.assign(this.webcamProps, this.webcamProperties);
     this.$refs.memberCode.focus();
   },
 
   methods: {
-    onlyNumberKey($event){
-      var number = /[0-9]/;
-      let keyCode = $event.keyCode ? $event.keyCode : $event.which;
-      if (keyCode < 48 || keyCode > 57) {
-        $event.preventDefault();
-      }
-      if (number.test(key)) return true;
-
-    },
     handler: function handler(event) {
       // console.log("ddddddeeee");
     },
@@ -2125,23 +2086,15 @@ export default {
     checkQuickLinkTracking(quickLinkTracking) {
       this.is_track_readonly = true;
       this.is_readonly = false;
-
          this.nulltracking = false;
           this.trackingNoFormat = false;
           this.trackingNoCapture = false;
           this.trackingDuplicated = false;
           this.trackingPhoneNotMatch = false;
           this.trackingCannotuse = false;
-      // if (!this.quickLinkTracking) {
-      //   this.nulltracking = true;
-      //   // alert("กรุณากรอกเลข Tracking");
-      //   this.is_track_readonly = false;
-      // }
       this.quickLinkDataDetail = false;
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       var tracking = this.quickLinkAddData;
-      // this.$refs.quickLinkZipcode.focus();
-
       var quickLinkBarcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
       if (quickLinkTrackingKey.match(quickLinkBarcodeReg) === null || this.quickLinkTracking == null) {
         // alert("กรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง");
@@ -2167,11 +2120,10 @@ export default {
           return v.tracking == quickLinkTrackingKey;
         }).length;
         if (result >= 1) {
-                  this.is_track_readonly = false;
+            this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
            this.trackingDuplicated = true;
-          // alert("ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว");
           this.quickLinkZipcode = false;
 
           this.is_track_readonly = false;
@@ -2214,7 +2166,6 @@ export default {
       axios
         .get(
           "https://pos.945.report/genBillNo/checkSendermember?phone=" +
-            // "http://206.189.85.185:8100/genBillNo/checkSendermember?phone=" +
             this.memberPhone +
             "&tracking=" +
             quickLinkTrackingKey
@@ -2225,45 +2176,27 @@ export default {
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
             this.trackingNoCapture = true;
-        
-            // alert(
-            //   "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ"
-            // );
-
-        
           } else if (response.data.status == "Error_Phone_Not_Match") {
               this.is_track_readonly = false;
               this.quickLinkTracking = "";
               this.$refs.barcode.focus();
               this.trackingPhoneNotMatch = true;
-            // alert("ไม่สามารถใช้ Tracking นี้ได้,ใส่รหัสผู้ส่งไม่ถูกต้อง");
-       
           } else if (response.data.status == "Error_Tracking_Cannot_Use") {
             this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
             this.trackingCannotuse = true;
-            // alert(
-            //   "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
-            // );
-      
           } else if (response.data.status == "ERROR_TRACKING_DUPLICATED") {
              this.is_track_readonly = false;
              this.quickLinkTracking = "";
              this.$refs.barcode.focus();
              this.trackingDuplicated = true;
-            // alert(
-            //   "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
-            // );
            
           } else if (response.data.status == "ERROR_TRACKING_WRONG_FORMAT") {
             this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
             this.trackingNoFormat = true;
-            // alert(
-            //   "กรุณากรอกเลขจัดส่งให้ถูกต้อง"
-            // );
     
           }else if (response.data.status == "Success") {
             if (!this.quickLinkTracking) {
@@ -2291,19 +2224,7 @@ export default {
               });
             }
           }
-          // else {
-          //   //response.data.status=="Success"
-          //   if (!this.quickLinkTracking) {
-          //     this.is_track_readonly = false;
-          //   } else {
-          //     this.is_track_readonly = true;
-          //     this.is_readonly = false;
-          //     this.quickLinkZipcode = true;
-          //     $(document).ready(function() {
-          //        $('#zCode').focus();
-          //     });
-          //   }
-          // }
+
         })
         .catch(error => {
           this.errored = true;
@@ -2313,7 +2234,6 @@ export default {
       axios
         .get(
           "https://pos.945.report/genBillNo/checkZipcode?zipcode=" +
-            // "http://206.189.85.185:8100/genBillNo/checkZipcode?zipcode=" +
             this.qlZipcode
         )
         .then(response => {
@@ -2323,10 +2243,7 @@ export default {
             var provinceInfo = response.data;
             this.quickLinkProvince1 = response.data[0].PROVINCE_NAME;
             this.quickLinkProvince2 = response.data[1].PROVINCE_NAME;
-
             this.quickLinkTransport = true;
-
-            // this.$refs.quickLinkKey.focus();
           } else {
             alert("กรอกรหัสไปรษณีย์ไม่ถูกต้อง");
             this.quickLinkProvince1 = "";
@@ -2334,10 +2251,8 @@ export default {
             this.qlZipcode = "";
             this.$refs.quickLinkZipcode.focus();
             this.quickLinkTransport = false;
-
             this.is_readonly = false;
           }
-          // this.quickLinkTransport = true;
         })
         .catch(function(error) {
           console.log(error);
@@ -2355,7 +2270,6 @@ export default {
           $("#quickLinkInputCOD").focus();
         });
         this.is_cod_readonly = false;
-        // this.$refs.inputcod.focus();
         this.quickLinkProduct = false;
         this.quickLinkInputCod = true;
       }
@@ -2374,6 +2288,7 @@ export default {
       }    
       else if(this.intPriceCod > 30000){
         alert("มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง");
+          this.quickLinkCodValue = "";
            this.quickLinkBtnRe = true;
            this.is_cod_readonly = false;
            this.state.isSending = false;
@@ -2528,16 +2443,17 @@ export default {
 
         }
 
-        else if(this.intPriceCod >= 30001){
+        else if(this.intPriceCod > 30000){
         alert("มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง");
+          this.quickLinkCodValue = "";
            this.quickLinkBtnRe = true;
            this.is_cod_readonly = false;
            this.state.isSending = false;
              //  เลข track รหัสปณ.
-         this.is_track_readonly = true;
-         this.is_readonly = true;
-        // this.quickLinkProduct = true;
-        // this.is_cod_readonly = true;
+           this.is_track_readonly = true;
+            this.is_readonly = true;
+           // this.quickLinkProduct = true;
+          // this.is_cod_readonly = true;
        }
        else if (this.intPriceCod >= 10000) {
           alert("มูลค่า COD มีมูลค่าที่สูงมาก ยืนยันการกรอกมูลค่า");
@@ -2546,106 +2462,34 @@ export default {
         else {
           this.addQuiklink();
         }
-      }else{
-      // check tracking
-      // console.log("เข้า else check tracking");
-      var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
-      //ดึงmemberData ขึ้นมาเอาเบอร์โทร
-      this.memberData = JSON.parse(localStorage.getItem("memberData"));
-      this.memberPhone = this.memberData.phone;
-      var phone = this.memberPhone;
-      if (phone[0] + phone[1] == "66") {
-        this.memberPhone = this.changeDoubleSix(phone);
-      } else {
-        this.memberPhone = phone;
       }
-      this.quickLinkDataDetail = false;
-      // console.log("เลข Tracking ก่อนยิง",this.memberPhone , quickLinkTrackingKey);
-      axios
-        .get(
-          "https://pos.945.report/genBillNo/checkSendermember?phone=" +
-            // "http://206.189.85.185:8100/genBillNo/checkSendermember?phone=" +
-            this.memberPhone +
-            "&tracking=" +
-            quickLinkTrackingKey
-        )
-        .then(response => {
-          if (response.data.status == "Error_Not_In_Capture_Data") {
-            alert(
-              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ"
-            );
-            // this.quickLinkTracking = "";
-            // this.$refs.barcode.focus();
-          } else if (response.data.status == "Error_Phone_Not_Match") {
-            alert("ไม่สามารถใช้ Tracking นี้ได้,ใส่รหัสผู้ส่งไม่ถูกต้อง");
-            // this.quickLinkTracking = "";
-            // this.$refs.barcode.focus();
-          } else if (response.data.status == "Error_Tracking_Cannot_Use") {
-            alert(
-              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
-            );
-            // this.quickLinkTracking = "";
-            // this.$refs.barcode.focus();
-          } else if (response.data.status == "ERROR_TRACKING_DUPLICATED") {
-            alert(
-              "ไม่สามารถใช้ Tracking นี้ได้,เนื่องจาก เลขที่จัดส่งนี้ทำรายการแล้ว"
-            );
-            // this.quickLinkTracking = "";
-            // this.$refs.barcode.focus();
-          } else if (response.data.status == "ERROR_TRACKING_WRONG_FORMAT") {
-            alert(
-              "กรุณากรอกเลขจัดส่งให้ถูกต้อง"
-            );
-            // this.quickLinkTracking = "";
-            // this.$refs.barcode.focus();
-          }else if (response.data.status == "Success") {
-            alert("เลขถูกแล้ว");
-            // if (!this.quickLinkTracking) {
-            //   this.is_track_readonly = false;
-            // } else {
-            //   this.is_track_readonly = true;
-            //   this.is_readonly = false;
-            //   this.quickLinkZipcode = true;
-            //   $(document).ready(function() {
-            //      $('#zCode').focus();
-            //   });
-            // }
-          }
-        })
-        .catch(error => {
-          this.errored = true;
-        });
-      
-      }
+    
     },
     addQuiklink() {
       this.quickLinkDataDetail = false;
       if (this.quickLinkTypeTransport == "NORMAL") {
         this.quickLinkCountNormal++;
-        this.quickLinkCountAll++;
       } else if (this.quickLinkTypeTransport == "COD") {
         this.quickLinkCountCOD++;
-        this.quickLinkCountAll++;
       }
+     // จำนวนพัสดุCODและNormalในตาราง
       var quickLinkdataCount = {
-        quickcount_all: this.quickLinkCountAll,
         quickcount_cod: this.quickLinkCountCOD,
         quickcount_normal: this.quickLinkCountNormal
       };
-      // this.btnDisable = false;
       this.quickLinkdataCount.push(quickLinkdataCount);
+      //setlocalจำนวนพัสดุCODและNormalในตาราง
       localStorage.setItem(
         "quickLinkdataCount",
         JSON.stringify(this.quickLinkdataCount)
       );
-      // console.log("quickLinkdataCount", this.quickLinkdataCount);
-
       axios
         .post("https://pos.945.report/genBillNo/parcelPrice", {
           zipcode: this.qlZipcode,
           size_name: this.quickLinkSelectSize
         })
         .then(response => {
+          console.log("responseaddQuiklink =>",response);
           if (response.data.results == false) {
             alert("กรอกรหัสไปรษณีย์ไม่ถูกต้อง");
           }
@@ -2662,26 +2506,20 @@ export default {
             select_size: this.quickLinkSelectSize,
             province_name: this.quickLinkProvince1
           };
-          // console.log("dataShowInModal", dataShowInModal);
           this.quickLinkAddData.push(dataShowInModal);
           console.log("quickLinkAddData", this.quickLinkAddData);
-
           localStorage.setItem(
             "quickLinkAddData",
             JSON.stringify(this.quickLinkAddData)
           );
-          this.quickLinkCountAllinTable++;
-
+       // จำนวนพัสดุทั้งหมดในตาราง
+        this.quickLinkCountAllinTable = this.quickLinkAddData.length;
+        console.log("quickLinkCountAllinTable", this.quickLinkCountAllinTable);
           localStorage.setItem(
-            "quickLinkCountAllinTable",
-            this.quickLinkCountAllinTable
-          );
+        "quickLinkCountAllinTable",
+        JSON.stringify(this.quickLinkCountAllinTable)
+       );
           this.state.isSending = false;
-          // localStorage.setItem(
-          //   "quickLinkdataCount",
-          //   JSON.stringify(this.quickLinkdataCount)
-          // );
-
           // Clear Data
           this.quickLinkTracking = "";
           this.quickLinkZipcode = "";
@@ -2703,14 +2541,13 @@ export default {
           this.is_readonly = false;
         })
         .catch(function(error) {
-          // console.log(error);
+          console.log(error);
         });
     },
     resetQuicklink() {
       this.is_track_readonly = false;
       this.is_readonly = false;
       this.quickLinkBtnRe = false;
-
       // Clear Data
       this.quickLinkTracking = "";
       this.quickLinkZipcode = "";
@@ -2741,81 +2578,58 @@ export default {
     },
     removeRow: function(index) {
       this.quickLinkDataDetail = false;
-      var lib = JSON.parse(localStorage.getItem("quickLinkAddData"));
-      lib = lib.slice(0, index).concat(lib.slice(index + 1, lib.length));
-      localStorage.setItem("quickLinkAddData", JSON.stringify(lib));
-      // console.log("dataRemove", lib);
-      // localStorage.setItem("quickLinkAddData", JSON.stringify(dataRemove));
+      var countQL = JSON.parse(localStorage.getItem("quickLinkAddData"));
+      countQL = countQL.slice(0, index).concat(countQL.slice(index + 1, countQL.length));
+      //setquickLinkAddData ที่ลบไป
+      localStorage.setItem("quickLinkAddData", JSON.stringify(countQL));
+
       if (
         this.quickLinkAddData[index].parcel_type == "COD" &&
         this.quickLinkCountCOD > 0
       ) {
+        //ลบCOD
         var quickLinkdataCount = JSON.parse(
           localStorage.getItem("quickLinkdataCount")
         );
         var array = quickLinkdataCount;
-        var lastCountData = array[array.length - 1];
+        var lastCountData = array[array.length - 1];  //arrayตัวสุดท้าย
         this.quickLinkCountCOD = lastCountData.quickcount_cod--;
         localStorage.setItem(
           "quickLinkdataCount",
           JSON.stringify(quickLinkdataCount)
         );
-
         this.quickLinkCountCOD--;
       }
       if (
         this.quickLinkAddData[index].parcel_type == "NORMAL" &&
         this.quickLinkCountNormal > 0
       ) {
+        //ลบNORMAL 
         var quickLinkdataCount = JSON.parse(
           localStorage.getItem("quickLinkdataCount")
         );
         var array = quickLinkdataCount;
-        var lastCountData = array[array.length - 1];
+        var lastCountData = array[array.length - 1];  //arrayตัวสุดท้าย
         this.quickLinkCountNormal = lastCountData.quickcount_normal--;
         localStorage.setItem(
           "quickLinkdataCount",
           JSON.stringify(quickLinkdataCount)
         );
-        this.quickLinkCountNormal--;
+          this.quickLinkCountNormal--;
       }
-      if (this.quickLinkCountAll > 0) {
-        var quickLinkdataCount = JSON.parse(
-          localStorage.getItem("quickLinkdataCount")
-        );
-        var array = quickLinkdataCount;
-        var lastCountData = array[array.length - 1];
-        this.quickLinkCountAll = lastCountData.quickcount_all--;
-        localStorage.setItem(
-          "quickLinkdataCount",
-          JSON.stringify(quickLinkdataCount)
-        );
-
-        this.quickLinkCountAll--;
-        this.quickLinkCountAllinTable--;
-
-        var quickLinkCountAllinTable = JSON.parse(
+      if (this.quickLinkCountAllinTable > 0) {
+       // ลบพัสดุรวมทั้งหมดของตาราง
+       var countQL = JSON.parse(localStorage.getItem("quickLinkAddData"));
+       //getCountquickLinkCountAllinTable ทั้งหมดในตาราง
+       var quickLinkCountAllinTable = JSON.parse(
           localStorage.getItem("quickLinkCountAllinTable")
-        );
-        // console.log(
-        //   "quickLinkCountAllinTable get ขึ้นมา",
-        //   quickLinkCountAllinTable
-        // );
-
-        this.quickLinkCountAllinTable = quickLinkCountAllinTable--;
-        // console.log(
-        //   "quickLinkCountAllinTable ลบ",
-        //   quickLinkCountAllinTable
-        // );
-        // this.quickLinkCountAllinTable = quickLinkCountAllinTable--;
-        localStorage.setItem(
+       );
+       this.quickLinkCountAllinTable = countQL.length;
+      //setlocaldataquickLink ทั้งหมดในตาราง
+       localStorage.setItem(
           "quickLinkCountAllinTable",
-          JSON.stringify(quickLinkCountAllinTable)
+          JSON.stringify(this.quickLinkCountAllinTable)
         );
-        //  console.log(
-        //     "quickLinkCountAllinTable ][หลัง set",
-        //     quickLinkCountAllinTable
-        //   );
       }
       this.quickLinkAddData.splice(index, 1);
     },
@@ -2872,20 +2686,8 @@ export default {
         items: []
       };
       var subQuickLink = this.quickLinkAddData;
-      // console.log("subQuickLink", subQuickLink);
-      // console.log("headerQuickLink", headerQuickLink);
       this.dataSaveQuickLink = headerQuickLink;
       this.dataSaveQuickLink.items = subQuickLink;
-
-      // console.log("ก่อนยิง quickLinkAddData", this.dataSaveQuickLink);
-      // console.log(
-      //   "ก่อนยิง this.quickLinkAddData",
-      //   JSON.stringify(this.dataSaveQuickLink)
-      // );
-
-      // console.log("dataSaveQuickLink",  this.dataSaveQuickLink);
-      // console.log("dataSaveQuickLink Stringify",    JSON.stringify(this.dataSaveQuickLink));
-
       axios
         .post(
           "https://pos.945.report/quicklink/quickLink",
@@ -2902,7 +2704,6 @@ export default {
           this.$refs.errorsavebill.open();
           this.view = "quickLinkDataExpress";
           }
-          // this.getDataquickLinkPrintBill(this.quickLinkBillingNo);
           return this.quickLinkBillingNo;
         })
         .catch(function(error) {
@@ -3035,9 +2836,6 @@ export default {
         this.checkMemberAndCarrier();
         //  alert("ส่งไปเช็ค");
       }
-
-
-     
     },
     checkMemberAndCarrier(){
       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
@@ -3094,10 +2892,6 @@ export default {
                 this.idCard,
                 this.fileNameUpload
               );
-              // console.log(
-              //   "newbillkeydata =>",
-              //   JSON.stringify(this.newbillKeyData)
-              // );
               localStorage.setItem(
                 "newbillkeydata",
                 JSON.stringify(this.newbillKeyData)
@@ -3105,30 +2899,13 @@ export default {
             });
           }
           this.memberData = resultMember.data;
-          // console.log("memberData", this.memberData);
           this.memberCode = resultMember.data.member_code;
           this.$cookie.set("memberCode", memberCode, 1);
           this.memberFullName =
             resultMember.data.first_name + " " + resultMember.data.last_name;
           this.memberPhone = resultMember.data.phone;
           this.memberAddress = resultMember.data.address;
-          // console.log(
-          //   "member",
-          //   this.memberFullName,
-          //   this.memberPhone,
-          //   this.memberAddress
-          // );
           localStorage.setItem("memberData", JSON.stringify(resultMember.data));
-          // this.quickLinkTextPhone = resultMember.data[0].phone;
-          // this.dataFullName = resultMember.data[0].full_name;
-          // this.dataphone = resultMember.data[0].phone;
-          // this.dataaddress = "รอฟิลที่อยู่ใน API";
-          // var phoneNo = resultMember.data[0].phone;
-          // if (phoneNo[0] + phoneNo[1] == "66") {
-          //   this.checkPhoneNumber = this.changeDoubleSix(phoneNo);
-          // } else {
-          //   this.checkPhoneNumber = phoneNo;
-          // }
         })
         .catch(function(error) {
           console.log(error);
@@ -3276,24 +3053,11 @@ export default {
       if (!(keyCode < 48 || keyCode > 57)) {
         $event.preventDefault();
       }
-      // var englishAlphabetAndWhiteSpace = /[A-Za-z | กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์ | .\#/@$]/;
-      // var key = String.fromCharCode(event.which);
-      // if (
-      //   event.keyCode == 8 ||
-      //   event.keyCode == 37 ||
-      //   event.keyCode == 39 ||
-      //   englishAlphabetAndWhiteSpace.test(key)
-      // ) {
-      //   return true;
-      // }
-      // $event.preventDefault();
     },
 
     acceptSend() {
       this.state.isSending = false;
       var fullName = " ";
-      // var fullName =
-      //   "[a-zA-Z|กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์]+[ ][a-zA-Z|กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรฤลฦวศษสหฬอฮฯะัาำิีึืฺุูเแโใไๅๆ็่้๊๋์.]+";
       var phone = this.listTracking.inputPhoneNumber;
       const options = { okLabel: "ตกลง" };
       if (!this.listTracking.inputName) {
@@ -3320,21 +3084,15 @@ export default {
     },
 
     showTDZ() {
-      // console.log("zipcode", this.listTracking.address.zipcode);
-      // console.log("size_name", this.listTracking.sizeBox);
       this.view = "createBill7";
       axios
         .post("https://pos.945.report/genBillNo/parcelPrice", {
-          // .post("https://parcel-nodejs.herokuapp.com/genBillNo/parcelPrice", {
           zipcode: this.listTracking.address.zipcode,
           size_name: this.listTracking.sizeBox
         })
         .then(resultsSizePrice => {
-          // console.log("ราคากล่อง", resultsSizePrice.data);
           this.checkSizePrice = resultsSizePrice.data[0].parcel_price;
           this.checkSizeID = resultsSizePrice.data[0].size_id;
-          // console.log("checkSizePrice", this.checkSizePrice);
-          // console.log("checkSizeID", this.checkSizeID);
         })
         .catch(function(error) {
           console.log(error);
@@ -3343,23 +3101,14 @@ export default {
 
     btnNextInputTDZ() {
       this.state.isSending = true;
-      // console.log(
-      //   "tracking ตอนกดตกลง",
-      //   this.listTracking.inputTracking.toUpperCase()
-      // );
       const options = { okLabel: "ตกลง" };
       this.btnBack = "yes";
       var barcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
       var dataTrackingPos = this.finalDataSave.listTracking;
       var inputTrack = this.listTracking.inputTracking.toUpperCase();
-
-      // console.log("datatrack", dataTrackingPos);
-      // console.log("inputTrack", inputTrack);
-
       if (!this.listTracking.inputTracking) {
         this.$dialogs.alert("กรุณากรอกเลขที่จัดส่งให้ถูกต้อง", options);
         this.state.isSending = false;
-      // }else if (!this.listTracking.inputTracking.match(barcodeReg)) {
         }else if (this.listTracking.inputTracking.match(barcodeReg) === null) {
         this.$dialogs.alert("เลขที่จัดส่งไม่ถูกต้อง", options).then(res => {
           this.$refs.focusTDZ.focus();
@@ -3367,8 +3116,6 @@ export default {
         this.state.isSending = false;
       } else if (dataTrackingPos.length > 0) {
         var resultData = [];
-        // console.log("data0 =>", dataTrackingPos[0]);
-        // console.log("มากกว่า 0");
         dataTrackingPos.forEach((val, key, result) => {
           resultData[key] = dataTrackingPos[key];
         });
@@ -3387,12 +3134,7 @@ export default {
                 this.listTracking.inputTracking.toUpperCase()
             )
             .then(resultsCheckTracking => {
-              // console.log(
-              //   "---resultsCheckTracking---",
-              //   resultsCheckTracking.data
-              // );
               if (resultsCheckTracking.data == true) {
-                // console.log("เลขผ่าน");
                 //ข้อมูลอยุ่ในตารางเตรียมบันทึก
                 this.view = "createBill8";
                 var imgUrl = "";
@@ -3421,7 +3163,6 @@ export default {
                 } else {
                   this.memberPhone = phone;
                 }
-                // console.log("phone66", this.memberPhone);
                 var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
                 var merid = parseInt(dataLogin.merid);
                 var userid = parseInt(dataLogin.userid);
@@ -3494,12 +3235,6 @@ export default {
                   "datalistPOS",
                   JSON.stringify(this.datalistPOS)
                 );
-
-                // console.log(
-                //   "this.เงื่อนไขมีข้อมุลในตาราง...datalistPOS",
-                //   this.datalistPOS
-                // );
-
                 var objSavebase = {
                   user_id: userid,
                   branch_id: merid,
@@ -3530,9 +3265,6 @@ export default {
                   JSON.stringify(this.finalDataSave)
                 );
 
-                // console.log("finalDataSave1", this.finalDataSave);
-                // localStorage.setItem("dataCount", JSON.stringify(this.dataCount));
-
                 if (this.listTracking.parcelType == "COD") {
                   this.countCOD++;
                   this.countAll++;
@@ -3541,11 +3273,6 @@ export default {
                   this.countNormal++;
                   this.countAll++;
                 }
-
-                // console.log("ยอดรวม", this.countAll);
-                // console.log("ยอดCOD", this.countCOD);
-                // console.log("ยอดNORMAL", this.countNormal);
-
                 var dataCount = {
                   count_all: this.countAll,
                   count_cod: this.countCOD,
@@ -3553,8 +3280,6 @@ export default {
                 };
 
                 this.dataCount.push(dataCount);
-
-                // console.log("Count 3 อัน", this.dataCount);
                 localStorage.setItem(
                   "dataCount",
                   JSON.stringify(this.dataCount)
@@ -3566,10 +3291,6 @@ export default {
                     datainTablePOS
                   )
                   .then(function(response) {
-                    // console.log(
-                    //   "API addReceiverTemp เงื่อนไขมีข้อมูลในตาราง",
-                    //   response.data
-                    // );
                     this.state.isSending = false;
                   })
                   .catch(function(error) {
@@ -3598,12 +3319,7 @@ export default {
               this.listTracking.inputTracking.toUpperCase()
           )
           .then(resultsCheckTracking => {
-            // console.log(
-            //   "---resultsCheckTracking---",
-            //   resultsCheckTracking.data
-            // );
             if (resultsCheckTracking.data == true) {
-              // console.log("เลขผ่าน");
               //ข้อมูลอยุ่ในตารางเตรียมบันทึก
               var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
               this.view = "createBill8";
@@ -3707,12 +3423,6 @@ export default {
                 "datalistPOS",
                 JSON.stringify(this.datalistPOS)
               );
-
-              // console.log(
-              //   "this.เงื่อนไขมีข้อมุลในตาราง...datalistPOS",
-              //   this.datalistPOS
-              // );
-
               var objSavebase = {
                 user_id: userid,
                 branch_id: merid,
@@ -3733,8 +3443,6 @@ export default {
               };
 
               this.finalObject.push(objSavesub);
-              // this.finalObject.push(objSavesub);
-
               this.finalDataSave = objSavebase;
               this.finalDataSave.listTracking = this.finalObject;
 
@@ -3742,9 +3450,6 @@ export default {
                 "finalDataSave",
                 JSON.stringify(this.finalDataSave)
               );
-
-              // console.log("finalDataSave1", this.finalDataSave);
-              // localStorage.setItem("dataCount", JSON.stringify(this.dataCount));
 
               if (this.listTracking.parcelType == "COD") {
                 this.countCOD++;
@@ -3754,24 +3459,12 @@ export default {
                 this.countNormal++;
                 this.countAll++;
               }
-
-              // console.log("ยอดรวม", this.countAll);
-              // console.log("ยอดCOD", this.countCOD);
-              // console.log("ยอดNORMAL", this.countNormal);
-
               var dataCount = {
                 count_all: this.countAll,
                 count_cod: this.countCOD,
                 count_normal: this.countNormal
               };
-
               this.dataCount.push(dataCount);
-
-              // console.log("Count 3 อัน", this.dataCount);
-              // localStorage.setItem(
-              //   "dataCount",
-              //   JSON.stringify(this.dataCount)
-              // );
               //ส่งข้อมูลเข้าตาราง Temp ยังไม่ได้เวฟลงจริง
               axios
                 .post(
@@ -3779,10 +3472,6 @@ export default {
                   datainTablePOS
                 )
                 .then(function(response) {
-                  // console.log(
-                  //   "API addReceiverTemp เงื่อนไขมีข้อมูลในตาราง",
-                  //   response.data
-                  // );
                   this.state.isSending = false;
                 })
                 .catch(function(error) {
@@ -3822,17 +3511,6 @@ export default {
             that.view = "createBill8";
             //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
           }
-
-
-          // if (responseBillNo.data.status == "ERROR_TRACKING_DUPLICATED") {
-          //   alert(
-          //     "ไม่สามารถบันทึกข้อมูลได้เลข Tracking ซ้ำกันในตารางหรือมีอยู่ในระบบแล้ว"
-          //   );
-          //   this.view = "createBill8";
-          // }
-          // this.billNo = responseBillNo.data.billing_no;
-          // this.$cookie.set("billNo", this.billNo, 1);
-
 
           return this.billNo;
         })

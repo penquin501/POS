@@ -22,11 +22,11 @@ app.post("/quickLink", jsonParser, (req, res) => {
   let items = req.body.items;
   var source = "QUICKLINK";
   let trackings = [];
-  if (user_id === null || user_id === '') {
+  if (user_id === null || user_id === "") {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
-  } else if (branch_id === null || branch_id === '') {
+  } else if (branch_id === null || branch_id === "") {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
-  } else if (mer_authen_level === null|| mer_authen_level === '') {
+  } else if (mer_authen_level === null || mer_authen_level === "") {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
   } else {
     var dataJson = {
@@ -67,46 +67,32 @@ app.post("/quickLink", jsonParser, (req, res) => {
               if (res3.body.status != true) {
                 res.json({ status: res3.body.status });
               } else {
-                quicklinkService
-                  .saveQuicklinkBilling(
-                    user_id,
-                    mer_authen_level,
-                    member_code,
-                    carrier_id,
-                    billing_no,
-                    branch_id,
-                    total,
-                    img_url
-                  )
-                  .then(function(data) {});
+                quicklinkService.saveQuicklinkBilling(user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url)
+                
+                let updateItem = async () => {
+                  await items.forEach(async val => {
+                    var trackingItem = val.tracking;
+                    var zipcodeItem = val.zipcode;
+                    var parcelTypeItem = val.parcel_type.toUpperCase();
+                    var sizePriceItem = val.size_price;
+                    var codValueItem = val.cod_value;
+                    var sizeIdItem = val.size_id.size_id;
 
-                for (j = 0; j < items.length; j++) {
-                  var trackingItem = items[j].tracking;
-                  var zipcodeItem = items[j].zipcode;
-                  var parcelTypeItem = items[j].parcel_type.toUpperCase();
-                  var sizePriceItem = items[j].size_price;
-                  var codValueItem = items[j].cod_value;
-                  var sizeIdItem = items[j].size_id;
-
-                  quicklinkService
-                    .checkTrackingBillingItem(
-                      billing_no,
-                      sender_name,
-                      sender_phone,
-                      sender_address,
-                      source,
-                      trackingItem,
-                      zipcodeItem,
-                      parcelTypeItem,
-                      sizePriceItem,
-                      codValueItem,
-                      sizeIdItem
-                    )
-                    .then(function(dataBillItem) {});
-                }
-                res.json({
-                  status: "success",
-                  billing_no: billing_no
+                    await quicklinkService.checkTrackingBillingItem(billing_no,sender_name,sender_phone,sender_address,source,trackingItem,zipcodeItem,parcelTypeItem,sizePriceItem,codValueItem,sizeIdItem);
+                  });
+                  return true;
+                };
+                updateItem().then(data => {
+                  if (data) {
+                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
+                        if (resBilling.affectedRows > 0) {
+                          res.json({
+                            status: "success",
+                            billing_no: billing_no
+                          });
+                        }
+                      });
+                  }
                 });
               }
             }

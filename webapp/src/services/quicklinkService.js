@@ -8,16 +8,26 @@ module.exports = {
     saveQuicklinkBilling: (user_id,mer_authen_level,member_code, carrier_id, billing_no, branch_id, total, img_url) => {
         var dateTimestamp = new Date();
         var dateTimestamp2 = +dateTimestamp
-        // var dateTimeString = moment(new Date).format("YYYY-MM-DD HH:mm:ss", true);
+        var status='drafting'
 
-        var sql = "INSERT INTO billing(user_id, mer_authen_level, member_code, carrier_id, billing_date, billing_no, branch_id, total, timestamp, img_url) VALUES (?,?,?,?,?,?,?,?,?,?)"
-        var data=[user_id,mer_authen_level,member_code,carrier_id,new Date(),billing_no,branch_id,total,dateTimestamp2,img_url];
+        var sql = "INSERT INTO billing(user_id, mer_authen_level, member_code, carrier_id, billing_date, billing_no, branch_id, total, timestamp, img_url,status) VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+        var data=[user_id,mer_authen_level,member_code,carrier_id,new Date(),billing_no,branch_id,total,dateTimestamp2,img_url,status];
 
         return new Promise(function(resolve, reject) {
             
             connection.query(sql, data, (err, results) => {
                 resolve(results)
             })
+        })
+    },
+    updateStatusBilling:(billing_no)=>{
+        var status='complete'
+        var updateStatusBilling="UPDATE billing SET status=? WHERE billing_no=?"
+        var dataStatusBilling=[status,billing_no];
+        return new Promise(function(resolve, reject) {
+            connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
+                resolve(results)
+            });
         })
     },
 
