@@ -282,12 +282,13 @@ module.exports = {
     });
   },
   listBilling: branchId => {
+    var status='cancel'
     var sql =
-      "SELECT b.billing_no,b.timestamp,m.firstname,m.lastname " +
-      "FROM billing b JOIN parcel_member m ON b.member_code=m.member_id " +
-      "WHERE (DATE(b.billing_date)>= DATE_ADD(CURRENT_DATE(), INTERVAL -3 MONTH) AND Date(b.billing_date)<= CURRENT_DATE())AND b.branch_id= ? " +
-      "ORDER BY b.billing_date DESC";
-    var data = [branchId];
+      "SELECT b.billing_no,b.timestamp,b.billing_date,b.member_code " +
+      "FROM billing b " +
+      "WHERE (DATE(b.billing_date)>= DATE_ADD(CURRENT_DATE(), INTERVAL -3 MONTH) AND Date(b.billing_date)<= CURRENT_DATE()) AND b.status != ? AND b.branch_id= ? " +
+      "ORDER BY b.id DESC";
+    var data = [status,branchId];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
