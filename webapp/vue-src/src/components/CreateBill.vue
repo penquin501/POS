@@ -1581,8 +1581,6 @@
                     </div>
                   </div>
 
-
-
                   <div class="col-sm-12">
                     <div class="col-sm-5" style="
                       padding-left: 0px;">
@@ -2852,21 +2850,24 @@ export default {
           JSON.stringify(dataCheck)
         )
         .then(resultMember => {
-          // console.log("resultMember", resultMember.data);
+          console.log("resultMember =>", resultMember.data);          
           if (resultMember.data.status == "ERROR_NOT_FOUND") {
             this.$dialogs.alert(
               "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
               options
             );
-          // } else if (carrierId.length == 0 || carrierId.length != 13) {
-          //   this.$dialogs.alert(
-          //     "กรุณากรอกรหัสบัตรประชาชนผู้นำส่งให้ถูกต้อง",
-          //     options
-          //   );
-          } else {
+          } else if(resultMember.data.member_code == null || resultMember.data.branch_id == null || resultMember.data.first_name == null 
+                  || resultMember.data.last_name == null || resultMember.data.phone == null || resultMember.data.address == null
+                  || resultMember.data.bank_account_no == null || resultMember.data.bank_acc_name == null || resultMember.data.bank_name == null ){        
+            this.$dialogs.alert(
+              "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
+              options
+            );
+
+          }
+          else {
             this.view = "createBill2";
             this.$cookie.set("carrierId", carrierId, 1);
-
             // Upload Image ก่อน
             let formData = new FormData();
             let file = this.files[0];

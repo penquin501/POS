@@ -696,6 +696,7 @@ const queryString = require("query-string");
 // Vue.use(PreventUnload);
 import QueryString from "query-string";
 import { SweetModal, SweetModalTab } from "sweet-modal-vue";
+import momentTimezone from "moment-timezone";
 export default {
   props: ["value"],
   components: {
@@ -783,6 +784,10 @@ export default {
   },
 
   methods: {
+      sortInvioce(a, b){
+        return b - a;
+      },
+
     checkInvioce() {
       // const data = {
       //   bill_no: bill,
@@ -1076,9 +1081,10 @@ export default {
       window.open("https://zip.945.report/", "_blank");
     },
     timeCon(date) {
-      var year = moment(date).format("YYYY");
+      var datatime = momentTimezone(date).tz('Asia/Bangkok').format("YYYY-MM-DD HH:mm:ss", true);
+      var year = moment(datatime).format("YYYY");
       var year2 = parseInt(year) + 543;
-      return moment(date).format(" Do MMMM " + year2 + " " + "H:mm");
+      return moment(datatime).format(" Do MMMM " + year2 + " " + "H:mm");
     },
     getListBillPrint(bill) {
       // console.log("..เลขบิล..", bill);
@@ -1087,11 +1093,11 @@ export default {
         "_blank"
       );
     },
-
     listBillPre() {
-      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+         var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       if (localStorage.dataLogin || dataLogin != null) {
-        var branchId = dataLogin.merid;
+           this.listBill = [];
+           var branchId = dataLogin.merid;
         axios
           .get(
             "https://pos.945.report/billingPos/listBillngNo?branch_id=" +
@@ -1099,22 +1105,17 @@ export default {
           )
           .then(resultList => {
             var myData = resultList.data;
-
             // var taxLink = "";
             for (let i = 0; i < myData.length; i++) {
               var data = {
                 bill_no: myData[i].billing_no
               };
-
               axios
                 .post(
                   "https://www.945api.com/parcel/tax/bill/api",
                   JSON.stringify(data)
                 )
-                .then(res => {
-                  // taxLink = res.data.peak_url_receipt_webview;
-                  
-                
+                .then(res => {                  
               var memberJson = {
                 member_code: myData[i].member_code
               };
@@ -1124,7 +1125,6 @@ export default {
                   JSON.stringify(memberJson)
                 )
                 .then(res2 => {
-                  // console.log(res2.data);
                   let firstname;
                   let lastname;
                   if (
@@ -1143,23 +1143,28 @@ export default {
                     firstname = "";
                     lastname = "";
                   }
-              
-
                 var dataLine = {
                     bill_no: myData[i],
                     firstname: firstname,
                     lastname: lastname,
                     taxLink: this.taxLink
                   };
+
                   this.listBill.push(dataLine);
+    
                 })
                 })
             }
             // console.log("data all", this.listBill);
           })
+        
       } else {
         window.location.reload();
       }
+
+    
+
+
     },
     printBillHistory(bill) {
       this.$refs.processprint.open();
@@ -1377,11 +1382,12 @@ export default {
     },
 
     filteredResourcesBill() {
+      // var dataBill = this.listBill.sort((a, b) => a.bill_no.timestamp - b.bill_no.timestamp).slice().reverse();
       if (this.searchBill) {
         return this.listBill.filter(items => {
           var billingNo = items.bill_no.billing_no;
-          var firstName = items.bill_no.firstname;
-          var lastName = items.bill_no.lastname;
+          var firstName = items.firstname;
+          var lastName = items.lastname;
 
           if (billingNo == null) {
             billingNo = "";
@@ -1396,16 +1402,20 @@ export default {
             items.bill_no.billing_no
               .toLowerCase()
               .indexOf(this.searchBill.toLowerCase()) > -1 ||
-            items.bill_no.firstname
+            items.firstname
               .toLowerCase()
               .includes(this.searchBill.toLowerCase()) ||
-            items.bill_no.lastname
+            items.lastname
               .toLowerCase()
               .includes(this.searchBill.toLowerCase())
           );
         });
+      
       } else {
-        return this.listBill;
+        return this.listBill.sort((a, b) => a.bill_no.timestamp - b.bill_no.timestamp).slice().reverse();
+          //  return dataBill;
+          // return this.listBill.bill_no.sort((a, b) => a.timestamp - b.timestamp);    
+
       }
     }
   }
