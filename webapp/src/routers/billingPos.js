@@ -1,5 +1,6 @@
 const app = require("express").Router();
 const billingPosService = require("../services/billingPosService.js");
+const quicklinkService = require("../services/quicklinkService.js");
 const connection = require("../common/db.js");
 const request = require("request");
 const moment = require("moment");
@@ -54,9 +55,6 @@ app.post("/addReceiver", jsonParser, (req, res) => {
       (err, res2, body) => {
         billing_no = res2.body;
 
-        var data = {
-          billing_no: billing_no
-        };
         for (i = 0; i < listTracking.length; i++) {
           tracking = listTracking[i].tracking;
           var trackingItem = {
@@ -82,78 +80,33 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                 status: res3.body.status
               });
             } else {
-              billingPosService
-                .saveDataBilling(
-                  user_id,
-                  mer_authen_level,
-                  member_code,
-                  carrier_id,
-                  billing_no,
-                  branch_id,
-                  total,
-                  img_url
-                )
-                .then(function(data) {});
-              for (i = 0; i < listTracking.length; i++) {
-                let track = listTracking[i].tracking;
-                let size_id = listTracking[i].size_id;
-                let size_price = listTracking[i].size_price;
-                let parcel_type = listTracking[i].parcel_type.toUpperCase();
-                let cod_value = listTracking[i].cod_value;
-                let address = listTracking[i].address;
-                let sender_name = address.sender_name;
-                let sender_phone = address.sender_phone;
-                let sender_address = address.sender_address;
-                let receiver_name = address.receiver_name;
-                let phone = address.phone;
-                let receiver_address = address.receiver_address;
-                let district_id = address.district_id;
-                let district_name = address.district_name;
-                let amphur_id = address.amphur_id;
-                let amphur_name = address.amphur_name;
-                let province_id = address.province_id;
-                let province_name = address.province_name;
-                let zipcode = address.zipcode;
-                let remark = address.remark;
+              billingPosService.saveDataBilling(user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url)
+              
+                let saveItem = async () => {
+                  await listTracking.forEach(async val => {
+                    let track = val.tracking;
+                    let size_id = val.size_id;
+                    let size_price = val.size_price;
+                    let parcel_type = val.parcel_type.toUpperCase();
+                    let cod_value = val.cod_value;
+                    let address = val.address;
 
-                billingPosService
-                  .saveDataBillingItem(
-                    billing_no,
-                    track,
-                    zipcode,
-                    size_id,
-                    size_price,
-                    parcel_type,
-                    cod_value,
-                    source
-                  )
-                  .then(function(data) {});
-                billingPosService
-                  .saveDataBillingReceiver(
-                    track,
-                    parcel_type,
-                    sender_name,
-                    sender_phone,
-                    sender_address,
-                    receiver_name,
-                    phone,
-                    receiver_address,
-                    district_id,
-                    district_name,
-                    amphur_id,
-                    amphur_name,
-                    province_id,
-                    province_name,
-                    zipcode,
-                    remark
-                  )
-                  .then(function(data) {});
-                billingPosService
-                  .updateDataBillingItemTemp(billing_no, track)
-                  .then(function(data) {});
-              }
-              sendDataToMainServer(dataJson, data);
-              res.json(data);
+                    await billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address)
+                  })
+                  return true;
+                };
+                saveItem().then(result => {
+                  if (result) {
+                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
+                        if (resBilling.affectedRows > 0) {
+                          res.json({
+                            status: "success",
+                            billing_no: billing_no
+                          });
+                        }
+                      });
+                  }
+                });
             }
           }
         );
@@ -214,38 +167,8 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
           let zipcode = address.zipcode;
           let remark = address.remark;
 
-          billingPosService
-            .saveDataBillingItemTemp(
-              billing_no_temp,
-              tracking,
-              zipcode,
-              size_id,
-              size_price,
-              parcel_type,
-              cod_value,
-              source
-            )
-            .then(function(data) {});
-          billingPosService
-            .saveDataBillingReceiverTemp(
-              tracking,
-              parcel_type,
-              sender_name,
-              sender_phone,
-              sender_address,
-              receiver_name,
-              phone,
-              receiver_address,
-              district_id,
-              district_name,
-              amphur_id,
-              amphur_name,
-              province_id,
-              province_name,
-              zipcode,
-              remark
-            )
-            .then(function(data) {});
+          billingPosService.saveDataBillingItemTemp(billing_no_temp,tracking,zipcode,size_id,size_price,parcel_type,cod_value,source).then(function(data) {});
+          billingPosService.saveDataBillingReceiverTemp(tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark).then(function(data) {});
         }
         res.end("Complete.....");
       }
@@ -332,109 +255,10 @@ app.get("/listDailyBilling", (req, res) => {
 });
 
 app.get("/test", jsonParser, (req, res) => {
-  billingPosService.testData().then(function(result) {});
-  // let branch_id = req.query.branch_id
-  // billingPosService.listBillingWithOutMember(branch_id).then(function (data) {
-  //   console.log(JSON.stringify(data));
-  // });
+  // billingPosService.testData().then(function(result) {});
+
   res.end();
 });
 
-function sendDataToMainServer(dataAuthen, dataBill) {
-  var orderlist = [];
-  var paymentType = "";
-
-  billingPosService
-    .selectDataInBillNo(dataBill.billing_no)
-    .then(function(data) {
-      for (i = 0; i < data.length; i++) {
-        // "paymenttype": "99",99=normal,60=cod
-        if (data[i].parcel_type.toUpperCase() == "NORMAL") {
-          paymentType = "99";
-        } else {
-          paymentType = "60";
-        }
-        dataDes = {
-          productinfo: {
-            globalproductid: data[i].product_id,
-            productname: data[i].product_name,
-            methodtype: data[i].parcel_type.toUpperCase(),
-            paymenttype: paymentType,
-            price: data[i].size_price.toString(),
-            codvalue: data[i].cod_value.toString()
-          },
-          destinationinfo: {
-            custname: data[i].receiver_name,
-            custphone: data[i].phone,
-            custzipcode: data[i].zipcode,
-            custaddr: data[i].receiver_address,
-            //   "custdistrict": data[i].district_name,
-            //   "custamphur": data[i].amphur_name,
-            //   "custprovince": data[i].province_name,
-            ordershortnote: data[i].remark,
-            districtcode: data[i].DISTRICT_CODE,
-            amphercode: data[i].AMPHUR_CODE,
-            provincecode: data[i].PROVINCE_CODE,
-            geoid: data[i].GEO_ID,
-            geoname: data[i].GEO_NAME,
-            sendername: data[i].sender_name,
-            senderphone: data[i].sender_phone,
-            senderaddr: data[i].sender_address
-          },
-          consignmentno: data[i].tracking
-        };
-        orderlist.push(dataDes);
-      }
-
-      var dataAll = {
-        authen: {
-          merid: dataAuthen.branch_id,
-          userid: dataAuthen.user_id,
-          merauthenlevel: dataAuthen.mer_authen_level
-        },
-        memberparcel: {
-          memberinfo: {
-            memberid: data[0].member_code,
-            courierpid: data[0].carrier_id,
-            courierimage: data[0].img_url
-          },
-          billingno: dataBill.billing_no,
-          orderlist: orderlist
-        }
-      };
-      request(
-        {
-          url:
-            "https://www.945holding.com/webservice/restful/parcel/order_record/v11/data",
-          method: "POST",
-          body: dataAll,
-          json: true,
-          headers: {
-            apikey: "XbOiHrrpH8aQXObcWj69XAom1b0ac5eda2b",
-            "Content-Type": "application/json"
-          }
-        },
-        (err, res, body) => {
-          if (
-            res.body.checkpass == "pass" &&
-            res.body.bill_no == "data_varidated_pass"
-          ) {
-            billingPosService
-              .updateStatusBilling(dataBill.billing_no, res.body.checkpass)
-              .then(function(data) {});
-            listStatus = res.body.status;
-            for (i = 0; i < listStatus.length; i++) {
-              var tracking = listStatus[i].consignmentno;
-              var status = listStatus[i].status;
-              billingPosService
-                .updateStatusReceiverInfo(tracking, status)
-                .then(function(data) {});
-            }
-          }
-        }
-      );
-    });
-}
-// setInterval(intervalFunc, 1500);
 
 module.exports = app;

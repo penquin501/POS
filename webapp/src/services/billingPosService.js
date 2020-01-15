@@ -57,33 +57,13 @@ module.exports = {
       });
     });
   },
-  saveDataBilling: (
-    user_id,
-    mer_authen_level,
-    member_code,
-    carrier_id,
-    billing_no,
-    branch_id,
-    total,
-    img_url
-  ) => {
+  saveDataBilling: (user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url) => {
     var dateTimestamp = new Date();
     var dateTimestamp2 = +dateTimestamp;
-    // var dateTimeString = moment(new Date).format("YYYY-MM-DD HH:mm:ss", true);
-    var sql =
-      "INSERT INTO billing(user_id,mer_authen_level,member_code,carrier_id,billing_date,billing_no,branch_id,total,timestamp,img_url) VALUES (?,?,?,?,?,?,?,?,?,?)";
-    var data = [
-      user_id,
-      mer_authen_level,
-      member_code,
-      carrier_id,
-      new Date(),
-      billing_no,
-      branch_id,
-      total,
-      dateTimestamp2,
-      img_url
-    ];
+    var status='drafting'
+
+    var sql ="INSERT INTO billing(user_id,mer_authen_level,member_code,carrier_id,billing_date,billing_no,branch_id,total,timestamp,img_url) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    var data = [user_id,mer_authen_level,member_code,carrier_id,new Date(),billing_no,branch_id,total,dateTimestamp2,img_url,status];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -91,28 +71,41 @@ module.exports = {
       });
     });
   },
-  saveDataBillingItem: (
-    billing_no,
-    tracking,
-    zipcode,
-    size_id,
-    size_price,
-    parcel_type,
-    cod_value,
-    source
-  ) => {
-    var sql =
-      "INSERT INTO billing_item(billing_no, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source) VALUES (?, ?,?, ?, ?, ?, ?, ?)";
-    var data = [
-      billing_no,
-      tracking,
-      zipcode,
-      size_id,
-      size_price,
-      parcel_type,
-      cod_value,
-      source
-    ];
+  saveDataBillingItem: (billing_no,tracking,size_id,size_price,parcel_type,cod_value,source,address) => {
+
+                    let sender_name = address.sender_name;
+                    let sender_phone = address.sender_phone;
+                    let sender_address = address.sender_address;
+                    let receiver_name = address.receiver_name;
+                    let phone = address.phone;
+                    let receiver_address = address.receiver_address;
+                    let district_id = address.district_id;
+                    let district_name = address.district_name;
+                    let amphur_id = address.amphur_id;
+                    let amphur_name = address.amphur_name;
+                    let province_id = address.province_id;
+                    let province_name = address.province_name;
+                    let zipcode = address.zipcode;
+                    let remark = address.remark;
+
+    var sqlBillingItem ="INSERT INTO billing_item(billing_no, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source) VALUES (?, ?,?, ?, ?, ?, ?, ?)";
+    var dataBillintItem = [billing_no,tracking,zipcode,size_id,size_price,parcel_type,cod_value,source];
+
+    var sqlReceiver ="INSERT INTO billing_receiver_info(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    var dataReceiver = [tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark];
+
+    var sqlUpdateItemTemp = "UPDATE billing_item_temp SET billing_no = ? WHERE tracking = ?";
+    var dataUpdateItemTemp = [billing_no, tracking];
+
+    return new Promise(function(resolve, reject) {
+      connection.query(sqlBillingItem,dataBillintItem, (error, results, fields) => {});
+      connection.query(sqlReceiver,dataReceiver, (error, results, fields) => {});
+      connection.query(sqlUpdateItemTemp,dataUpdateItemTemp, (error, results, fields) => {});
+    });
+  },
+  saveDataBillingReceiver: (tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark) => {
+    var sql ="INSERT INTO billing_receiver_info(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    var data = [tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -120,44 +113,9 @@ module.exports = {
       });
     });
   },
-  saveDataBillingReceiver: (
-    tracking,
-    parcel_type,
-    sender_name,
-    sender_phone,
-    sender_address,
-    receiver_name,
-    phone,
-    receiver_address,
-    district_id,
-    district_name,
-    amphur_id,
-    amphur_name,
-    province_id,
-    province_name,
-    zipcode,
-    remark
-  ) => {
-    var sql =
-      "INSERT INTO billing_receiver_info(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    var data = [
-      tracking,
-      parcel_type,
-      sender_name,
-      sender_phone,
-      sender_address,
-      receiver_name,
-      phone,
-      receiver_address,
-      district_id,
-      district_name,
-      amphur_id,
-      amphur_name,
-      province_id,
-      province_name,
-      zipcode,
-      remark
-    ];
+  saveDataBillingItemTemp: (billing_no_temp,tracking,zipcode,size_id,size_price,parcel_type,cod_value,source) => {
+    var sql = "INSERT INTO billing_item_temp(billing_no, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source) VALUES (?, ?,?, ?, ?, ?, ?, ?)";
+    var data = [billing_no_temp,tracking,zipcode,size_id,size_price,parcel_type,cod_value,source];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -165,73 +123,9 @@ module.exports = {
       });
     });
   },
-  saveDataBillingItemTemp: (
-    billing_no_temp,
-    tracking,
-    zipcode,
-    size_id,
-    size_price,
-    parcel_type,
-    cod_value,
-    source
-  ) => {
-    var sql =
-      "INSERT INTO billing_item_temp(billing_no, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source) VALUES (?, ?,?, ?, ?, ?, ?, ?)";
-    var data = [
-      billing_no_temp,
-      tracking,
-      zipcode,
-      size_id,
-      size_price,
-      parcel_type,
-      cod_value,
-      source
-    ];
-
-    return new Promise(function(resolve, reject) {
-      connection.query(sql, data, (err, results) => {
-        resolve(results);
-      });
-    });
-  },
-  saveDataBillingReceiverTemp: (
-    tracking,
-    parcel_type,
-    sender_name,
-    sender_phone,
-    sender_address,
-    receiver_name,
-    phone,
-    receiver_address,
-    district_id,
-    district_name,
-    amphur_id,
-    amphur_name,
-    province_id,
-    province_name,
-    zipcode,
-    remark
-  ) => {
-    var sql =
-      "INSERT INTO billing_receiver_info_temp(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    var data = [
-      tracking,
-      parcel_type,
-      sender_name,
-      sender_phone,
-      sender_address,
-      receiver_name,
-      phone,
-      receiver_address,
-      district_id,
-      district_name,
-      amphur_id,
-      amphur_name,
-      province_id,
-      province_name,
-      zipcode,
-      remark
-    ];
+  saveDataBillingReceiverTemp: (tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark) => {
+    var sql ="INSERT INTO billing_receiver_info_temp(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    var data = [tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -318,57 +212,6 @@ module.exports = {
             resolve(results);
           }
         }
-      });
-    });
-  },
-  selectDataInBillNo: bill_no => {
-    let sql =
-      "SELECT b.member_code,b.carrier_id,b.billing_no,b.branch_id,b.total,b.img_url," +
-      "bItem.tracking,bItem.size_id,bItem.size_price,bItem.parcel_type,bItem.cod_value," +
-      "br.sender_name,br.sender_phone,br.sender_address,br.receiver_name,br.phone,br.receiver_address,d.DISTRICT_CODE,br.district_name,a.AMPHUR_CODE,br.amphur_name,p.PROVINCE_CODE,br.province_name,br.zipcode,br.remark," +
-      "s.location_zone,s.alias_size,gSize.product_id,gSize.product_name,g.GEO_ID,g.GEO_NAME " +
-      "FROM billing b " +
-      "JOIN billing_item bItem ON b.billing_no=bItem.billing_no " +
-      "JOIN billing_receiver_info br ON bItem.tracking=br.tracking " +
-      "JOIN size_info s ON s.size_id=bItem.size_id " +
-      "JOIN global_parcel_size gSize ON s.location_zone = gSize.area AND s.alias_size =gSize.alias_name AND bItem.parcel_type= gSize.type " +
-      "JOIN postinfo_district d ON br.district_id=d.DISTRICT_ID and br.amphur_id=d.AMPHUR_ID and br.province_id=d.PROVINCE_ID " +
-      "JOIN postinfo_amphur a ON br.amphur_id=a.AMPHUR_ID " +
-      "JOIN postinfo_province p ON br.province_id=p.PROVINCE_ID " +
-      "JOIN postinfo_geography g ON d.GEO_ID=g.GEO_ID " +
-      "WHERE bItem.billing_no= ? ";
-    var data = [bill_no];
-
-    return new Promise(function(resolve, reject) {
-      connection.query(sql, data, (err, results) => {
-        if (err === null) {
-          if (results.length == 0) {
-            resolve(false);
-          } else {
-            resolve(results);
-          }
-        }
-      });
-    });
-  },
-  updateStatusBilling: (bill_no, status) => {
-    let sql = "UPDATE billing SET status=? WHERE billing_no=?";
-    var data = [status, bill_no];
-    return new Promise(function(resolve, reject) {
-      connection.query(sql, data, (err, results) => {
-        resolve(results);
-      });
-    });
-  },
-  updateStatusReceiverInfo: (tracking, status) => {
-    // var dateTimeString = moment(new Date).format("YYYY-MM-DD HH:mm:ss", true);
-    let sql =
-      "UPDATE billing_receiver_info SET status=?,sending_date=? WHERE tracking=?";
-    var data = [status, new Date(), tracking];
-
-    return new Promise(function(resolve, reject) {
-      connection.query(sql, data, (err, results) => {
-        resolve(results);
       });
     });
   },
