@@ -119,10 +119,15 @@ app.get("/getReceipt", (req, res) => {
               status: "ERROR_NO_BILL_NO"
             });
           } else {
+            let itemTotal=0;
+            for(i=0;i<data.billingItem.length;i++){
+              itemTotal=itemTotal+parseInt(data.billingItem[i].size_price);
+            }
+            // console.log("length: %d , Total: %d",data.billingItem.length,itemTotal);
             res.json({
               status: "SUCCESS",
               billing_no: data.billingInfo[0].billing_no,
-              total: data.billingInfo[0].total,
+              total: itemTotal,
               member_code: data.billingInfo[0].member_code,
               member_name: res2.body.memberInfo.firstname + " " +res2.body.memberInfo.lastname,
               branch_id: data.billingInfo[0].branch_id,
