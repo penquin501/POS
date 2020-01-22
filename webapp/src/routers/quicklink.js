@@ -64,36 +64,61 @@ app.post("/quickLink", jsonParser, (req, res) => {
               json: true
             },
             (err, res3, body) => {
-              if (res3.body.status != true) {
-                res.json({ status: res3.body.status });
-              } else {
-                quicklinkService.saveQuicklinkBilling(user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url)
+              if (err === null) {
+                if (res3.body.status != true) {
+                  res.json({ status: res3.body.status });
+                } else {
+                  quicklinkService.saveQuicklinkBilling(
+                    user_id,
+                    mer_authen_level,
+                    member_code,
+                    carrier_id,
+                    billing_no,
+                    branch_id,
+                    total,
+                    img_url
+                  );
 
-                let updateItem = async () => {
-                  await items.forEach(async val => {
-                    var trackingItem = val.tracking;
-                    var zipcodeItem = val.zipcode;
-                    var parcelTypeItem = val.parcel_type.toUpperCase();
-                    var sizePriceItem = val.size_price;
-                    var codValueItem = val.cod_value;
-                    var sizeIdItem = val.size_id;
+                  let updateItem = async () => {
+                    await items.forEach(async val => {
+                      var trackingItem = val.tracking;
+                      var zipcodeItem = val.zipcode;
+                      var parcelTypeItem = val.parcel_type.toUpperCase();
+                      var sizePriceItem = val.size_price;
+                      var codValueItem = val.cod_value;
+                      var sizeIdItem = val.size_id;
 
-                    await quicklinkService.checkTrackingBillingItem(billing_no,sender_name,sender_phone,sender_address,source,trackingItem,zipcodeItem,parcelTypeItem,sizePriceItem,codValueItem,sizeIdItem);
+                      await quicklinkService.checkTrackingBillingItem(
+                        billing_no,
+                        sender_name,
+                        sender_phone,
+                        sender_address,
+                        source,
+                        trackingItem,
+                        zipcodeItem,
+                        parcelTypeItem,
+                        sizePriceItem,
+                        codValueItem,
+                        sizeIdItem
+                      );
+                    });
+                    return true;
+                  };
+                  updateItem().then(data => {
+                    if (data) {
+                      quicklinkService
+                        .updateStatusBilling(billing_no)
+                        .then(function(resBilling) {
+                          if (resBilling.affectedRows > 0) {
+                            res.json({
+                              status: "success",
+                              billing_no: billing_no
+                            });
+                          }
+                        });
+                    }
                   });
-                  return true;
-                };
-                updateItem().then(data => {
-                  if (data) {
-                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
-                        if (resBilling.affectedRows > 0) {
-                          res.json({
-                            status: "success",
-                            billing_no: billing_no
-                          });
-                        }
-                      });
-                  }
-                });
+                }
               }
             }
           );

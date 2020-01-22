@@ -75,13 +75,23 @@ app.post("/addReceiver", jsonParser, (req, res) => {
             json: true
           },
           (err, res3, body) => {
-            if (res3.body.status != true) {
-              res.json({
-                status: res3.body.status
-              });
-            } else {
-              billingPosService.saveDataBilling(user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url)
-              
+            if (err === null) {
+              if (res3.body.status != true) {
+                res.json({
+                  status: res3.body.status
+                });
+              } else {
+                billingPosService.saveDataBilling(
+                  user_id,
+                  mer_authen_level,
+                  member_code,
+                  carrier_id,
+                  billing_no,
+                  branch_id,
+                  total,
+                  img_url
+                );
+
                 let saveItem = async () => {
                   await listTracking.forEach(async val => {
                     let track = val.tracking;
@@ -91,13 +101,24 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                     let cod_value = val.cod_value;
                     let address = val.address;
 
-                    await billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address)
-                  })
+                    await billingPosService.saveDataBillingItem(
+                      billing_no,
+                      track,
+                      size_id,
+                      size_price,
+                      parcel_type,
+                      cod_value,
+                      source,
+                      address
+                    );
+                  });
                   return true;
                 };
                 saveItem().then(result => {
                   if (result) {
-                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
+                    quicklinkService
+                      .updateStatusBilling(billing_no)
+                      .then(function(resBilling) {
                         if (resBilling.affectedRows > 0) {
                           res.json({
                             status: "success",
@@ -107,6 +128,7 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                       });
                   }
                 });
+              }
             }
           }
         );
@@ -138,39 +160,71 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
       json: true
     },
     (err, res2, body) => {
-      if (res2.body.status != true) {
-        res.json({
-          status: res2.body.status
-        });
-      } else {
-        for (i = 0; i < listTracking.length; i++) {
-          let tracking = listTracking[i].tracking;
-          let size_id = listTracking[i].size_id;
-          let size_price = listTracking[i].size_price;
-          let parcel_type = listTracking[i].parcel_type.toUpperCase();
-          let cod_value = listTracking[i].cod_value;
-          let source = "POS";
+      if (err === null) {
+        if (res2.body.status != true) {
+          res.json({
+            status: res2.body.status
+          });
+        } else {
+          for (i = 0; i < listTracking.length; i++) {
+            let tracking = listTracking[i].tracking;
+            let size_id = listTracking[i].size_id;
+            let size_price = listTracking[i].size_price;
+            let parcel_type = listTracking[i].parcel_type.toUpperCase();
+            let cod_value = listTracking[i].cod_value;
+            let source = "POS";
 
-          let address = listTracking[i].address;
-          let sender_name = address.sender_name;
-          let sender_phone = address.sender_phone;
-          let sender_address = address.sender_address;
-          let receiver_name = address.receiver_name;
-          let phone = address.phone;
-          let receiver_address = address.receiver_address;
-          let district_id = address.district_id;
-          let district_name = address.district_name;
-          let amphur_id = address.amphur_id;
-          let amphur_name = address.amphur_name;
-          let province_id = address.province_id;
-          let province_name = address.province_name;
-          let zipcode = address.zipcode;
-          let remark = address.remark;
+            let address = listTracking[i].address;
+            let sender_name = address.sender_name;
+            let sender_phone = address.sender_phone;
+            let sender_address = address.sender_address;
+            let receiver_name = address.receiver_name;
+            let phone = address.phone;
+            let receiver_address = address.receiver_address;
+            let district_id = address.district_id;
+            let district_name = address.district_name;
+            let amphur_id = address.amphur_id;
+            let amphur_name = address.amphur_name;
+            let province_id = address.province_id;
+            let province_name = address.province_name;
+            let zipcode = address.zipcode;
+            let remark = address.remark;
 
-          billingPosService.saveDataBillingItemTemp(billing_no_temp,tracking,zipcode,size_id,size_price,parcel_type,cod_value,source).then(function(data) {});
-          billingPosService.saveDataBillingReceiverTemp(tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark).then(function(data) {});
+            billingPosService
+              .saveDataBillingItemTemp(
+                billing_no_temp,
+                tracking,
+                zipcode,
+                size_id,
+                size_price,
+                parcel_type,
+                cod_value,
+                source
+              )
+              .then(function(data) {});
+            billingPosService
+              .saveDataBillingReceiverTemp(
+                tracking,
+                parcel_type,
+                sender_name,
+                sender_phone,
+                sender_address,
+                receiver_name,
+                phone,
+                receiver_address,
+                district_id,
+                district_name,
+                amphur_id,
+                amphur_name,
+                province_id,
+                province_name,
+                zipcode,
+                remark
+              )
+              .then(function(data) {});
+          }
+          res.end("Complete.....");
         }
-        res.end("Complete.....");
       }
     }
   );
@@ -210,18 +264,20 @@ app.get("/checkTracking", (req, res) => {
       json: true
     },
     (err, res2, body) => {
-      if (res2.body.status != true) {
-        res.send(false);
-      } else {
-        billingPosService.checkTracking(tracking).then(function(data) {
-          billingPosService.checkTrackingTemp(tracking).then(function(data2) {
-            if (data == true || data2 == true) {
-              res.send(false);
-            } else {
-              res.send(true);
-            }
+      if (err === null) {
+        if (res2.body.status != true) {
+          res.send(false);
+        } else {
+          billingPosService.checkTracking(tracking).then(function(data) {
+            billingPosService.checkTrackingTemp(tracking).then(function(data2) {
+              if (data == true || data2 == true) {
+                res.send(false);
+              } else {
+                res.send(true);
+              }
+            });
           });
-        });
+        }
       }
     }
   );
@@ -259,6 +315,5 @@ app.get("/test", jsonParser, (req, res) => {
 
   res.end();
 });
-
 
 module.exports = app;

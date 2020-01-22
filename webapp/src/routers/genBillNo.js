@@ -54,31 +54,37 @@ app.get("/checkSenderMember", (req, res) => {
       json: true
     },
     (err, res2, body) => {
-      if (res2.body.status != true) {
-        res.json({ status: res2.body.status });
-      } else {
-        genBillingNoServices.checkSenderMember(tracking).then(function(dataCapture) {
-            genBillingNoServices.checkTrackingBillItem(tracking).then(function(dataBillItem) {
-                let phoneCapture;
+      if (err === null) {
+        if (res2.body.status != true) {
+          res.json({ status: res2.body.status });
+        } else {
+          genBillingNoServices
+            .checkSenderMember(tracking)
+            .then(function(dataCapture) {
+              genBillingNoServices
+                .checkTrackingBillItem(tracking)
+                .then(function(dataBillItem) {
+                  let phoneCapture;
 
-                if (dataCapture == false) {
-                  status = "Error_Not_In_Capture_Data";
-                } else {
-                  phoneCapture = dataCapture[0].phone_number;
-                  if (phoneCapture != phone_number) {
-                    status = "Error_Phone_Not_Match";
-                  } else if (dataBillItem == false) {
-                    status = "Error_Tracking_Cannot_Use";
+                  if (dataCapture == false) {
+                    status = "Error_Not_In_Capture_Data";
                   } else {
-                    status = "Success";
+                    phoneCapture = dataCapture[0].phone_number;
+                    if (phoneCapture != phone_number) {
+                      status = "Error_Phone_Not_Match";
+                    } else if (dataBillItem == false) {
+                      status = "Error_Tracking_Cannot_Use";
+                    } else {
+                      status = "Success";
+                    }
                   }
-                }
-                var output = {
-                  status: status
-                };
-                res.json(output);
-              });
-          });
+                  var output = {
+                    status: status
+                  };
+                  res.json(output);
+                });
+            });
+        }
       }
     }
   );
@@ -88,10 +94,13 @@ app.post("/genBillingNumber", (req, res) => {
   let branch_id = req.body.branch_id;
   let user_id = req.body.user_id;
   // let dateBillingNo = moment(new Date()).format("YYMMDDHHmmss", true);
-  let dateBillingNo=momentTimezone(new Date()).tz('Asia/Bangkok').format("YYMMDDHHmmss", true)
+  let dateBillingNo = momentTimezone(new Date())
+    .tz("Asia/Bangkok")
+    .format("YYMMDDHHmmss", true);
   let randomNo = Math.floor(Math.random() * (999 - 111)) + 111;
 
-  let billing_no = branch_id + "-" + user_id + "-" + dateBillingNo + "-" + randomNo;
+  let billing_no =
+    branch_id + "-" + user_id + "-" + dateBillingNo + "-" + randomNo;
   res.json(billing_no);
 });
 
@@ -114,31 +123,41 @@ app.get("/getReceipt", (req, res) => {
           json: true
         },
         (err, res2, body) => {
-          if (data == false || data2 == false) {
-            res.json({
-              status: "ERROR_NO_BILL_NO"
-            });
-          } else {
-            let itemTotal=0;
-            for(i=0;i<data.billingItem.length;i++){
-              itemTotal=itemTotal+parseInt(data.billingItem[i].size_price);
+          if (err === null) {
+            if (data == false || data2 == false) {
+              res.json({
+                status: "ERROR_NO_BILL_NO"
+              });
+            } else {
+              let itemTotal = 0;
+              for (i = 0; i < data.billingItem.length; i++) {
+                itemTotal =
+                  itemTotal + parseInt(data.billingItem[i].size_price);
+              }
+              // console.log("length: %d , Total: %d",data.billingItem.length,itemTotal);
+              res.json({
+                status: "SUCCESS",
+                billing_no: data.billingInfo[0].billing_no,
+                total: itemTotal,
+                member_code: data.billingInfo[0].member_code,
+                member_name:
+                  res2.body.memberInfo.firstname +
+                  " " +
+                  res2.body.memberInfo.lastname,
+                branch_id: data.billingInfo[0].branch_id,
+                branch_name: data.billingInfo[0].branch_name,
+                timestamp: data.billingInfo[0].timestamp,
+                // billing_date: moment(parseInt(data.billingInfo[0].timestamp)).format("YYYY-MM-DD HH:mm:ss", true),
+                billing_date_test: momentTimezone(
+                  data.billingInfo[0].billing_date
+                )
+                  .tz("Asia/Bangkok")
+                  .format("YYYY-MM-DD HH:mm:ss", true),
+                billing_date: data.billingInfo[0].billing_date,
+                listTracking: data.billingItem,
+                summary: data2
+              });
             }
-            // console.log("length: %d , Total: %d",data.billingItem.length,itemTotal);
-            res.json({
-              status: "SUCCESS",
-              billing_no: data.billingInfo[0].billing_no,
-              total: itemTotal,
-              member_code: data.billingInfo[0].member_code,
-              member_name: res2.body.memberInfo.firstname + " " +res2.body.memberInfo.lastname,
-              branch_id: data.billingInfo[0].branch_id,
-              branch_name: data.billingInfo[0].branch_name,
-              timestamp: data.billingInfo[0].timestamp,
-              // billing_date: moment(parseInt(data.billingInfo[0].timestamp)).format("YYYY-MM-DD HH:mm:ss", true),
-              billing_date_test: momentTimezone(data.billingInfo[0].billing_date).tz('Asia/Bangkok').format("YYYY-MM-DD HH:mm:ss", true),
-              billing_date: data.billingInfo[0].billing_date,
-              listTracking: data.billingItem,
-              summary: data2
-            });
           }
         }
       );
@@ -160,23 +179,28 @@ app.get("/checkZipcode", (req, res) => {
 app.post("/status/bill/no/api", (req, res) => {
   let billingNo = req.body.billingNo;
   let countTrackingNo = req.body.countTrackingNo;
-  let trackingNoList=req.body.trackingNoList;
-  
-  genBillingNoServices.checkTrackingNo(billingNo).then(function(data) {
+  let trackingNoList = req.body.trackingNoList;
 
-    if(data[0].cTracking===countTrackingNo) {
-      status='SUCCESS'
-      for(i=0;i<trackingNoList.length;i++){
-        let tracking=trackingNoList[i].trackingNo;
-        genBillingNoServices.updateStatusInReceiver(status,tracking).then(function(data) {})
+  genBillingNoServices.checkTrackingNo(billingNo).then(function(data) {
+    if (data[0].cTracking === countTrackingNo) {
+      status = "SUCCESS";
+      for (i = 0; i < trackingNoList.length; i++) {
+        let tracking = trackingNoList[i].trackingNo;
+        genBillingNoServices
+          .updateStatusInReceiver(status, tracking)
+          .then(function(data) {});
       }
     } else {
-      status='ERROR'
-      genBillingNoServices.updateResponseData(JSON.stringify(req.body),billingNo).then(function(data) {})
+      status = "ERROR";
+      genBillingNoServices
+        .updateResponseData(JSON.stringify(req.body), billingNo)
+        .then(function(data) {});
     }
-    genBillingNoServices.updateStatusInBilling(status,billingNo).then(function(data) {})
+    genBillingNoServices
+      .updateStatusInBilling(status, billingNo)
+      .then(function(data) {});
     res.end(status);
-  })
+  });
 });
 
 module.exports = app;
