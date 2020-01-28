@@ -101,7 +101,7 @@ module.exports = {
       "JOIN billing_receiver_info br ON bItem.tracking=br.tracking " +
       "JOIN size_info s ON bItem.size_id=s.size_id " +
       "JOIN global_parcel_size gSize ON s.alias_size=gSize.alias_name AND s.location_zone=gSize.area AND bItem.parcel_type=gSize.type " +
-      "WHERE bItem.billing_no=? AND br.status!='cancel'";
+      "WHERE bItem.billing_no=? and (br.status != 'cancel' or br.status is null)";
     var dataBillItem = [bill];
 
     return new Promise(function(resolve, reject) {
@@ -161,9 +161,9 @@ module.exports = {
       "SELECT bItem.parcel_type,count(bItem.parcel_type) as cType, sum(cod_value) as sumCOD " +
       "FROM billing b JOIN billing_item bItem on b.billing_no=bItem.billing_no " +
       "JOIN billing_receiver_info br on bItem.tracking=br.tracking " +
-      "WHERE b.billing_no=? AND br.status != ?" +
+      "WHERE b.billing_no=? and (br.status != 'cancel' or br.status is null) " +
       "GROUP by bItem.parcel_type ORDER BY parcel_type ASC";
-    var data = [bill,status];
+    var data = [bill];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {

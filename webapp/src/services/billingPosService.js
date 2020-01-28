@@ -198,9 +198,9 @@ module.exports = {
   },
   listDailyMember: branchId => {
     var sql =
-      "SELECT b.member_code,p.firstname,p.lastname FROM billing b " +
-      "JOIN parcel_member p ON b.member_code=p.member_id " +
-      "WHERE Date(b.billing_date)=CURRENT_DATE() AND b.branch_id= ? GROUP BY b.member_code,p.firstname,p.lastname";
+      "SELECT b.member_code FROM billing b " +
+      // "JOIN parcel_member p ON b.member_code=p.member_id " +
+      "WHERE Date(b.billing_date)=CURRENT_DATE() AND b.branch_id= ? GROUP BY b.member_code";
     var data = [branchId];
 
     return new Promise(function(resolve, reject) {

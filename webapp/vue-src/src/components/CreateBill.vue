@@ -372,9 +372,7 @@
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('mini')"
               >
                 <span style="font-size:16px">MINI</span>
@@ -383,9 +381,7 @@
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('miniPlus')"
               >
                 <span style="font-size:16px">MINI+</span>
@@ -394,22 +390,19 @@
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('s')"
               >
                 <span style="font-size:16px">S</span>
               </button>
             </div>
           </div>
+
           <div class="row" style="margin-top: 2%">
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('sPlus')"
               >
                 <span style="font-size:16px">S+</span>
@@ -418,9 +411,7 @@
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('m')"
               >
                 <span style="font-size:16px">M</span>
@@ -429,22 +420,19 @@
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('mPlus')"
               >
                 <span style="font-size:16px">M+</span>
               </button>
             </div>
           </div>
+
           <div class="row" style="margin-top: 2%">
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('l')"
               >
                 <span style="font-size:16px">L</span>
@@ -453,9 +441,7 @@
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('xl')"
               >
                 <span style="font-size:16px">XL</span>
@@ -464,15 +450,50 @@
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
                 v-on:click="selectBox('xxl')"
               >
                 <span style="font-size:16px">XXL</span>
               </button>
             </div>
           </div>
+          <!-- เพิ่มใหม่ -->
+                <div class="row" style="margin-top: 2%">
+            <div class="col-sm-4">
+              <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('m1')"
+              >
+                <span style="font-size:16px">M1</span>
+              </button>
+            </div>
+            <div class="col-sm-4">
+              <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('lPlus')"
+              >
+                <span style="font-size:16px">L+</span>
+              </button>
+            </div>
+            <div class="col-sm-4">
+              <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('xlPlus')"
+              >
+                <span style="font-size:16px">XL+</span>
+              </button>
+            </div>
+          </div>
+
+
+
+
+
+
+
         </div>
 
         <div>
@@ -1215,6 +1236,7 @@
                 <button
                   type="button"
                   v-on:click="insertQuiklink"
+                  :disabled='isDisabledInsertQuiklink'
                   class="trigger-btn btn btn-success col-sm-4"
                   data-toggle="modal"
                 >บันทึกรายการ</button>
@@ -1577,6 +1599,36 @@
                             >XXL</button>
                           </div>
                         </div>
+
+                        <!-- เพิ่มใหม่ -->
+                        <!-- <div class="row">
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('m1')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >M1</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('lPlus')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >L+</button>
+                          </div>
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('xlPlus')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                              style="padding-left: 5px;"
+                            >XL+</button>
+                          </div>
+                        </div> -->
+
+
+
+
                       </div>
                     </div>
                   </div>
@@ -1726,6 +1778,7 @@
 
         <sweet-modal icon="success" ref="successavebill">บันทึกรายการสำเร็จ</sweet-modal>
         <sweet-modal icon="error" ref="errorsavebill">ไม่สามารถบันทึกรายการได้ กรุณาตรวจสอบข้อมูลอีกครั้ง</sweet-modal>
+         <sweet-modal icon="supererror" ref="supererror">ติดต่อเจ้าหน้าที่เพื่อทำการแก้ปัญหา หรือ โทร.0914271551</sweet-modal>
   </div>
 </template>
 
@@ -1910,6 +1963,7 @@ export default {
       trackingDuplicated:false,
       trackingPhoneNotMatch:false,
       trackingCannotuse:false,
+      isDisabledInsertQuiklink:false,
     };
   },
   created: function() {
@@ -2629,13 +2683,15 @@ export default {
       this.quickLinkAddData.splice(index, 1);
     },
     insertQuiklink() {
+      // check state
+      this.isDisabledInsertQuiklink = true;
       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+      if(this.view == "quickLinkDataExpress"){
       this.quickLinkDataDetail = false;
       this.quickLinkTotal = this.quickLinkTotalSum;
        var merid = parseInt(dataLogin.merid);
       var userid = dataLogin.userid;
       var authenlevel = dataLogin.authenlevel;
-
       // รูปหน้าบัตรประชาชน
       var imgUrl = "";
       if (!this.fileNameUpload) {
@@ -2689,26 +2745,42 @@ export default {
           this.dataSaveQuickLink
         )
         .then(response => {
-          console.log("response---เลขบิลกลับมา", response.data);
+          // console.log("response---เลขบิลกลับมา", response.data);
           this.quickLinkBillingNo = response.data.billing_no;
           if(this.quickLinkBillingNo){
+           this.isDisabledInsertQuiklink = false;
             this.$refs.successavebill.open();
           this.view = "quickLinkDataPrint";
           this.$cookie.set("quickLinkBillingNo", this.quickLinkBillingNo, 1);
           }else{
-          this.$refs.errorsavebill.open();
-          this.view = "quickLinkDataExpress";
+            // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+            this.$refs.supererror.open();
+            // ลบของ QuickLink
+            this.$cookie.delete("quickLinkBillingNo");
+            localStorage.removeItem("quickLinkdataCount");
+            localStorage.removeItem("quickLinkAddData");
+            localStorage.removeItem("quickLinkCountAllinTable");
           }
           return this.quickLinkBillingNo;
         })
         .catch(function(error) {
           console.log(error);
         });
-
-        setTimeout(function(){
+      }else{
+        // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+         this.$refs.supererror.open();
+        // ลบของ QuickLink
+        this.$cookie.delete("quickLinkBillingNo");
+        localStorage.removeItem("quickLinkdataCount");
+        localStorage.removeItem("quickLinkAddData");
+        localStorage.removeItem("quickLinkCountAllinTable");
+      }
+     setTimeout(function(){
           this.$refs.successavebill.close();
-           this.$refs.errorsavebill.close();
-         }.bind(this),3000);
+          this.$refs.errorsavebill.close();
+          this.isDisabledInsertQuiklink = false;
+      }.bind(this),3000);
+
     },
     getDataquickLinkPrintBill(billing) {
       var bill = this.quickLinkBillingNo;
@@ -3042,6 +3114,7 @@ export default {
       var valueSize = selectBox;
       var sizeName = valueSize.replace("Plus", "+");
       this.listTracking.sizeBox = sizeName;
+      console.log(" this.listTracking.sizeBox =>", this.listTracking.sizeBox);
       this.view = "createBill5";
       // document.getElementById("receiverName").focus();
     },
@@ -3748,6 +3821,7 @@ export default {
     quicklinkSizeBox(size) {
       var valueSize = size;
       var sizeName = valueSize.replace("Plus", "+");
+      console.log("sizeName =>",sizeName);
       this.quickLinkSelectSize = sizeName;
       this.quickLinkBtnAdd = true;
       this.quickLinkBtnRe = true;
