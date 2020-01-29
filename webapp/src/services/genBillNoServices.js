@@ -284,5 +284,13 @@ module.exports = {
         resolve(results);
       });
     });
-  }
+  },
+  checkLastProcess: () => {
+    var sql = "SELECT state, ts FROM log_process_data_lastest";
+    return new Promise(function(resolve, reject) {
+      connection.query(sql, (err, results) => {
+        resolve(results);
+      });
+    });
+  },
 };

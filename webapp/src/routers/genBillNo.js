@@ -203,4 +203,13 @@ app.post("/status/bill/no/api", (req, res) => {
   });
 });
 
+app.get("/check/last/process", (req, res) => {
+
+  genBillingNoServices.checkLastProcess().then(function(data) {
+
+    res.json({state:data[0].state,
+      last_process:parseInt(data[0].ts)});
+  });
+});
+
 module.exports = app;

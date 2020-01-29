@@ -101,24 +101,13 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                     let cod_value = val.cod_value;
                     let address = val.address;
 
-                    await billingPosService.saveDataBillingItem(
-                      billing_no,
-                      track,
-                      size_id,
-                      size_price,
-                      parcel_type,
-                      cod_value,
-                      source,
-                      address
-                    );
+                    await billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address);
                   });
                   return true;
                 };
                 saveItem().then(result => {
                   if (result) {
-                    quicklinkService
-                      .updateStatusBilling(billing_no)
-                      .then(function(resBilling) {
+                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
                         if (resBilling.affectedRows > 0) {
                           res.json({
                             status: "success",
