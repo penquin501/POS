@@ -663,7 +663,7 @@ export default {
     },
 
     checkPhoneNo(phone) {
-      console.log("checkPhoneNo เช็คเบอร์มือถือ");
+      // console.log("checkPhoneNo เช็คเบอร์มือถือ");
       const options = { okLabel: "ตกลง" };
       var ph = phone;
       if (

@@ -110,7 +110,7 @@
             style="height: 57px;padding-top: 5px;"
             v-on:click="sizeBox"
           >
-            <img src="../assets/img/printer.png" height="35px" /> &nbsp;คำนวณขนาด
+            <img src="../assets/img/ruler.png" height="35px" /> &nbsp;คำนวณขนาด
           </a>
         </div>
         <div class="col-sm-3 col-md-3 col-lg-3">
@@ -181,6 +181,12 @@
       </div>
 
       <div id="printModal" class="modal modal-wide fade">
+           <div class="vld-parent">
+        <loading :active.sync="isLoading" 
+        :is-full-page="fullPage"></loading>
+       </div>
+
+
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header modalHeader" style="text-align:center;">
@@ -352,7 +358,7 @@
                       scope="row"
                       value="0"
                       style="text-align:center;"
-                    >{{ changePhone(item.phoneregis) }}</td>
+                    >{{ changePhonemember(item.phoneregis) }}</td>
                     <td scope="row" value="0" style="text-align:left;">{{ item.address }}</td>
                     <td scope="row" value="0" style="text-align:center;">
                       <button
@@ -685,6 +691,9 @@
     </div>
     <router-view />
 
+
+
+
     <!-- Modal HTML -->
     <sweet-modal icon="success" ref="processprint">กำลังดำเนินการพิมพ์ใบเสร็จ</sweet-modal>
     <sweet-modal icon="error" ref="processprintTax">ไม่มีใบกำกับภาษี</sweet-modal>
@@ -694,13 +703,17 @@
 var moment = require("moment");
 const queryString = require("query-string");
 // Vue.use(PreventUnload);
+
 import QueryString from "query-string";
 import { SweetModal, SweetModalTab } from "sweet-modal-vue";
 import momentTimezone from "moment-timezone";
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 export default {
   props: ["value"],
   components: {
-    SweetModal
+    SweetModal,
+    Loading
   },
   data: function() {
     return {
@@ -766,7 +779,10 @@ export default {
         "https://secure.peakengine.com/Pdf?emi=NjM0MDE=&eti=MTY5OTYzOQ==&eii=Mw=="
       ],
       listInvoice: [],
-      btnTaxInvioce: false
+      btnTaxInvioce: false,
+      // loading
+      isLoading: false,
+      fullPage: true
     };
   },
 
@@ -817,14 +833,15 @@ export default {
         const data = {
           branch_id: merid
         };
+        console.log("Datacheckmember",data);
         axios
           .post(
             "https://www.945api.com/parcel/list/member/api",
             JSON.stringify(data)
           )
           .then(function(response) {
-            //  console.log(response.data);
-            // console.log(response.data.listMember);
+             console.log(response.data);
+            console.log(response.data.listMember);
             that.memberList = response.data.listMember;
             //  console.log("list", response.data.listMember);
             that.getDataBank();
@@ -840,8 +857,14 @@ export default {
       var phonechange = phone.replace("66", "0");
       return phonechange;
     },
-    changePhonep(phone) {
-      var phonechange = phone.replace("66", "0");
+    changePhonemember(phone) {
+      var phonechange;
+      if(phone == null){
+        phonechange = "-";
+      }else{
+         phonechange = phone.replace("66", "0");
+      }
+      // var phonechange = phone.replace("66", "0");
       return phonechange;
     },
 
@@ -1094,6 +1117,7 @@ export default {
       );
     },
     listBillPre() {
+    //  this.isLoading = true;
          var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       if (localStorage.dataLogin || dataLogin != null) {
            this.listBill = [];
@@ -1154,9 +1178,12 @@ export default {
     
                 })
                 })
-            }
+            }   
             // console.log("data all", this.listBill);
           })
+        //  setTimeout(() => {
+        //           this.isLoading = false
+        //         },10000)
         
       } else {
         window.location.reload();
@@ -1354,11 +1381,13 @@ export default {
       if (this.searchQuery) {
         return this.memberList.filter(item => {
           var re = item.phoneregis;
+          if(!re){
+            re = "";
+          }
           var phone = re.replace("66", "0");
           var citizenId = item.citizenid;
           var member_id = item.member_id;
           var firstname = item.firstname;
-
           if (citizenId == null) {
             citizenId = "";
           } else if (member_id == null) {
@@ -1367,7 +1396,7 @@ export default {
             firstname = "";
           } else if (phone == null) {
             phone = "";
-          }
+          } 
           return (
             !this.searchQuery ||
             citizenId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
@@ -1378,6 +1407,8 @@ export default {
         });
       } else {
         return this.memberList;
+
+        console.log("this.memberList",this.memberList);
       }
     },
 

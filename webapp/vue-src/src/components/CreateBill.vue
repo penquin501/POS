@@ -778,7 +778,7 @@
               <div class="panel-heading" style="text-align: center; ">
                 <span style="font-size:18px">เลขที่จัดส่ง</span>
               </div>
-              <div class="panel-body" style="height: 260px">
+              <div class="panel-body" style="height: 300px">
                 <input
                   id="focusTDZ"
                   ref="focusTDZ"
@@ -791,6 +791,12 @@
                   placeholder="Consignment No."
                   style="margin-top: 5% ; margin-bottom: 5% ; text-transform: uppercase;"
                 />
+                 <h5 v-show="nulltracking" style="color:red;">**กรุณากรอกเลขที่จัดส่ง</h5>
+                 <h5 v-show="trackingNoFormat" style="color:red;">**กรุณากรอกกรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง</h5>
+                 <h5 v-show="trackingNoCapture" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ</h5>
+                 <h5 v-show="trackingDuplicated" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว</h5>
+                 <h5 v-show="trackingPhoneNotMatch" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ใส่รหัสผู้ส่งไม่ถูกต้อง</h5>
+                 <h5 v-show="trackingCannotuse" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขที่จัดส่งนี้ทำรายการแล้ว</h5>
                 <div style="text-align: center">
                   <b style="font-size: 20px">Example : TDZxxxxxxxx</b>
                 </div>
@@ -966,6 +972,7 @@
                   href="#myModal"
                   class="btn btn-success col-sm-4"
                   v-on:click="successCreateBill"
+                  :disabled="isDisabledInsertPOS"
                   v-if="countAll != 0"
                 >บันทึกรายการ</button>
                 <div class="col-sm-4"></div>
@@ -1964,6 +1971,7 @@ export default {
       trackingPhoneNotMatch:false,
       trackingCannotuse:false,
       isDisabledInsertQuiklink:false,
+      isDisabledInsertPOS:false,
     };
   },
   created: function() {
@@ -2831,7 +2839,6 @@ export default {
         $event.preventDefault();
       }
     },
-
     engOnly($event) {
       var englishAlphabetAndWhiteSpace = /[A-Za-z | 0-9]/g;
       // let keyCode = $event.keyCode ? $event.keyCode : $event.which;
@@ -2858,7 +2865,6 @@ export default {
       this.$cookie.set("carrierId", carrierId, 1);
       var codeToCheck = "";
       const options = { okLabel: "ตกลง" };
-
       // เช็ค memberCode กรอกเบอร์โทร 10 หลัก และรหัสบัตรประชาชน 13 หลัก
       if(memberCode.length == 0){
          this.$dialogs.alert(
@@ -2929,8 +2935,7 @@ export default {
               options
             );
           } else if(resultMember.data.member_code == null || resultMember.data.branch_id == null || resultMember.data.first_name == null 
-                  || resultMember.data.last_name == null || resultMember.data.phone == null || resultMember.data.address == null
-                  || resultMember.data.bank_account_no == null || resultMember.data.bank_acc_name == null || resultMember.data.bank_name == null ){        
+                  || resultMember.data.last_name == null || resultMember.data.phone == null){        
             this.$dialogs.alert(
               "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
               options
@@ -2969,6 +2974,16 @@ export default {
             });
           }
           this.memberData = resultMember.data;
+            if(resultMember.data.bank_account_no == null || resultMember.data.bank_account_no == '' ){
+              this.memberData.bank_account_no = '-';
+            }
+            if(resultMember.data.bank_acc_name == null || resultMember.data.bank_acc_name == '' ){
+              this.memberData.bank_acc_name  = '-';
+            }if(resultMember.data.bank_name == null || resultMember.data.bank_name == '' ){
+              this.memberData.bank_name  = '-';
+            }if(resultMember.data.address == null || resultMember.data.address == ''){
+                this.memberData.address  = '-';
+            }
           this.memberCode = resultMember.data.member_code;
           this.$cookie.set("memberCode", memberCode, 1);
           this.memberFullName =
@@ -3172,18 +3187,40 @@ export default {
 
     btnNextInputTDZ() {
       this.state.isSending = true;
-      const options = { okLabel: "ตกลง" };
+      console.log("listTracking",this.listTracking.inputTracking);
+      if(this.listTracking.inputTracking  == null){
+          this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+          this.nulltracking = true;
+          this.state.isSending = false;
+      }
       this.btnBack = "yes";
       var barcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
       var dataTrackingPos = this.finalDataSave.listTracking;
-      var inputTrack = this.listTracking.inputTracking.toUpperCase();
-      if (!this.listTracking.inputTracking) {
-        this.$dialogs.alert("กรุณากรอกเลขที่จัดส่งให้ถูกต้อง", options);
-        this.state.isSending = false;
-        }else if (this.listTracking.inputTracking.match(barcodeReg) === null) {
-        this.$dialogs.alert("เลขที่จัดส่งไม่ถูกต้อง", options).then(res => {
-          this.$refs.focusTDZ.focus();
-        });
+      var inputTrack = this.listTracking.inputTracking.toUpperCase(); 
+        if (!inputTrack) {
+                 this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+              this.nulltracking = true;
+             this.state.isSending = false;
+
+        }else if (inputTrack.match(barcodeReg) === null) {
+                 this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+
+            this.trackingNoFormat = true;
         this.state.isSending = false;
       } else if (dataTrackingPos.length > 0) {
         var resultData = [];
@@ -3195,9 +3232,14 @@ export default {
         }).length;
         // console.log("result", result);
         if (result >= 1) {
-          alert("ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว");
+                 this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+               this.trackingDuplicated = true;
           this.state.isSending = false;
-          return false;
         } else {
           axios
             .get(
@@ -3206,6 +3248,13 @@ export default {
             )
             .then(resultsCheckTracking => {
               if (resultsCheckTracking.data == true) {
+                this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+
                 //ข้อมูลอยุ่ในตารางเตรียมบันทึก
                 this.view = "createBill8";
                 var imgUrl = "";
@@ -3368,9 +3417,14 @@ export default {
                     console.log(error);
                   });
               } else {
-                alert(
-                  "ไม่สามารถใช้เลขที่จัดส่งนี้ได้ เลขจัดส่งถูกใช้งานไปแล้ว"
-                );
+                       this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+                    this.trackingDuplicated = true;
+
                 this.state.isSending = false;
                 this.listTracking.inputTracking = "";
                 this.$refs.focusTDZ.focus();
@@ -3391,6 +3445,12 @@ export default {
           )
           .then(resultsCheckTracking => {
             if (resultsCheckTracking.data == true) {
+              this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
               //ข้อมูลอยุ่ในตารางเตรียมบันทึก
               var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
               this.view = "createBill8";
@@ -3549,7 +3609,13 @@ export default {
                   console.log(error);
                 });
             } else {
-              alert("ไม่สามารถใช้เลขที่จัดส่งนี้ได้ เลขจัดส่งถูกใช้งานไปแล้ว");
+                                     this.nulltracking = false;
+          this.trackingNoFormat = false;
+          this.trackingNoCapture = false;
+          this.trackingDuplicated = false;
+          this.trackingPhoneNotMatch = false;
+          this.trackingCannotuse = false;
+                    this.trackingDuplicated = true;
               this.state.isSending = false;
               this.listTracking.inputTracking = "";
               this.$refs.focusTDZ.focus();
@@ -3562,7 +3628,10 @@ export default {
     },
 
     successCreateBill() {
-      console.log("finaldata", this.finalDataSave);
+      // console.log("finaldata", this.finalDataSave);
+       this.isDisabledInsertPOS = true;
+      if(this.view == "createBill8"){
+
       var that = this;
       axios
         .post(
@@ -3574,20 +3643,42 @@ export default {
           if(responseBillNo.data){
              that.$refs.successavebill.open();
              that.view = "createBill9"; //หน้าโชว์และมีเลขที่บิลส่งกลับมาพร้อมพิมพ์ใบเสร็จ
+             this.isDisabledInsertPOS = true;
              console.log("มีเลขบิล");
              that.billNo = responseBillNo.data.billing_no;
               that.$cookie.set("billNo", that.billNo, 1);
           }else{
-            that.$refs.errorsavebill.open();
-            that.view = "createBill8";
+            // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+            this.$refs.supererror.open();
             //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
+             // ลบของ POS
+            this.$cookie.delete("billNo");
+            localStorage.removeItem("datalistPOS");
+            localStorage.removeItem("finalDataSave");
+            localStorage.removeItem("dataCount");
           }
-
           return this.billNo;
         })
         .catch(function(error) {
           console.log(error);
         });
+      
+      }else{
+         // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+         this.$refs.supererror.open();
+        // ลบของ POS
+        this.$cookie.delete("billNo");
+        localStorage.removeItem("datalistPOS");
+        localStorage.removeItem("finalDataSave");
+        localStorage.removeItem("dataCount");
+     
+      }
+         setTimeout(function(){
+          this.$refs.successavebill.close();
+          this.$refs.errorsavebill.close();
+          this.isDisabledInsertPOS = false;
+      }.bind(this),3000);
+
      
     },
 
@@ -3844,7 +3935,6 @@ export default {
       localStorage.removeItem("datalistPOS");
       localStorage.removeItem("finalDataSave");
       localStorage.removeItem("dataCount");
-
       // ลบของ QuickLink
       this.$cookie.delete("quickLinkBillingNo");
       localStorage.removeItem("quickLinkdataCount");
@@ -3860,11 +3950,11 @@ export default {
 
     notNextBill() {
       window.location.reload();
-      this.$cookie.delete("memberCode");
-      this.$cookie.delete("carrierId");
       this.$cookie.delete("billNo");
-      this.$cookie.delete("quickLinkBillingNo");
-      localStorage.clear();
+      localStorage.removeItem("datalistPOS");
+      localStorage.removeItem("finalDataSave");
+      localStorage.removeItem("dataCount");
+      localStorage.removeItem("memberData");
     },
     changePhone(phone) {
       var phonechange = phone.replace("66", "0");
