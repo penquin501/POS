@@ -18,6 +18,16 @@ app.get("/checkZipcode", (req, res) => {
     }
   });
 });
+app.get("/checktest", (req, res) => {
+  var billing_no=req.query.billing_no
+  billingPosService.checkBillingNoItem(billing_no).then(function(data) {
+    if (data == false) {
+      res.send(false);
+    } else {
+      res.json(data);
+    }
+  });
+});
 
 app.post("/addReceiver", jsonParser, (req, res) => {
   var billing_no;
@@ -81,33 +91,25 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                   status: res3.body.status
                 });
               } else {
-                billingPosService.saveDataBilling(
-                  user_id,
-                  mer_authen_level,
-                  member_code,
-                  carrier_id,
-                  billing_no,
-                  branch_id,
-                  total,
-                  img_url
-                );
 
-                let saveItem = async () => {
-                  await listTracking.forEach(async val => {
-                    let track = val.tracking;
-                    let size_id = val.size_id;
-                    let size_price = val.size_price;
-                    let parcel_type = val.parcel_type.toUpperCase();
-                    let cod_value = val.cod_value;
-                    let address = val.address;
+                billingPosService.saveDataBilling(user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url).then(function(resBilling) {
 
-                    await billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address);
-                  });
-                  return true;
-                };
-                saveItem().then(result => {
-                  if (result) {
-                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
+                  let saveItem = async () => {
+                    await listTracking.forEach(async val => {
+                      let track = val.tracking;
+                      let size_id = val.size_id;
+                      let size_price = val.size_price;
+                      let parcel_type = val.parcel_type.toUpperCase();
+                      let cod_value = val.cod_value;
+                      let address = val.address;
+  
+                      await billingPosService.saveDataBillingItem(resBilling,track,size_id,size_price,parcel_type,cod_value,source,address);
+                    });
+                    return true;
+                  };
+                  saveItem().then(result => {
+                    if (result) {
+                      quicklinkService.updateStatusBilling(resBilling).then(function(resBilling) {
                         if (resBilling.affectedRows > 0) {
                           res.json({
                             status: "success",
@@ -115,8 +117,9 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                           });
                         }
                       });
-                  }
-                });
+                    } 
+                  });
+                })
               }
             }
           }
