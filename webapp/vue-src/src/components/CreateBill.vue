@@ -417,6 +417,20 @@
                 <span style="font-size:16px">M</span>
               </button>
             </div>
+                        <div class="col-sm-4">
+              <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('m1')"
+              >
+                <span style="font-size:16px">M1</span>
+              </button>
+            </div>
+
+            
+          </div>
+
+          <div class="row" style="margin-top: 2%">
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
@@ -426,9 +440,6 @@
                 <span style="font-size:16px">M+</span>
               </button>
             </div>
-          </div>
-
-          <div class="row" style="margin-top: 2%">
             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
@@ -438,37 +449,7 @@
                 <span style="font-size:16px">L</span>
               </button>
             </div>
-            <div class="col-sm-4">
-              <button
-                class="btn btn-success form-control"
-                style="height: 49px;"
-                v-on:click="selectBox('xl')"
-              >
-                <span style="font-size:16px">XL</span>
-              </button>
-            </div>
-            <div class="col-sm-4">
-              <button
-                class="btn btn-success form-control"
-                style="height: 49px;"
-                v-on:click="selectBox('xxl')"
-              >
-                <span style="font-size:16px">XXL</span>
-              </button>
-            </div>
-          </div>
-          <!-- เพิ่มใหม่ -->
-                <div class="row" style="margin-top: 2%">
-            <div class="col-sm-4">
-              <button
-                class="btn btn-success form-control"
-                style="height: 49px;"
-                v-on:click="selectBox('m1')"
-              >
-                <span style="font-size:16px">M1</span>
-              </button>
-            </div>
-            <div class="col-sm-4">
+             <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -477,7 +458,25 @@
                 <span style="font-size:16px">L+</span>
               </button>
             </div>
-            <div class="col-sm-4">
+
+
+
+            
+          </div>
+          <!-- เพิ่มใหม่ -->
+            <div class="row" style="margin-top: 2%">
+
+                          <div class="col-sm-4">
+              <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('xl')"
+              >
+                <span style="font-size:16px">XL</span>
+              </button>
+            </div>
+
+                       <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -486,14 +485,41 @@
                 <span style="font-size:16px">XL+</span>
               </button>
             </div>
+
+          <div class="col-sm-4">
+              <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('xxl')"
+              >
+                <span style="font-size:16px">XXL</span>
+              </button>
+            </div>
+
+
+ 
           </div>
-
-
-
-
-
-
-
+           <!-- เพิ่มใหม่สินค้าเกษตร -->
+                <div class="row" style="margin-top: 2%">
+            <div class="col-sm-6">
+              <button
+                class="btn btn-warning form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('ks40')"
+              >
+                <span style="font-size:16px">สินค้าเกษตร 40</span>
+              </button>
+            </div>
+            <div class="col-sm-6">
+              <button
+                class="btn btn-warning form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('ks95')"
+              >
+                <span style="font-size:16px">สินค้าเกษตร 95</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div>
@@ -1533,6 +1559,7 @@
                         <b style="font-size: 22px; ">ขนาดพัสดุ</b>
                       </div>
                       <div class="panel-body">
+                
                         <div class="row">
                           <div class="col-sm-4">
                             <button
@@ -1573,16 +1600,23 @@
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >M</button>
                           </div>
-                          <div class="col-sm-4">
+                                <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('m1')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >M1</button>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                           <div class="col-sm-4">
                             <button
                               type="button"
                               v-on:click="quicklinkSizeBox('mPlus')"
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >M+</button>
                           </div>
-                        </div>
-
-                        <div class="row">
                           <div class="col-sm-4">
                             <button
                               type="button"
@@ -1590,39 +1624,30 @@
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >L</button>
                           </div>
-                          <div class="col-sm-4">
-                            <button
-                              type="button"
-                              v-on:click="quicklinkSizeBox('xl')"
-                              class="btn btn-warning btn-lg btn-block btn-size"
-                            >XL</button>
-                          </div>
-                          <div class="col-sm-4">
-                            <button
-                              type="button"
-                              v-on:click="quicklinkSizeBox('xxl')"
-                              class="btn btn-warning btn-lg btn-block btn-size"
-                              style="padding-left: 5px;"
-                            >XXL</button>
-                          </div>
-                        </div>
-
-                        <!-- เพิ่มใหม่ -->
-                        <!-- <div class="row">
-                          <div class="col-sm-4">
-                            <button
-                              type="button"
-                              v-on:click="quicklinkSizeBox('m1')"
-                              class="btn btn-warning btn-lg btn-block btn-size"
-                            >M1</button>
-                          </div>
-                          <div class="col-sm-4">
+                                       <div class="col-sm-4">
                             <button
                               type="button"
                               v-on:click="quicklinkSizeBox('lPlus')"
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >L+</button>
                           </div>
+
+
+
+                         
+                          
+                        </div>
+                      
+                        <!-- เพิ่มใหม่ -->
+                        <div class="row">
+                           <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('xl')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >XL</button>
+                          </div>
+
                           <div class="col-sm-4">
                             <button
                               type="button"
@@ -1631,10 +1656,38 @@
                               style="padding-left: 5px;"
                             >XL+</button>
                           </div>
-                        </div> -->
+
+                          <div class="col-sm-4">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('xxl')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                              style="padding-left: 5px;"
+                            >XXL</button>
+                          </div>
+             
+   
+                        </div>
 
 
+                     <!-- เพิ่มใหม่ -->
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('ks40')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >สินค้าเกษตร 40</button>
+                          </div>
+                          <div class="col-sm-6">
+                            <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('ks95')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                            >สินค้าเกษตร 95</button>
+                          </div>
 
+                        </div>
 
                       </div>
                     </div>
@@ -3629,9 +3682,9 @@ export default {
 
     successCreateBill() {
       // console.log("finaldata", this.finalDataSave);
-       this.isDisabledInsertPOS = true;
-      if(this.view == "createBill8"){
-
+      this.isDisabledInsertPOS = true;
+     if(this.view == "createBill8"){
+     this.isDisabledInsertPOS = true;
       var that = this;
       axios
         .post(
@@ -3643,21 +3696,21 @@ export default {
           if(responseBillNo.data){
              that.$refs.successavebill.open();
              that.view = "createBill9"; //หน้าโชว์และมีเลขที่บิลส่งกลับมาพร้อมพิมพ์ใบเสร็จ
-             this.isDisabledInsertPOS = true;
+             that.isDisabledInsertPOS = true;
              console.log("มีเลขบิล");
              that.billNo = responseBillNo.data.billing_no;
-              that.$cookie.set("billNo", that.billNo, 1);
+             that.$cookie.set("billNo", that.billNo, 1);
           }else{
             // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
-            this.$refs.supererror.open();
+            that.$refs.supererror.open();
             //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
              // ลบของ POS
-            this.$cookie.delete("billNo");
+            that.$cookie.delete("billNo");
             localStorage.removeItem("datalistPOS");
             localStorage.removeItem("finalDataSave");
             localStorage.removeItem("dataCount");
           }
-          return this.billNo;
+          return that.billNo;
         })
         .catch(function(error) {
           console.log(error);
@@ -3665,21 +3718,18 @@ export default {
       
       }else{
          // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
-         this.$refs.supererror.open();
+         that.$refs.supererror.open();
         // ลบของ POS
-        this.$cookie.delete("billNo");
+        that.$cookie.delete("billNo");
         localStorage.removeItem("datalistPOS");
         localStorage.removeItem("finalDataSave");
         localStorage.removeItem("dataCount");
-     
       }
          setTimeout(function(){
-          this.$refs.successavebill.close();
-          this.$refs.errorsavebill.close();
-          this.isDisabledInsertPOS = false;
-      }.bind(this),3000);
-
-     
+          that.$refs.successavebill.close();
+          that.$refs.errorsavebill.close();
+          that.isDisabledInsertPOS = false;
+      }.bind(that),3000); 
     },
 
     deleteEvent: function(index) {
