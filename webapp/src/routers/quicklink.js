@@ -68,18 +68,10 @@ app.post("/quickLink", jsonParser, (req, res) => {
                 if (res3.body.status != true) {
                   res.json({ status: res3.body.status });
                 } else {
-                  quicklinkService.saveQuicklinkBilling(
-                    user_id,
-                    mer_authen_level,
-                    member_code,
-                    carrier_id,
-                    billing_no,
-                    branch_id,
-                    total,
-                    img_url
-                  );
+                  console.log("begin",billing_no);
+                  async function updateItem() {
+                    var resItem = [];
 
-                  let updateItem = async () => {
                     await items.forEach(async val => {
                       var trackingItem = val.tracking;
                       var zipcodeItem = val.zipcode;
@@ -87,38 +79,61 @@ app.post("/quickLink", jsonParser, (req, res) => {
                       var sizePriceItem = val.size_price;
                       var codValueItem = val.cod_value;
                       var sizeIdItem = val.size_id;
-
-                      await quicklinkService.checkTrackingBillingItem(
-                        billing_no,
-                        sender_name,
-                        sender_phone,
-                        sender_address,
-                        source,
-                        trackingItem,
-                        zipcodeItem,
-                        parcelTypeItem,
-                        sizePriceItem,
-                        codValueItem,
-                        sizeIdItem
-                      );
+                      
+                      resItem.push(quicklinkService.checkTrackingBillingItem(billing_no,sender_name,sender_phone,sender_address,source,trackingItem,zipcodeItem,parcelTypeItem,sizePriceItem,codValueItem,sizeIdItem))
                     });
-                    return true;
-                  };
-                  updateItem().then(data => {
-                    if (data) {
-                      quicklinkService
-                        .updateStatusBilling(billing_no)
-                        .then(function(resBilling) {
-                          if (resBilling.affectedRows > 0) {
-                            res.json({
-                              status: "success",
-                              billing_no: billing_no
-                            });
-                          }
-                        });
-                    }
-                  });
+                  var resultArr = await Promise.all(resItem);
+                  return resultArr;
                 }
+                updateItem().then(function(result){
+                  async function dataProcess(rtArr) {
+                    let c_pass=true;
+                    for(i=0;i<rtArr.length;i++){
+                      if(typeof rtArr[i] == "undefined"){
+                        c_pass=false;
+                      }
+                    }
+                    if(c_pass){
+                      let resultBilling = await quicklinkService.saveQuicklinkBilling(rtArr[0],user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url)
+                      return resultBilling
+                    } else {
+                      return false
+                    }
+                    
+                  }
+                  dataProcess(result).then((data)=>{
+                    if(data===false){
+                      res.json({
+                        status: "error"
+                      });
+                  } else{
+                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
+                      if (resBilling.affectedRows > 0) {
+                        res.json({
+                          status: "success",
+                          billing_no: billing_no
+                        });
+                      }
+                    });
+                  }
+                  
+                  })
+                })
+                
+                  // updateItem().then(data => {
+                  //   if (data) {
+                  //     quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
+                  //         if (resBilling.affectedRows > 0) {
+                  //           res.json({
+                  //             status: "success",
+                  //             billing_no: billing_no
+                  //           });
+                  //         }
+                  //       });
+                  //   }
+                  // });
+                
+              }
               }
             }
           );

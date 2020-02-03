@@ -91,18 +91,7 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                   status: res3.body.status
                 });
               } else {
-
-                var billingInfo = {
-                  user_id: user_id,
-                  mer_authen_level: mer_authen_level,
-                  member_code: member_code,
-                  carrier_id: carrier_id,
-                  branch_id: branch_id,
-                  total: total,
-                  img_url: img_url
-                };
-
-                  console.log("begin",billing_no);
+                console.log("begin",billing_no);
                 async function saveItem() {
                   var resItem = [];
                   await listTracking.forEach(async val => {
@@ -113,7 +102,7 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                     let cod_value = val.cod_value;
                     let address = val.address;
 
-                      resItem.push(billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address,billingInfo))
+                      resItem.push(billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address))
                   });
 
                 var resultArr = await Promise.all(resItem);
