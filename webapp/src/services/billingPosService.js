@@ -57,37 +57,39 @@ module.exports = {
       });
     });
   },
-  saveDataBilling: (user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url) => {
+  saveDataBilling: (resBillingNo,user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url) => {
 
     var dateTimestamp = new Date();
     var dateTimestamp2 = +dateTimestamp;
     var status='drafting'
 
-    var sqlSaveBilling ="INSERT INTO billing(user_id,mer_authen_level,member_code,carrier_id,billing_date,billing_no,branch_id,total,timestamp,img_url) VALUES (?,?,?,?,?,?,?,?,?,?)";
+    var sqlSaveBilling ="INSERT INTO billing_test(user_id,mer_authen_level,member_code,carrier_id,billing_date,billing_no,branch_id,total,timestamp,img_url) VALUES (?,?,?,?,?,?,?,?,?,?)";
     var dataSaveBilling = [user_id,mer_authen_level,member_code,carrier_id,new Date(),billing_no,branch_id,total,dateTimestamp2,img_url,status];
+
+    var sqlCheckBilling ="SELECT billing_no FROM billing_test WHERE billing_no=?";
+    var dataBilling = [resBillingNo];
+
+    var sqlTrackingInItem = "SELECT tracking FROM billing_item_test where billing_no=?";
+    var dataBillingNo = [resBillingNo];
  
     return new Promise(function(resolve, reject) {
-      connection.query(sqlSaveBilling,dataSaveBilling, (error, results, fields) => {
-        resolve(billing_no);
-      });
-    });
-  },
-  checkBillingNoItem:(billing_no)=>{
-
-    let sqlCheckBillingNoItem="SELECT tracking FROM billing_item WHERE billing_no=?"
-    let dataBillingNoItem=[billing_no];
-    // console.log(sqlCheckBillingNoItem);
-    var test = []
-    return new Promise(function(resolve, reject) {
-      connection.query(sqlCheckBillingNoItem, function(error, results) {
-        // console.log('test =>', results, 'test2 =>', billingNo);
-        resolve(results);
-      });
-    
+      connection.query(sqlTrackingInItem,dataBillingNo, (error, results2, fields) => {
+        if(results2.length>=0){
+          connection.query(sqlCheckBilling,dataBilling, (error, results, fields) => {
+            if(results.length<=0){
+              connection.query(sqlSaveBilling,dataSaveBilling, (error, results122222, fields) => {
+                resolve();
+              });
+            }
+          });
+        }
+      })
+      
+      
     });
   },
   saveDataBillingItem: (billing_no,tracking,size_id,size_price,parcel_type,cod_value,source,address) => {
-    console.log(billing_no);
+    // console.log(billing_no);
     let sender_name = address.sender_name;
     let sender_phone = address.sender_phone;
     let sender_address = address.sender_address;
@@ -103,27 +105,32 @@ module.exports = {
     let zipcode = address.zipcode;
     let remark = address.remark;
 
-    var sqlBillingItem ="INSERT INTO billing_item(billing_no, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source) VALUES (?, ?,?, ?, ?, ?, ?, ?)";
+    var sqlSaveBillingItem ="INSERT INTO billing_item_test(billing_no, tracking, zipcode, size_id, size_price, parcel_type, cod_value, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     var dataBillintItem = [billing_no,tracking,zipcode,size_id,size_price,parcel_type,cod_value,source];
 
-    var sqlReceiver ="INSERT INTO billing_receiver_info(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    var sqlReceiver ="INSERT INTO billing_receiver_info_test(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     var dataReceiver = [tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark];
 
     var sqlUpdateItemTemp = "UPDATE billing_item_temp SET billing_no = ? WHERE tracking = ?";
     var dataUpdateItemTemp = [billing_no, tracking];
 
-    var sqlCheckDupTracking ="SELECT tracking,billing_no FROM billing_item where tracking=?";
+    var sqlCheckDupTracking ="SELECT tracking,billing_no FROM billing_item_test where tracking=?";
 
-    var sqlCheckDupReceiver ="SELECT tracking FROM billing_receiver_info WHERE tracking=?";
+    var sqlCheckDupReceiver ="SELECT tracking FROM billing_receiver_info_test WHERE tracking=?";
     var dataTracking = [tracking];
 
     return new Promise(function(resolve, reject) {
-
+      /* check tracking ซ้ำ */
       connection.query(sqlCheckDupTracking,dataTracking, (error1, resultsItem, fields) => {
         if(error1===null){
           if(resultsItem.length<=0){
-            connection.query(sqlBillingItem,dataBillintItem, (error, results, fields) => {});
+            /* save tracking ที่ไม่ซ้ำ */
+            connection.query(sqlSaveBillingItem,dataBillintItem, (error, results, fields) => {
+              resolve(billing_no)
+            });
             connection.query(sqlUpdateItemTemp,dataUpdateItemTemp, (error, results, fields) => {});
+          } else {
+            resolve()
           }
         }
       });
@@ -134,12 +141,11 @@ module.exports = {
           }
         }
       });
-      resolve(billing_no);
-
+      // console.log('return =>',billing_no)
     });
   },
   saveDataBillingReceiver: (tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark) => {
-    var sql ="INSERT INTO billing_receiver_info(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    var sql ="INSERT INTO billing_receiver_info_test(tracking, parcel_type, sender_name, sender_phone, sender_address, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) VALUES (?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     var data = [tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark];
 
     return new Promise(function(resolve, reject) {
@@ -179,7 +185,7 @@ module.exports = {
     });
   },
   checkTracking: tracking => {
-    var sql = "SELECT tracking FROM billing_item WHERE tracking = ?";
+    var sql = "SELECT tracking FROM billing_item_test WHERE tracking = ?";
     var data = [tracking];
 
     return new Promise(function(resolve, reject) {

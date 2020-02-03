@@ -1407,7 +1407,6 @@ export default {
         });
       } else {
         return this.memberList;
-
         console.log("this.memberList",this.memberList);
       }
     },

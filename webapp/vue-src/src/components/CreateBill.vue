@@ -1,7 +1,6 @@
 <template>
   <div style="margin-top: 40px;">
     <div class="container">
- 
       <div class="row" v-if="view == 'createBill'">
         <div style="text-align: center">
           <h2>Status : เปิดบิลใหม่</h2>
@@ -11,14 +10,12 @@
           class="panel panel-default"
           style="border-bottom-width: 0px;border-right-width: 0px;border-top-width: 0px;border-left-width: 0px;"
         >
-     
           <div class="panel-heading" style="text-align: center;  background-color:#291e9c;">
             <span style="font-size:18px">Member : รหัสสมาชิก</span>
           </div>
           <div class="panel-body" style="text-align: center">
             <div class="col-sm-4"></div>
             <div class="col-sm-4">
-             
               <input
                 type="text"
                 class="form-control"
@@ -28,9 +25,7 @@
                 v-on:keypress="onlyNumber"
                 ref="memberCode"
                 style="height:40px"
-                />
-
-       
+              />
             </div>
             <div class="col-sm-4"></div>
           </div>
@@ -55,7 +50,7 @@
                   v-on:keypress="onlyNumber"
                   id="idCardNumber"
                   style="height:40px"
-               />
+                />
               </div>
               <div class="col-sm-4"></div>
             </div>
@@ -417,7 +412,7 @@
                 <span style="font-size:16px">M</span>
               </button>
             </div>
-                        <div class="col-sm-4">
+            <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -426,8 +421,6 @@
                 <span style="font-size:16px">M1</span>
               </button>
             </div>
-
-            
           </div>
 
           <div class="row" style="margin-top: 2%">
@@ -449,7 +442,7 @@
                 <span style="font-size:16px">L</span>
               </button>
             </div>
-             <div class="col-sm-4">
+            <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -458,15 +451,10 @@
                 <span style="font-size:16px">L+</span>
               </button>
             </div>
-
-
-
-            
           </div>
           <!-- เพิ่มใหม่ -->
-            <div class="row" style="margin-top: 2%">
-
-                          <div class="col-sm-4">
+          <div class="row" style="margin-top: 2%">
+            <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -476,7 +464,7 @@
               </button>
             </div>
 
-                       <div class="col-sm-4">
+            <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -486,7 +474,7 @@
               </button>
             </div>
 
-          <div class="col-sm-4">
+            <div class="col-sm-4">
               <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -495,12 +483,9 @@
                 <span style="font-size:16px">XXL</span>
               </button>
             </div>
-
-
- 
           </div>
-           <!-- เพิ่มใหม่สินค้าเกษตร -->
-                <div class="row" style="margin-top: 2%">
+          <!-- เพิ่มใหม่สินค้าเกษตร -->
+          <div class="row" style="margin-top: 2%">
             <div class="col-sm-6">
               <button
                 class="btn btn-warning form-control"
@@ -812,17 +797,32 @@
                   :disabled="state.isSending"
                   class="form-control"
                   v-model="listTracking.inputTracking"
-                  onKeyPress="if(this.value.length == 12) return false;"
+                  onkeypress="if(this.value.length == 12) return false;"
                   v-on:keypress="engOnly"
                   placeholder="Consignment No."
                   style="margin-top: 5% ; margin-bottom: 5% ; text-transform: uppercase;"
                 />
-                 <h5 v-show="nulltracking" style="color:red;">**กรุณากรอกเลขที่จัดส่ง</h5>
-                 <h5 v-show="trackingNoFormat" style="color:red;">**กรุณากรอกกรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง</h5>
-                 <h5 v-show="trackingNoCapture" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ</h5>
-                 <h5 v-show="trackingDuplicated" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว</h5>
-                 <h5 v-show="trackingPhoneNotMatch" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ใส่รหัสผู้ส่งไม่ถูกต้อง</h5>
-                 <h5 v-show="trackingCannotuse" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขที่จัดส่งนี้ทำรายการแล้ว</h5>
+                <h5 v-show="nulltracking" style="color:red;">**กรุณากรอกเลขที่จัดส่ง</h5>
+                <h5
+                  v-show="trackingNoFormat"
+                  style="color:red;"
+                >**กรุณากรอกกรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง</h5>
+                <h5
+                  v-show="trackingNoCapture"
+                  style="color:red;"
+                >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ</h5>
+                <h5
+                  v-show="trackingDuplicated"
+                  style="color:red;"
+                >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว</h5>
+                <h5
+                  v-show="trackingPhoneNotMatch"
+                  style="color:red;"
+                >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ใส่รหัสผู้ส่งไม่ถูกต้อง</h5>
+                <h5
+                  v-show="trackingCannotuse"
+                  style="color:red;"
+                >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขที่จัดส่งนี้ทำรายการแล้ว</h5>
                 <div style="text-align: center">
                   <b style="font-size: 20px">Example : TDZxxxxxxxx</b>
                 </div>
@@ -1004,6 +1004,118 @@
                 <div class="col-sm-4"></div>
                 <div class="col-sm-4"></div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" v-if="view == 'createBill8A'">
+        <div style="text-align: center">
+          <h2>Status : อยู่ระหว่างขั้นตอนการทำรายการ</h2>
+        </div>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <div
+                class="col-sm-6 col-md-6"
+                style="background-color:#D3D3D3; border-radius:15px;  height: 130px;"
+              >
+                <div class="row" style="padding-bottom: 10px; padding-top:10px">
+                  <div class="col-sm-6 col-md-6">
+                    <b style="font-size:18px;">พัสดุทั้งหมด</b>
+                  </div>
+                  <div class="col-sm-6 col-md-6" style="text-align:right">
+                    <span style="font-size:22px">{{countAll}}</span>
+                  </div>
+                </div>
+                <div class="row" style="padding-bottom: 10px;">
+                  <div class="col-sm-6 col-md-6">
+                    <b style="font-size:18px;">พัสดุเก็บเงินปลายทาง (COD)</b>
+                  </div>
+
+                  <div class="col-sm-6 col-md-6" style="text-align:right">
+                    <span style="font-size:22px">{{countCOD}}</span>
+                  </div>
+                </div>
+                <div class="row" style="padding-bottom: 10px;">
+                  <div class="col-sm-6 col-md-6">
+                    <b style="font-size:18px;">พัสดุจัดส่งปกติ (Normal)</b>
+                  </div>
+                  <div class="col-sm-6 col-md-6" style="text-align:right">
+                    <span style="font-size:22px">{{countNormal}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="col-sm-6 col-md-6"
+                style="background-color: 		rgb(138, 138, 138); border-radius:15px;  height: 130px;"
+              >
+                <div class="row" style="padding-bottom: 10px;text-align: right;margin-top: 30px;">
+                  <div class="col-sm-4 col-md-4"></div>
+                  <div class="col-sm-8 col-md-8" style="vertical-align: middle;">
+                    <b style="font-size:30px; ">รวมค่าจัดส่ง&nbsp; {{totalSum}} &nbsp;บาท</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12" style="margin-top: 15px;">
+              <table class="table table-striped t-table">
+                <thead>
+                  <tr>
+                    <th scope="col" style="text-align: center ;">
+                      <b style="font-size:18px">เลขจัดส่ง</b>
+                    </th>
+                    <th scope="col" style="text-align: center ;">
+                      <b style="font-size:18px">ประเภท</b>
+                    </th>
+                    <th scope="col" style="text-align: center">
+                      <b style="font-size:18px">ขนาดพัสดุ</b>
+                    </th>
+
+                    <th scope="col" style="text-align: center ; ">
+                      <b style="font-size:18px">มูลค่า COD</b>
+                    </th>
+                    <th scope="col" style="text-align: center">
+                      <b style="font-size:18px">ปลายทางจัดส่ง</b>
+                    </th>
+                    <th scope="col" style="text-align: center">
+                      <b style="font-size:18px">ค่าจัดส่ง</b>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-bind:key="item.id" v-for="(item  , index ) in datalistPOS">
+                    <td
+                      style="text-transform: uppercase;"
+                    >{{datalistPOS[index].listTracking[0].tracking}}</td>
+                    <td
+                      style="text-transform: uppercase;"
+                    >{{datalistPOS[index].listTracking[0].parcel_type}}</td>
+
+                    <td
+                      style="text-transform: uppercase; text-align: center;"
+                    >{{datalistPOS[index].listTracking[0].size_box}}</td>
+
+                    <td
+                      style="text-transform: uppercase; text-align: right;"
+                    >{{datalistPOS[index].listTracking[0].cod_value}}</td>
+                    <td style="text-align: center">
+                      {{ datalistPOS[index].listTracking[0].address.receiver_name + '&nbsp; &nbsp;'+
+                      datalistPOS[index].listTracking[0].address.province_name + '&nbsp; &nbsp;' +
+                      datalistPOS[index].listTracking[0].address.zipcode }}
+                    </td>
+                    <td style="text-align: right">
+                      <span
+                        style="text-transform: uppercase;"
+                      >{{datalistPOS[index].listTracking[0].size_price}} .-</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1269,7 +1381,7 @@
                 <button
                   type="button"
                   v-on:click="insertQuiklink"
-                  :disabled='isDisabledInsertQuiklink'
+                  :disabled="isDisabledInsertQuiklink"
                   class="trigger-btn btn btn-success col-sm-4"
                   data-toggle="modal"
                 >บันทึกรายการ</button>
@@ -1281,6 +1393,107 @@
         </div>
       </section>
 
+      <section v-if="view == 'quickLinkDataExpressA'">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <div
+                class="col-sm-6 col-md-6"
+                style="background-color:#D3D3D3; border-radius:15px;  height: 130px;"
+              >
+                <div class="row" style="padding-bottom: 10px; padding-top:10px">
+                  <div class="col-sm-6 col-md-6">
+                    <b style="font-size:18px;">พัสดุทั้งหมด</b>
+                  </div>
+                  <div class="col-sm-6 col-md-6" style="text-align:right">
+                    <span style="font-size:22px">{{quickLinkCountAllinTable}}</span>
+                  </div>
+                </div>
+                <div class="row" style="padding-bottom: 10px;">
+                  <div class="col-sm-6 col-md-6">
+                    <b style="font-size:18px;">พัสดุเก็บเงินปลายทาง (COD)</b>
+                  </div>
+
+                  <div class="col-sm-6 col-md-6" style="text-align:right">
+                    <span style="font-size:22px">{{quickLinkCountCOD}}</span>
+                  </div>
+                </div>
+                <div class="row" style="padding-bottom: 10px;">
+                  <div class="col-sm-6 col-md-6">
+                    <b style="font-size:18px;">พัสดุจัดส่งปกติ (Normal)</b>
+                  </div>
+                  <div class="col-sm-6 col-md-6" style="text-align:right">
+                    <span style="font-size:22px">{{quickLinkCountNormal}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="col-sm-6 col-md-6"
+                style="background-color: 		rgb(138, 138, 138); border-radius:15px;  height: 130px;"
+              >
+                <div class="row" style="padding-bottom: 10px;text-align: right;margin-top: 30px;">
+                  <div class="col-sm-4 col-md-4"></div>
+                  <div class="col-sm-8 col-md-8" style="vertical-align: middle;">
+                    <b style="font-size:30px; ">รวมค่าจัดส่ง&nbsp; {{quickLinkTotalSum}} &nbsp;บาท</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12" style="margin-top: 15px;">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col" style="text-align: center ;">
+                      <b style="font-size:18px">เลขจัดส่ง</b>
+                    </th>
+                    <th scope="col" style="text-align: center ;">
+                      <b style="font-size:18px">ประเภท</b>
+                    </th>
+                    <th scope="col" style="text-align: center">
+                      <b style="font-size:18px">ขนาดพัสดุ</b>
+                    </th>
+                    <th scope="col" style="text-align: center ; ">
+                      <b style="font-size:18px">มูลค่า COD</b>
+                    </th>
+                    <th scope="col" style="text-align: center">
+                      <b style="font-size:18px">ปลายทางจัดส่ง</b>
+                    </th>
+                    <th scope="col" style="text-align: center">
+                      <b style="font-size:18px">ค่าจัดส่ง</b>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in quickLinkAddData" :key="item.id">
+                    <td
+                      style="font-size:16px; text-transform: uppercase; text-align: center; "
+                    >{{ quickLinkAddData[index].tracking }}</td>
+                    <td
+                      style="font-size:16px; text-transform: uppercase; text-align: center; "
+                    >{{ quickLinkAddData[index].parcel_type }}</td>
+                    <td
+                      style="font-size:16px; text-align: center; text-transform: uppercase;"
+                    >{{ quickLinkAddData[index].select_size }}</td>
+                    <td
+                      style="font-size:16px; text-align:right;"
+                    >{{ quickLinkAddData[index].cod_value }}.00</td>
+                    <td
+                      style="font-size:16px; text-align: center;"
+                    >{{ quickLinkAddData[index].province_name }} {{ quickLinkAddData[index].zipcode }}</td>
+
+                    <td
+                      style="font-size:16px; text-align:right;"
+                    >{{ quickLinkAddData[index].size_price }} .-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
       <section v-if="view == 'quickLinkDataPrint'">
         <div style="text-align: center">
           <h2>Status : เสร็จสิ้น</h2>
@@ -1328,7 +1541,8 @@
 
         <div class="col-sm-12">
           <div
-            style="text-align: center ; margin-top: 15px; font-weight: bold; font-size: 20px; margin-bottom: 15px;">
+            style="text-align: center ; margin-top: 15px; font-weight: bold; font-size: 20px; margin-bottom: 15px;"
+          >
             <b>เลขที่บิลใบเสร็จ : {{quickLinkBillingNo}}</b>
           </div>
           <table class="table table-striped">
@@ -1441,10 +1655,7 @@
               <div class="row">
                 <div class="col-sm-6">
                   <div class="col-sm-5">
-                    <div
-                      class="panelborder panel-default"
-                      v-show="quickLinkBarcode"
-                    >
+                    <div class="panelborder panel-default" v-show="quickLinkBarcode">
                       <div class="panel-heading panelHeader" style=" text-align:center">
                         <b style="font-size: 24px;">เลขที่จัดส่ง</b>
                       </div>
@@ -1454,7 +1665,7 @@
                           type="text"
                           ref="barcode"
                           class="form-control input-tracking"
-                          onKeyPress="if(this.value.length==12) return false;"
+                          onkeypress="if(this.value.length==12) return false;"
                           v-on:keypress="engOnly"
                           @keyup.enter="checkQuickLinkTracking"
                           v-model="quickLinkTracking"
@@ -1463,18 +1674,29 @@
                           v-bind:readonly="is_track_readonly"
                         />
                         <h5 v-show="nulltracking" style="color:red;">**กรุณากรอกเลขที่จัดส่ง</h5>
-                        <h5 v-show="trackingNoFormat" style="color:red;">**กรุณากรอกกรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง</h5>
-                        <h5 v-show="trackingNoCapture" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ</h5>
-                        <h5 v-show="trackingDuplicated" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว</h5>
-                        <h5 v-show="trackingPhoneNotMatch" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ใส่รหัสผู้ส่งไม่ถูกต้อง</h5>
-                        <h5 v-show="trackingCannotuse" style="color:red;">**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขที่จัดส่งนี้ทำรายการแล้ว</h5>
-
+                        <h5
+                          v-show="trackingNoFormat"
+                          style="color:red;"
+                        >**กรุณากรอกกรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง</h5>
+                        <h5
+                          v-show="trackingNoCapture"
+                          style="color:red;"
+                        >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ยังไม่ได้ทำถ่ายรูปหน้ากล่องเข้ามาในระบบ</h5>
+                        <h5
+                          v-show="trackingDuplicated"
+                          style="color:red;"
+                        >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว</h5>
+                        <h5
+                          v-show="trackingPhoneNotMatch"
+                          style="color:red;"
+                        >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ใส่รหัสผู้ส่งไม่ถูกต้อง</h5>
+                        <h5
+                          v-show="trackingCannotuse"
+                          style="color:red;"
+                        >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขที่จัดส่งนี้ทำรายการแล้ว</h5>
                       </div>
                     </div>
-                    <div
-                      class="panelborder panel-default"
-                      v-show="quickLinkZipcode"
-                    >
+                    <div class="panelborder panel-default" v-show="quickLinkZipcode">
                       <div class="panel-heading panelHeader" style=" text-align:center">
                         <b style="font-size: 24px;">รหัสไปรษณีย์</b>
                       </div>
@@ -1484,9 +1706,9 @@
                           ref="quickLinkZipcode"
                           class="form-control"
                           maxlength="5"
-                           @keypress="isNumber($event)"
+                          @keypress="isNumber($event)"
                           @keyup.enter="addquickLinkZipcode"
-                          onKeyPress="if(this.value.length==5) return false;"
+                          onkeypress="if(this.value.length==5) return false;"
                           v-model="qlZipcode"
                           placeholder="รหัสไปรษณีย์"
                           id="zCode"
@@ -1501,14 +1723,9 @@
                         >{{ this.quickLinkProvince2 }}</p>
                       </div>
                     </div>
-
-
                   </div>
                   <div class="col-sm-7">
-                    <div
-                      class="panelborder panel-default"
-                      v-show="quickLinkTransport"
-                    >
+                    <div class="panelborder panel-default" v-show="quickLinkTransport">
                       <div class="panel-heading panelHeader" style=" text-align:center">
                         <b style="font-size: 24px;">การจัดส่ง</b>
                       </div>
@@ -1540,8 +1757,8 @@
                               ref="inputcod"
                               class="form-control"
                               @keyup.enter="addquickLinkSize"
-                               maxlength="5"
-                               onKeyPress="if(this.value.length==5) return false;"
+                              maxlength="5"
+                              onkeypress="if(this.value.length==5) return false;"
                               @keypress="isNumber($event)"
                               v-model="quickLinkCodValue"
                               v-show="quickLinkInputCod"
@@ -1559,7 +1776,6 @@
                         <b style="font-size: 22px; ">ขนาดพัสดุ</b>
                       </div>
                       <div class="panel-body">
-                
                         <div class="row">
                           <div class="col-sm-4">
                             <button
@@ -1600,7 +1816,7 @@
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >M</button>
                           </div>
-                                <div class="col-sm-4">
+                          <div class="col-sm-4">
                             <button
                               type="button"
                               v-on:click="quicklinkSizeBox('m1')"
@@ -1610,7 +1826,7 @@
                         </div>
 
                         <div class="row">
-                           <div class="col-sm-4">
+                          <div class="col-sm-4">
                             <button
                               type="button"
                               v-on:click="quicklinkSizeBox('mPlus')"
@@ -1624,23 +1840,18 @@
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >L</button>
                           </div>
-                                       <div class="col-sm-4">
+                          <div class="col-sm-4">
                             <button
                               type="button"
                               v-on:click="quicklinkSizeBox('lPlus')"
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >L+</button>
                           </div>
-
-
-
-                         
-                          
                         </div>
-                      
+
                         <!-- เพิ่มใหม่ -->
                         <div class="row">
-                           <div class="col-sm-4">
+                          <div class="col-sm-4">
                             <button
                               type="button"
                               v-on:click="quicklinkSizeBox('xl')"
@@ -1665,12 +1876,9 @@
                               style="padding-left: 5px;"
                             >XXL</button>
                           </div>
-             
-   
                         </div>
 
-
-                     <!-- เพิ่มใหม่ -->
+                        <!-- เพิ่มใหม่ -->
                         <div class="row">
                           <div class="col-sm-6">
                             <button
@@ -1686,9 +1894,7 @@
                               class="btn btn-warning btn-lg btn-block btn-size"
                             >สินค้าเกษตร 95</button>
                           </div>
-
                         </div>
-
                       </div>
                     </div>
                   </div>
@@ -1744,9 +1950,7 @@
                           <td
                             style="font-size:14px; text-transform: uppercase; text-align:center;"
                           >{{ item.tracking }}</td>
-                          <td
-                            style="font-size:14px;"
-                          >{{ item.province_name }} {{ item.zipcode }}</td>
+                          <td style="font-size:14px;">{{ item.province_name }} {{ item.zipcode }}</td>
                           <td
                             style="font-size:14px; text-transform: uppercase;text-align:center;"
                           >{{ item.parcel_type }}</td>
@@ -1836,9 +2040,19 @@
       </div>
     </div>
 
-        <sweet-modal icon="success" ref="successavebill">บันทึกรายการสำเร็จ</sweet-modal>
-        <sweet-modal icon="error" ref="errorsavebill">ไม่สามารถบันทึกรายการได้ กรุณาตรวจสอบข้อมูลอีกครั้ง</sweet-modal>
-         <sweet-modal icon="supererror" ref="supererror">ติดต่อเจ้าหน้าที่เพื่อทำการแก้ปัญหา หรือ โทร.0914271551</sweet-modal>
+    <div class="vld-parent">
+      <loading :active.sync="isLoading" :is-full-page="fullPage"></loading>
+    </div>
+
+    <sweet-modal icon="success" ref="successavebill">บันทึกรายการสำเร็จ</sweet-modal>
+    <sweet-modal
+      icon="error"
+      ref="errorsavebill"
+    >ไม่สามารถบันทึกรายการได้ กรุณาตรวจสอบข้อมูลอีกครั้ง</sweet-modal>
+    <sweet-modal
+      icon="supererror"
+      ref="supererror"
+    >ติดต่อเจ้าหน้าที่เพื่อทำการแก้ปัญหา หรือ โทร.0914271551</sweet-modal>
   </div>
 </template>
 
@@ -1851,6 +2065,11 @@ import "v-slim-dialog/dist/v-slim-dialog.css";
 import SlimDialog from "v-slim-dialog";
 import PreventUnload from "vue-prevent-unload";
 import { SweetModal, SweetModalTab } from "sweet-modal-vue";
+// Import component
+import Loading from "vue-loading-overlay";
+// Import stylesheet
+import "vue-loading-overlay/dist/vue-loading.css";
+
 // Vue.component("vue-prevent-unload", PreventUnload);
 Vue.use(PreventUnload);
 
@@ -1858,11 +2077,15 @@ Vue.use(SlimDialog);
 export default {
   components: {
     PreventUnload,
-    SweetModal
+    SweetModal,
+    Loading
   },
   props: ["value"],
   data: function() {
     return {
+      // loading
+      isLoading: false,
+      fullPage: true,
       btnDisable: false,
       hasChanges: true,
       quickLinkPrintBill: false,
@@ -2017,14 +2240,14 @@ export default {
       userid: "",
 
       //errortracking
-      nulltracking:false,
-      trackingNoFormat:false,
-      trackingNoCapture:false,
-      trackingDuplicated:false,
-      trackingPhoneNotMatch:false,
-      trackingCannotuse:false,
-      isDisabledInsertQuiklink:false,
-      isDisabledInsertPOS:false,
+      nulltracking: false,
+      trackingNoFormat: false,
+      trackingNoCapture: false,
+      trackingDuplicated: false,
+      trackingPhoneNotMatch: false,
+      trackingCannotuse: false,
+      isDisabledInsertQuiklink: false,
+      isDisabledInsertPOS: false
     };
   },
   created: function() {
@@ -2034,26 +2257,26 @@ export default {
   },
 
   watch: {
-    idmember(){
-       var num = /^\s+$/;
-       var reg = new RegExp('^\\d+$');
+    idmember() {
+      var num = /^\s+$/;
+      var reg = new RegExp("^\\d+$");
       //  console.log(reg.test(this.idCard));
-       if(!reg.test(this.idmember)) {
-         alert("กรุณากรอกให้ถูกต้อง");
-         this.idmember = "";
-       }
-      this.idmember = this.idmember.replace(/\s+/g, '');
+      if (!reg.test(this.idmember)) {
+        alert("กรุณากรอกให้ถูกต้อง");
+        this.idmember = "";
+      }
+      this.idmember = this.idmember.replace(/\s+/g, "");
       // console.log('card => ', this.idCard);
     },
     idCard() {
-       var num = /^\s+$/;
-       var reg = new RegExp('^\\d+$');
+      var num = /^\s+$/;
+      var reg = new RegExp("^\\d+$");
       //  console.log(reg.test(this.idCard));
-       if(!reg.test(this.idCard)) {
-         alert("กรุณากรอกให้ถูกต้อง");
-         this.idCard = "";
-       }
-      this.idCard = this.idCard.replace(/\s+/g, '');
+      if (!reg.test(this.idCard)) {
+        alert("กรุณากรอกให้ถูกต้อง");
+        this.idCard = "";
+      }
+      this.idCard = this.idCard.replace(/\s+/g, "");
       // console.log('card => ', this.idCard);
     },
     quickLinkZipcode(vShowQuickLinkZipcode) {
@@ -2196,30 +2419,33 @@ export default {
     checkQuickLinkTracking(quickLinkTracking) {
       this.is_track_readonly = true;
       this.is_readonly = false;
-         this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
+      this.nulltracking = false;
+      this.trackingNoFormat = false;
+      this.trackingNoCapture = false;
+      this.trackingDuplicated = false;
+      this.trackingPhoneNotMatch = false;
+      this.trackingCannotuse = false;
       this.quickLinkDataDetail = false;
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       var tracking = this.quickLinkAddData;
       var quickLinkBarcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
-      if (quickLinkTrackingKey.match(quickLinkBarcodeReg) === null || this.quickLinkTracking == null) {
+      if (
+        quickLinkTrackingKey.match(quickLinkBarcodeReg) === null ||
+        this.quickLinkTracking == null
+      ) {
         // alert("กรุณากรอกเลขที่จัดส่ง ให้ถูกต้อง");
         this.is_track_readonly = false;
         this.quickLinkTracking = "";
-         this.$refs.barcode.focus();
+        this.$refs.barcode.focus();
         this.trackingNoFormat = true;
         return false;
-      }else if (tracking.length == 0) {
-          this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
+      } else if (tracking.length == 0) {
+        this.nulltracking = false;
+        this.trackingNoFormat = false;
+        this.trackingNoCapture = false;
+        this.trackingDuplicated = false;
+        this.trackingPhoneNotMatch = false;
+        this.trackingCannotuse = false;
         this.checkQuickLinkTrackingApi(
           this.quickLinkTextPhone,
           quickLinkTrackingKey
@@ -2230,10 +2456,10 @@ export default {
           return v.tracking == quickLinkTrackingKey;
         }).length;
         if (result >= 1) {
-            this.is_track_readonly = false;
-            this.quickLinkTracking = "";
-            this.$refs.barcode.focus();
-           this.trackingDuplicated = true;
+          this.is_track_readonly = false;
+          this.quickLinkTracking = "";
+          this.$refs.barcode.focus();
+          this.trackingDuplicated = true;
           this.quickLinkZipcode = false;
 
           this.is_track_readonly = false;
@@ -2254,12 +2480,12 @@ export default {
       }
     },
     checkQuickLinkTrackingApi(phone, tracking) {
-          this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
+      this.nulltracking = false;
+      this.trackingNoFormat = false;
+      this.trackingNoCapture = false;
+      this.trackingDuplicated = false;
+      this.trackingPhoneNotMatch = false;
+      this.trackingCannotuse = false;
 
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       //ดึงmemberData ขึ้นมาเอาเบอร์โทร
@@ -2272,7 +2498,11 @@ export default {
         this.memberPhone = phone;
       }
       this.quickLinkDataDetail = false;
-      console.log("เลข Tracking ก่อนยิง",this.memberPhone , quickLinkTrackingKey);
+      console.log(
+        "เลข Tracking ก่อนยิง",
+        this.memberPhone,
+        quickLinkTrackingKey
+      );
       axios
         .get(
           "https://pos.945.report/genBillNo/checkSendermember?phone=" +
@@ -2287,54 +2517,51 @@ export default {
             this.$refs.barcode.focus();
             this.trackingNoCapture = true;
           } else if (response.data.status == "Error_Phone_Not_Match") {
-              this.is_track_readonly = false;
-              this.quickLinkTracking = "";
-              this.$refs.barcode.focus();
-              this.trackingPhoneNotMatch = true;
+            this.is_track_readonly = false;
+            this.quickLinkTracking = "";
+            this.$refs.barcode.focus();
+            this.trackingPhoneNotMatch = true;
           } else if (response.data.status == "Error_Tracking_Cannot_Use") {
             this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
             this.trackingCannotuse = true;
           } else if (response.data.status == "ERROR_TRACKING_DUPLICATED") {
-             this.is_track_readonly = false;
-             this.quickLinkTracking = "";
-             this.$refs.barcode.focus();
-             this.trackingDuplicated = true;
-           
+            this.is_track_readonly = false;
+            this.quickLinkTracking = "";
+            this.$refs.barcode.focus();
+            this.trackingDuplicated = true;
           } else if (response.data.status == "ERROR_TRACKING_WRONG_FORMAT") {
             this.is_track_readonly = false;
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
             this.trackingNoFormat = true;
-    
-          }else if (response.data.status == "Success") {
+          } else if (response.data.status == "Success") {
             if (!this.quickLinkTracking) {
               this.is_track_readonly = false;
 
-          this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
+              this.nulltracking = false;
+              this.trackingNoFormat = false;
+              this.trackingNoCapture = false;
+              this.trackingDuplicated = false;
+              this.trackingPhoneNotMatch = false;
+              this.trackingCannotuse = false;
             } else {
-                    this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
+              this.nulltracking = false;
+              this.trackingNoFormat = false;
+              this.trackingNoCapture = false;
+              this.trackingDuplicated = false;
+              this.trackingPhoneNotMatch = false;
+              this.trackingCannotuse = false;
 
               this.is_track_readonly = true;
               this.is_readonly = false;
               this.quickLinkZipcode = true;
               $(document).ready(function() {
-                 $('#zCode').focus();
+                $("#zCode").focus();
               });
             }
           }
-
         })
         .catch(error => {
           this.errored = true;
@@ -2391,36 +2618,35 @@ export default {
       if (this.intPriceCod == 0 || this.quickLinkCodValue == "") {
         alert("กรอกมูลค่า COD ให้ถูกต้อง");
         this.is_cod_readonly = false;
-           this.state.isSending = false;
+        this.state.isSending = false;
         //  เลข track รหัสปณ.
-         this.is_track_readonly = true;
-         this.is_readonly = true;
-      }    
-      else if(this.intPriceCod > 30000){
-        alert("มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง");
-          this.quickLinkCodValue = "";
-           this.quickLinkBtnRe = true;
-           this.is_cod_readonly = false;
-           this.state.isSending = false;
+        this.is_track_readonly = true;
+        this.is_readonly = true;
+      } else if (this.intPriceCod > 30000) {
+        alert(
+          "มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง"
+        );
+        this.quickLinkCodValue = "";
+        this.quickLinkBtnRe = true;
+        this.is_cod_readonly = false;
+        this.state.isSending = false;
         //  เลข track รหัสปณ.
-         this.is_track_readonly = true;
-         this.is_readonly = true;
-           // this.quickLinkProduct = true;
+        this.is_track_readonly = true;
+        this.is_readonly = true;
+        // this.quickLinkProduct = true;
         // this.is_cod_readonly = true;
-      }
-      else if (this.intPriceCod >= 10000) {
+      } else if (this.intPriceCod >= 10000) {
         alert("มูลค่า COD มีมูลค่าที่สูงมาก ยืนยันการกรอกมูลค่า");
         this.quickLinkProduct = true;
         this.is_cod_readonly = true;
-         this.state.isSending = false;
+        this.state.isSending = false;
         //  เลข track รหัสปณ.
-         this.is_track_readonly = true;
-         this.is_readonly = true;
-      }
-      else {
+        this.is_track_readonly = true;
+        this.is_readonly = true;
+      } else {
         this.quickLinkProduct = true;
         this.is_cod_readonly = true;
-         this.state.isSending = false;
+        this.state.isSending = false;
       }
     },
     addBtn() {
@@ -2438,142 +2664,136 @@ export default {
       this.intPriceCod = parseInt(this.quickLinkCodValue);
       if (!this.quickLinkTracking) {
         alert("กรอกข้อมูลให้ครบถ้วน");
-         this.is_track_readonly = false;
-      this.is_readonly = false;
-      this.quickLinkBtnRe = false;
-     this.state.isSending = false;
+        this.is_track_readonly = false;
+        this.is_readonly = false;
+        this.quickLinkBtnRe = false;
+        this.state.isSending = false;
 
-      // Clear Data
-      this.quickLinkTracking = "";
-      this.quickLinkZipcode = "";
-      this.quickLinkTypeTransport = "";
-      this.quickLinkCodValue = "";
-      this.quickLinkSelectSize = "";
-      this.quickLinkSizePrice = "";
-      this.quickLinkSizeId = "";
-      this.quickLinkProvince1 = "";
-      this.quickLinkProvince2 = "";
-      this.qlZipcode = "";
-      this.quickLinkZipcode = false;
-      this.quickLinkTransport = false;
-      this.quickLinkProduct = false;
-      this.quickLinkBtnAdd = false;
-      this.quickLinkInputCod = false;
-      this.$refs.barcode.focus();
+        // Clear Data
+        this.quickLinkTracking = "";
+        this.quickLinkZipcode = "";
+        this.quickLinkTypeTransport = "";
+        this.quickLinkCodValue = "";
+        this.quickLinkSelectSize = "";
+        this.quickLinkSizePrice = "";
+        this.quickLinkSizeId = "";
+        this.quickLinkProvince1 = "";
+        this.quickLinkProvince2 = "";
+        this.qlZipcode = "";
+        this.quickLinkZipcode = false;
+        this.quickLinkTransport = false;
+        this.quickLinkProduct = false;
+        this.quickLinkBtnAdd = false;
+        this.quickLinkInputCod = false;
+        this.$refs.barcode.focus();
       } else if (!this.qlZipcode) {
         alert("กรอกข้อมูลให้ครบถ้วน");
-         this.is_track_readonly = false;
-      this.is_readonly = false;
-      this.quickLinkBtnRe = false;
-     this.state.isSending = false;
-      // Clear Data
-      this.quickLinkTracking = "";
-      this.quickLinkZipcode = "";
-      this.quickLinkTypeTransport = "";
-      this.quickLinkCodValue = "";
-      this.quickLinkSelectSize = "";
-      this.quickLinkSizePrice = "";
-      this.quickLinkSizeId = "";
-      this.quickLinkProvince1 = "";
-      this.quickLinkProvince2 = "";
-      this.qlZipcode = "";
-      this.quickLinkZipcode = false;
-      this.quickLinkTransport = false;
-      this.quickLinkProduct = false;
-      this.quickLinkBtnAdd = false;
-      this.quickLinkInputCod = false;
-      this.$refs.barcode.focus();
+        this.is_track_readonly = false;
+        this.is_readonly = false;
+        this.quickLinkBtnRe = false;
+        this.state.isSending = false;
+        // Clear Data
+        this.quickLinkTracking = "";
+        this.quickLinkZipcode = "";
+        this.quickLinkTypeTransport = "";
+        this.quickLinkCodValue = "";
+        this.quickLinkSelectSize = "";
+        this.quickLinkSizePrice = "";
+        this.quickLinkSizeId = "";
+        this.quickLinkProvince1 = "";
+        this.quickLinkProvince2 = "";
+        this.qlZipcode = "";
+        this.quickLinkZipcode = false;
+        this.quickLinkTransport = false;
+        this.quickLinkProduct = false;
+        this.quickLinkBtnAdd = false;
+        this.quickLinkInputCod = false;
+        this.$refs.barcode.focus();
       } else if (!this.quickLinkTypeTransport) {
         alert("กรอกข้อมูลให้ครบถ้วน");
-         this.is_track_readonly = false;
-      this.is_readonly = false;
-      this.quickLinkBtnRe = false;
-         this.state.isSending = false;
-      // Clear Data
-      this.quickLinkTracking = "";
-      this.quickLinkZipcode = "";
-      this.quickLinkTypeTransport = "";
-      this.quickLinkCodValue = "";
-      this.quickLinkSelectSize = "";
-      this.quickLinkSizePrice = "";
-      this.quickLinkSizeId = "";
-      this.quickLinkProvince1 = "";
-      this.quickLinkProvince2 = "";
-      this.qlZipcode = "";
-      this.quickLinkZipcode = false;
-      this.quickLinkTransport = false;
-      this.quickLinkProduct = false;
-      this.quickLinkBtnAdd = false;
-      this.quickLinkInputCod = false;
-      this.$refs.barcode.focus();
+        this.is_track_readonly = false;
+        this.is_readonly = false;
+        this.quickLinkBtnRe = false;
+        this.state.isSending = false;
+        // Clear Data
+        this.quickLinkTracking = "";
+        this.quickLinkZipcode = "";
+        this.quickLinkTypeTransport = "";
+        this.quickLinkCodValue = "";
+        this.quickLinkSelectSize = "";
+        this.quickLinkSizePrice = "";
+        this.quickLinkSizeId = "";
+        this.quickLinkProvince1 = "";
+        this.quickLinkProvince2 = "";
+        this.qlZipcode = "";
+        this.quickLinkZipcode = false;
+        this.quickLinkTransport = false;
+        this.quickLinkProduct = false;
+        this.quickLinkBtnAdd = false;
+        this.quickLinkInputCod = false;
+        this.$refs.barcode.focus();
       } else if (!this.quickLinkSelectSize) {
         alert("กรอกข้อมูลให้ครบถ้วน");
-         this.is_track_readonly = false;
-         this.is_readonly = false;
-         this.quickLinkBtnRe = false;
-            this.state.isSending = false;
-      // Clear Data
-      this.quickLinkTracking = "";
-      this.quickLinkZipcode = "";
-      this.quickLinkTypeTransport = "";
-      this.quickLinkCodValue = "";
-      this.quickLinkSelectSize = "";
-      this.quickLinkSizePrice = "";
-      this.quickLinkSizeId = "";
-      this.quickLinkProvince1 = "";
-      this.quickLinkProvince2 = "";
-      this.qlZipcode = "";
-      this.quickLinkZipcode = false;
-      this.quickLinkTransport = false;
-      this.quickLinkProduct = false;
-      this.quickLinkBtnAdd = false;
-      this.quickLinkInputCod = false;
-      this.$refs.barcode.focus();
-      } 
-
-      else if (this.quickLinkTypeTransport == "NORMAL") {
+        this.is_track_readonly = false;
+        this.is_readonly = false;
+        this.quickLinkBtnRe = false;
+        this.state.isSending = false;
+        // Clear Data
+        this.quickLinkTracking = "";
+        this.quickLinkZipcode = "";
+        this.quickLinkTypeTransport = "";
+        this.quickLinkCodValue = "";
+        this.quickLinkSelectSize = "";
+        this.quickLinkSizePrice = "";
+        this.quickLinkSizeId = "";
+        this.quickLinkProvince1 = "";
+        this.quickLinkProvince2 = "";
+        this.qlZipcode = "";
+        this.quickLinkZipcode = false;
+        this.quickLinkTransport = false;
+        this.quickLinkProduct = false;
+        this.quickLinkBtnAdd = false;
+        this.quickLinkInputCod = false;
+        this.$refs.barcode.focus();
+      } else if (this.quickLinkTypeTransport == "NORMAL") {
         this.quickLinkCodValue = 0;
         this.addQuiklink();
       } else if (this.quickLinkTypeTransport == "COD") {
         if (this.intPriceCod == 0) {
           alert("กรอกมูลค่า COD");
-         this.quickLinkBtnRe = true;
-         this.state.isSending = false;
-         //  เลข track รหัสปณ.
-         this.is_track_readonly = true;
-         this.is_readonly = true;
-        } else if(!this.intPriceCod){
+          this.quickLinkBtnRe = true;
+          this.state.isSending = false;
+          //  เลข track รหัสปณ.
+          this.is_track_readonly = true;
+          this.is_readonly = true;
+        } else if (!this.intPriceCod) {
           alert("กรอกมูลค่า COD");
-         this.quickLinkBtnRe = true;
-         this.state.isSending = false;
-         
-         //  เลข track รหัสปณ.
-         this.is_track_readonly = true;
-         this.is_readonly = true;
+          this.quickLinkBtnRe = true;
+          this.state.isSending = false;
 
-        }
-
-        else if(this.intPriceCod > 30000){
-        alert("มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง");
+          //  เลข track รหัสปณ.
+          this.is_track_readonly = true;
+          this.is_readonly = true;
+        } else if (this.intPriceCod > 30000) {
+          alert(
+            "มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง"
+          );
           this.quickLinkCodValue = "";
-           this.quickLinkBtnRe = true;
-           this.is_cod_readonly = false;
-           this.state.isSending = false;
-             //  เลข track รหัสปณ.
-           this.is_track_readonly = true;
-            this.is_readonly = true;
-           // this.quickLinkProduct = true;
+          this.quickLinkBtnRe = true;
+          this.is_cod_readonly = false;
+          this.state.isSending = false;
+          //  เลข track รหัสปณ.
+          this.is_track_readonly = true;
+          this.is_readonly = true;
+          // this.quickLinkProduct = true;
           // this.is_cod_readonly = true;
-       }
-       else if (this.intPriceCod >= 10000) {
+        } else if (this.intPriceCod >= 10000) {
           alert("มูลค่า COD มีมูลค่าที่สูงมาก ยืนยันการกรอกมูลค่า");
           this.addQuiklink();
-        }
-        else {
+        } else {
           this.addQuiklink();
         }
       }
-    
     },
     addQuiklink() {
       this.quickLinkDataDetail = false;
@@ -2582,7 +2802,7 @@ export default {
       } else if (this.quickLinkTypeTransport == "COD") {
         this.quickLinkCountCOD++;
       }
-     // จำนวนพัสดุCODและNormalในตาราง
+      // จำนวนพัสดุCODและNormalในตาราง
       var quickLinkdataCount = {
         quickcount_cod: this.quickLinkCountCOD,
         quickcount_normal: this.quickLinkCountNormal
@@ -2599,7 +2819,7 @@ export default {
           size_name: this.quickLinkSelectSize
         })
         .then(response => {
-          console.log("responseaddQuiklink =>",response);
+          console.log("responseaddQuiklink =>", response);
           if (response.data.results == false) {
             alert("กรอกรหัสไปรษณีย์ไม่ถูกต้อง");
           }
@@ -2622,13 +2842,16 @@ export default {
             "quickLinkAddData",
             JSON.stringify(this.quickLinkAddData)
           );
-       // จำนวนพัสดุทั้งหมดในตาราง
-        this.quickLinkCountAllinTable = this.quickLinkAddData.length;
-        console.log("quickLinkCountAllinTable", this.quickLinkCountAllinTable);
+          // จำนวนพัสดุทั้งหมดในตาราง
+          this.quickLinkCountAllinTable = this.quickLinkAddData.length;
+          console.log(
+            "quickLinkCountAllinTable",
+            this.quickLinkCountAllinTable
+          );
           localStorage.setItem(
-        "quickLinkCountAllinTable",
-        JSON.stringify(this.quickLinkCountAllinTable)
-       );
+            "quickLinkCountAllinTable",
+            JSON.stringify(this.quickLinkCountAllinTable)
+          );
           this.state.isSending = false;
           // Clear Data
           this.quickLinkTracking = "";
@@ -2689,7 +2912,9 @@ export default {
     removeRow: function(index) {
       this.quickLinkDataDetail = false;
       var countQL = JSON.parse(localStorage.getItem("quickLinkAddData"));
-      countQL = countQL.slice(0, index).concat(countQL.slice(index + 1, countQL.length));
+      countQL = countQL
+        .slice(0, index)
+        .concat(countQL.slice(index + 1, countQL.length));
       //setquickLinkAddData ที่ลบไป
       localStorage.setItem("quickLinkAddData", JSON.stringify(countQL));
 
@@ -2702,7 +2927,7 @@ export default {
           localStorage.getItem("quickLinkdataCount")
         );
         var array = quickLinkdataCount;
-        var lastCountData = array[array.length - 1];  //arrayตัวสุดท้าย
+        var lastCountData = array[array.length - 1]; //arrayตัวสุดท้าย
         this.quickLinkCountCOD = lastCountData.quickcount_cod--;
         localStorage.setItem(
           "quickLinkdataCount",
@@ -2714,29 +2939,29 @@ export default {
         this.quickLinkAddData[index].parcel_type == "NORMAL" &&
         this.quickLinkCountNormal > 0
       ) {
-        //ลบNORMAL 
+        //ลบNORMAL
         var quickLinkdataCount = JSON.parse(
           localStorage.getItem("quickLinkdataCount")
         );
         var array = quickLinkdataCount;
-        var lastCountData = array[array.length - 1];  //arrayตัวสุดท้าย
+        var lastCountData = array[array.length - 1]; //arrayตัวสุดท้าย
         this.quickLinkCountNormal = lastCountData.quickcount_normal--;
         localStorage.setItem(
           "quickLinkdataCount",
           JSON.stringify(quickLinkdataCount)
         );
-          this.quickLinkCountNormal--;
+        this.quickLinkCountNormal--;
       }
       if (this.quickLinkCountAllinTable > 0) {
-       // ลบพัสดุรวมทั้งหมดของตาราง
-       var countQL = JSON.parse(localStorage.getItem("quickLinkAddData"));
-       //getCountquickLinkCountAllinTable ทั้งหมดในตาราง
-       var quickLinkCountAllinTable = JSON.parse(
+        // ลบพัสดุรวมทั้งหมดของตาราง
+        var countQL = JSON.parse(localStorage.getItem("quickLinkAddData"));
+        //getCountquickLinkCountAllinTable ทั้งหมดในตาราง
+        var quickLinkCountAllinTable = JSON.parse(
           localStorage.getItem("quickLinkCountAllinTable")
-       );
-       this.quickLinkCountAllinTable = countQL.length;
-      //setlocaldataquickLink ทั้งหมดในตาราง
-       localStorage.setItem(
+        );
+        this.quickLinkCountAllinTable = countQL.length;
+        //setlocaldataquickLink ทั้งหมดในตาราง
+        localStorage.setItem(
           "quickLinkCountAllinTable",
           JSON.stringify(this.quickLinkCountAllinTable)
         );
@@ -2747,101 +2972,110 @@ export default {
       // check state
       this.isDisabledInsertQuiklink = true;
       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
-      if(this.view == "quickLinkDataExpress"){
-      this.quickLinkDataDetail = false;
-      this.quickLinkTotal = this.quickLinkTotalSum;
-       var merid = parseInt(dataLogin.merid);
-      var userid = dataLogin.userid;
-      var authenlevel = dataLogin.authenlevel;
-      // รูปหน้าบัตรประชาชน
-      var imgUrl = "";
-      if (!this.fileNameUpload) {
-        imgUrl =
-          "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/5e508c1b_no-image-available.png";
-      } else {
-        imgUrl =
-          "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/" +
-          this.fileNameUpload;
-      }
-      // memberCode
-      if (this.memberCode) {
-        this.memberCode = this.memberCode;
-        this.memberFullName = this.memberFullName;
-        this.memberPhone = this.memberPhone;
-        this.memberAddress = this.memberAddress;
-      } else {
-        this.memberData = JSON.parse(localStorage.getItem("memberData"));
-        this.memberCode = this.memberData.member_code;
-        this.memberFullName =
-          this.memberData.first_name + " " + this.memberData.last_name;
-        this.memberAddress = this.memberData.address;
-        this.memberPhone = this.memberData.phone;
-        var phone = this.memberPhone;
-        if (phone[0] + phone[1] == "66") {
-          this.memberPhone = this.changeDoubleSix(phone);
+      if (this.view == "quickLinkDataExpress") {
+        this.view = "quickLinkDataExpressA";
+        this.isLoading = true; //หมุนรอเลขบิล
+        this.quickLinkDataDetail = false;
+        this.quickLinkTotal = this.quickLinkTotalSum;
+        var merid = parseInt(dataLogin.merid);
+        var userid = dataLogin.userid;
+        var authenlevel = dataLogin.authenlevel;
+        // รูปหน้าบัตรประชาชน
+        var imgUrl = "";
+        if (!this.fileNameUpload) {
+          imgUrl =
+            "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/5e508c1b_no-image-available.png";
         } else {
-          this.memberPhone = phone;
+          imgUrl =
+            "https://upload945.sgp1.digitaloceanspaces.com/uploads/images/frontend/" +
+            this.fileNameUpload;
         }
-        // console.log("เบอร์", this.memberPhone);
-      }
-      var headerQuickLink = {
-        branch_id: merid,
-        user_id: userid,
-        mer_authen_level: authenlevel,
-        member_code: this.memberCode,
-        carrier_id: this.idCard,
-        courier_image: imgUrl,
-        sender_name: this.memberFullName,
-        sender_phone: this.memberPhone,
-        sender_address: this.memberAddress,
-        total: this.quickLinkTotal,
-        items: []
-      };
-      var subQuickLink = this.quickLinkAddData;
-      this.dataSaveQuickLink = headerQuickLink;
-      this.dataSaveQuickLink.items = subQuickLink;
-      axios
-        .post(
-          "https://pos.945.report/quicklink/quickLink",
-          this.dataSaveQuickLink
-        )
-        .then(response => {
-          // console.log("response---เลขบิลกลับมา", response.data);
-          this.quickLinkBillingNo = response.data.billing_no;
-          if(this.quickLinkBillingNo){
-           this.isDisabledInsertQuiklink = false;
-            this.$refs.successavebill.open();
-          this.view = "quickLinkDataPrint";
-          this.$cookie.set("quickLinkBillingNo", this.quickLinkBillingNo, 1);
-          }else{
-            // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
-            this.$refs.supererror.open();
-            // ลบของ QuickLink
-            this.$cookie.delete("quickLinkBillingNo");
-            localStorage.removeItem("quickLinkdataCount");
-            localStorage.removeItem("quickLinkAddData");
-            localStorage.removeItem("quickLinkCountAllinTable");
+        // memberCode
+        if (this.memberCode) {
+          this.memberCode = this.memberCode;
+          this.memberFullName = this.memberFullName;
+          this.memberPhone = this.memberPhone;
+          this.memberAddress = this.memberAddress;
+        } else {
+          this.memberData = JSON.parse(localStorage.getItem("memberData"));
+          this.memberCode = this.memberData.member_code;
+          this.memberFullName =
+            this.memberData.first_name + " " + this.memberData.last_name;
+          this.memberAddress = this.memberData.address;
+          this.memberPhone = this.memberData.phone;
+          var phone = this.memberPhone;
+          if (phone[0] + phone[1] == "66") {
+            this.memberPhone = this.changeDoubleSix(phone);
+          } else {
+            this.memberPhone = phone;
           }
-          return this.quickLinkBillingNo;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      }else{
+          // console.log("เบอร์", this.memberPhone);
+        }
+        var headerQuickLink = {
+          branch_id: merid,
+          user_id: userid,
+          mer_authen_level: authenlevel,
+          member_code: this.memberCode,
+          carrier_id: this.idCard,
+          courier_image: imgUrl,
+          sender_name: this.memberFullName,
+          sender_phone: this.memberPhone,
+          sender_address: this.memberAddress,
+          total: this.quickLinkTotal,
+          items: []
+        };
+        var subQuickLink = this.quickLinkAddData;
+        this.dataSaveQuickLink = headerQuickLink;
+        this.dataSaveQuickLink.items = subQuickLink;
+        axios
+          .post(
+            "https://pos.945.report/quicklink/quickLink",
+            this.dataSaveQuickLink
+          )
+          .then(response => {
+            // console.log("response---เลขบิลกลับมา", response.data);
+            this.quickLinkBillingNo = response.data.billing_no;
+            if (this.quickLinkBillingNo) {
+              this.isLoading = false; //ได้เลขบิลแล้วหยุดหมุนด้วย
+              this.view = "quickLinkDataPrint";
+              this.isDisabledInsertQuiklink = false;
+              this.$refs.successavebill.open();
+              this.$cookie.set(
+                "quickLinkBillingNo",
+                this.quickLinkBillingNo,
+                1
+              );
+            } else {
+              // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+              this.$refs.supererror.open();
+              // ลบของ QuickLink
+              this.$cookie.delete("quickLinkBillingNo");
+              localStorage.removeItem("quickLinkdataCount");
+              localStorage.removeItem("quickLinkAddData");
+              localStorage.removeItem("quickLinkCountAllinTable");
+            }
+            return this.quickLinkBillingNo;
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      } else {
         // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
-         this.$refs.supererror.open();
+        this.$refs.supererror.open();
         // ลบของ QuickLink
         this.$cookie.delete("quickLinkBillingNo");
         localStorage.removeItem("quickLinkdataCount");
         localStorage.removeItem("quickLinkAddData");
         localStorage.removeItem("quickLinkCountAllinTable");
       }
-     setTimeout(function(){
+      setTimeout(
+        function() {
           this.$refs.successavebill.close();
           this.$refs.errorsavebill.close();
           this.isDisabledInsertQuiklink = false;
-      }.bind(this),3000);
-
+        }.bind(this),
+        3000
+      );
     },
     getDataquickLinkPrintBill(billing) {
       var bill = this.quickLinkBillingNo;
@@ -2873,20 +3107,19 @@ export default {
 
     filterNumber(e) {
       //console.log($event.keyCode); //keyCodes value
-      console.log('idNumber =>', this.idCard)
+      console.log("idNumber =>", this.idCard);
       this.idCard = this.idCard.slice(0, 13);
-      e.target.value = e.target.value.replace(/[^0-9]+/g, '');
+      e.target.value = e.target.value.replace(/[^0-9]+/g, "");
     },
 
     filterNumber2(e) {
       //console.log($event.keyCode); //keyCodes value
-      console.log('idNumber2 =>', this.idCard)
+      console.log("idNumber2 =>", this.idCard);
       this.idCard = this.idCard.slice(0, 13);
-      e.target.value = e.target.value.replace(/[^0-9]+/g, '');
+      e.target.value = e.target.value.replace(/[^0-9]+/g, "");
     },
 
     onlyNumber($event) {
-
       let keyCode = $event.keyCode ? $event.keyCode : $event.which;
       if (keyCode < 48 || keyCode > 57) {
         $event.preventDefault();
@@ -2919,51 +3152,63 @@ export default {
       var codeToCheck = "";
       const options = { okLabel: "ตกลง" };
       // เช็ค memberCode กรอกเบอร์โทร 10 หลัก และรหัสบัตรประชาชน 13 หลัก
-      if(memberCode.length == 0){
-         this.$dialogs.alert(
+      if (memberCode.length == 0) {
+        this.$dialogs.alert(
           "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ครบถ้วน",
           options
         );
-      } 
-      else if(memberCode.length == 10){
-          if (
+      } else if (memberCode.length == 10) {
+        if (
           memberCode[0] + memberCode[1] == "06" ||
           memberCode[0] + memberCode[1] == "08" ||
           memberCode[0] + memberCode[1] == "09"
         ) {
           codeToCheck = this.changeZeroToDoubleSix(memberCode);
-          console.log("codeToCheck",codeToCheck);
+          console.log("codeToCheck", codeToCheck);
           if (codeToCheck == undefined) {
             this.$dialogs.alert("กรุณากรอก เบอร์โทรศัพท์ ให้ถูกต้อง", options);
-          }else {
-          if(carrierId.length == 0 || carrierId.length != 13  || carrierId.length < 13){
-            this.$dialogs.alert("กรุณากรอก หมายเลขบัตรประชาชนผู้ส่ง ให้ครบ", options);
-          }else{
-            // alert("ส่งไปเช็ค");
-            this.checkMemberAndCarrier();
+          } else {
+            if (
+              carrierId.length == 0 ||
+              carrierId.length != 13 ||
+              carrierId.length < 13
+            ) {
+              this.$dialogs.alert(
+                "กรุณากรอก หมายเลขบัตรประชาชนผู้ส่ง ให้ครบ",
+                options
+              );
+            } else {
+              // alert("ส่งไปเช็ค");
+              this.checkMemberAndCarrier();
               // ส่งไปเข้าไป
-             }  
+            }
           }
-        } else{
+        } else {
           this.$dialogs.alert(
-          "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ครบถ้วน",
-          options
-            );
-          }
-      }else if(memberCode.length > 13){
+            "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ครบถ้วน",
+            options
+          );
+        }
+      } else if (memberCode.length > 13) {
         this.$dialogs.alert(
           "กรุณากรอก รหัสสมาชิก/เบอร์โทรศัพท์/เลขที่บัตรประชาชน ให้ครบถ้วน",
           options
         );
-      }
-      else if(carrierId.length == 0 || carrierId.length != 13  || carrierId.length < 13){
-        this.$dialogs.alert("กรุณากรอก หมายเลขบัตรประชาชนผู้ส่ง ให้ครบ", options);  
-      }else{
+      } else if (
+        carrierId.length == 0 ||
+        carrierId.length != 13 ||
+        carrierId.length < 13
+      ) {
+        this.$dialogs.alert(
+          "กรุณากรอก หมายเลขบัตรประชาชนผู้ส่ง ให้ครบ",
+          options
+        );
+      } else {
         this.checkMemberAndCarrier();
         //  alert("ส่งไปเช็ค");
       }
     },
-    checkMemberAndCarrier(){
+    checkMemberAndCarrier() {
       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       var meridGet = dataLogin.merid;
       var merid = meridGet;
@@ -2981,21 +3226,24 @@ export default {
           JSON.stringify(dataCheck)
         )
         .then(resultMember => {
-          console.log("resultMember =>", resultMember.data);          
+          console.log("resultMember =>", resultMember.data);
           if (resultMember.data.status == "ERROR_NOT_FOUND") {
             this.$dialogs.alert(
               "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
               options
             );
-          } else if(resultMember.data.member_code == null || resultMember.data.branch_id == null || resultMember.data.first_name == null 
-                  || resultMember.data.last_name == null || resultMember.data.phone == null){        
+          } else if (
+            resultMember.data.member_code == null ||
+            resultMember.data.branch_id == null ||
+            resultMember.data.first_name == null ||
+            resultMember.data.last_name == null ||
+            resultMember.data.phone == null
+          ) {
             this.$dialogs.alert(
               "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
               options
             );
-
-          }
-          else {
+          } else {
             this.view = "createBill2";
             this.$cookie.set("carrierId", carrierId, 1);
             // Upload Image ก่อน
@@ -3027,16 +3275,30 @@ export default {
             });
           }
           this.memberData = resultMember.data;
-            if(resultMember.data.bank_account_no == null || resultMember.data.bank_account_no == '' ){
-              this.memberData.bank_account_no = '-';
-            }
-            if(resultMember.data.bank_acc_name == null || resultMember.data.bank_acc_name == '' ){
-              this.memberData.bank_acc_name  = '-';
-            }if(resultMember.data.bank_name == null || resultMember.data.bank_name == '' ){
-              this.memberData.bank_name  = '-';
-            }if(resultMember.data.address == null || resultMember.data.address == ''){
-                this.memberData.address  = '-';
-            }
+          if (
+            resultMember.data.bank_account_no == null ||
+            resultMember.data.bank_account_no == ""
+          ) {
+            this.memberData.bank_account_no = "-";
+          }
+          if (
+            resultMember.data.bank_acc_name == null ||
+            resultMember.data.bank_acc_name == ""
+          ) {
+            this.memberData.bank_acc_name = "-";
+          }
+          if (
+            resultMember.data.bank_name == null ||
+            resultMember.data.bank_name == ""
+          ) {
+            this.memberData.bank_name = "-";
+          }
+          if (
+            resultMember.data.address == null ||
+            resultMember.data.address == ""
+          ) {
+            this.memberData.address = "-";
+          }
           this.memberCode = resultMember.data.member_code;
           this.$cookie.set("memberCode", memberCode, 1);
           this.memberFullName =
@@ -3048,7 +3310,6 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-    
     },
     changeZeroToDoubleSix(tels) {
       if (
@@ -3240,40 +3501,41 @@ export default {
 
     btnNextInputTDZ() {
       this.state.isSending = true;
-      console.log("listTracking",this.listTracking.inputTracking);
-      if(this.listTracking.inputTracking  == null){
-          this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
-          this.nulltracking = true;
-          this.state.isSending = false;
+      console.log("listTracking", this.listTracking.inputTracking);
+      if (this.listTracking.inputTracking == null) {
+        this.nulltracking = false;
+        this.trackingNoFormat = false;
+        this.trackingNoCapture = false;
+        this.trackingDuplicated = false;
+        this.trackingPhoneNotMatch = false;
+        this.trackingCannotuse = false;
+        this.nulltracking = true;
+        this.listTracking.inputTracking = "";
+        this.state.isSending = false;
       }
       this.btnBack = "yes";
       var barcodeReg = /^[T|t][D|d][Z|z]+[0-9]{8}[A-Z]?$/i;
       var dataTrackingPos = this.finalDataSave.listTracking;
-      var inputTrack = this.listTracking.inputTracking.toUpperCase(); 
-        if (!inputTrack) {
-                 this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
-              this.nulltracking = true;
-             this.state.isSending = false;
-
-        }else if (inputTrack.match(barcodeReg) === null) {
-                 this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
-
-            this.trackingNoFormat = true;
+      var inputTrack = this.listTracking.inputTracking.toUpperCase();
+      if (!inputTrack) {
+        this.nulltracking = false;
+        this.trackingNoFormat = false;
+        this.trackingNoCapture = false;
+        this.trackingDuplicated = false;
+        this.trackingPhoneNotMatch = false;
+        this.trackingCannotuse = false;
+        this.nulltracking = true;
+        this.listTracking.inputTracking = "";
+        this.state.isSending = false;
+      } else if (inputTrack.match(barcodeReg) === null) {
+        this.nulltracking = false;
+        this.trackingNoFormat = false;
+        this.trackingNoCapture = false;
+        this.trackingDuplicated = false;
+        this.trackingPhoneNotMatch = false;
+        this.trackingCannotuse = false;
+        this.listTracking.inputTracking = "";
+        this.trackingNoFormat = true;
         this.state.isSending = false;
       } else if (dataTrackingPos.length > 0) {
         var resultData = [];
@@ -3285,13 +3547,14 @@ export default {
         }).length;
         // console.log("result", result);
         if (result >= 1) {
-                 this.nulltracking = false;
+          this.nulltracking = false;
           this.trackingNoFormat = false;
           this.trackingNoCapture = false;
           this.trackingDuplicated = false;
           this.trackingPhoneNotMatch = false;
           this.trackingCannotuse = false;
-               this.trackingDuplicated = true;
+          this.trackingDuplicated = true;
+          this.listTracking.inputTracking = "";
           this.state.isSending = false;
         } else {
           axios
@@ -3302,11 +3565,11 @@ export default {
             .then(resultsCheckTracking => {
               if (resultsCheckTracking.data == true) {
                 this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
+                this.trackingNoFormat = false;
+                this.trackingNoCapture = false;
+                this.trackingDuplicated = false;
+                this.trackingPhoneNotMatch = false;
+                this.trackingCannotuse = false;
 
                 //ข้อมูลอยุ่ในตารางเตรียมบันทึก
                 this.view = "createBill8";
@@ -3470,13 +3733,14 @@ export default {
                     console.log(error);
                   });
               } else {
-                       this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
-                    this.trackingDuplicated = true;
+                this.nulltracking = false;
+                this.trackingNoFormat = false;
+                this.trackingNoCapture = false;
+                this.trackingDuplicated = false;
+                this.trackingPhoneNotMatch = false;
+                this.trackingCannotuse = false;
+                this.listTracking.inputTracking = "";
+                this.trackingDuplicated = true;
 
                 this.state.isSending = false;
                 this.listTracking.inputTracking = "";
@@ -3499,11 +3763,11 @@ export default {
           .then(resultsCheckTracking => {
             if (resultsCheckTracking.data == true) {
               this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
+              this.trackingNoFormat = false;
+              this.trackingNoCapture = false;
+              this.trackingDuplicated = false;
+              this.trackingPhoneNotMatch = false;
+              this.trackingCannotuse = false;
               //ข้อมูลอยุ่ในตารางเตรียมบันทึก
               var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
               this.view = "createBill8";
@@ -3662,13 +3926,13 @@ export default {
                   console.log(error);
                 });
             } else {
-                                     this.nulltracking = false;
-          this.trackingNoFormat = false;
-          this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
-          this.trackingPhoneNotMatch = false;
-          this.trackingCannotuse = false;
-                    this.trackingDuplicated = true;
+              this.nulltracking = false;
+              this.trackingNoFormat = false;
+              this.trackingNoCapture = false;
+              this.trackingDuplicated = false;
+              this.trackingPhoneNotMatch = false;
+              this.trackingCannotuse = false;
+              this.trackingDuplicated = true;
               this.state.isSending = false;
               this.listTracking.inputTracking = "";
               this.$refs.focusTDZ.focus();
@@ -3681,55 +3945,61 @@ export default {
     },
 
     successCreateBill() {
-      // console.log("finaldata", this.finalDataSave);
-      this.isDisabledInsertPOS = true;
-     if(this.view == "createBill8"){
-     this.isDisabledInsertPOS = true;
       var that = this;
-      axios
-        .post(
-          "https://pos.945.report/billingPos/addReceiver",
-          that.finalDataSave
-        )
-        .then(responseBillNo => {
-          console.log("DATABILL", responseBillNo.data);
-          if(responseBillNo.data){
-             that.$refs.successavebill.open();
-             that.view = "createBill9"; //หน้าโชว์และมีเลขที่บิลส่งกลับมาพร้อมพิมพ์ใบเสร็จ
-             that.isDisabledInsertPOS = true;
-             console.log("มีเลขบิล");
-             that.billNo = responseBillNo.data.billing_no;
-             that.$cookie.set("billNo", that.billNo, 1);
-          }else{
-            // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
-            that.$refs.supererror.open();
-            //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
-             // ลบของ POS
-            that.$cookie.delete("billNo");
-            localStorage.removeItem("datalistPOS");
-            localStorage.removeItem("finalDataSave");
-            localStorage.removeItem("dataCount");
-          }
-          return that.billNo;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      
-      }else{
-         // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
-         that.$refs.supererror.open();
+      // console.log("finaldata", this.finalDataSave);
+      that.isDisabledInsertPOS = true;
+      if (that.view == "createBill8") {
+        that.view = "createBill8A";
+        that.isLoading = true; //หมุนรอเลขบิล
+        axios
+          .post(
+            "https://pos.945.report/billingPos/addReceiver",
+            that.finalDataSave
+          )
+          .then(responseBillNo => {
+            console.log("DATABILL", responseBillNo.data);
+            if (responseBillNo.data) {
+              that.isLoading = false; //ได้เลขบิลแล้วหยุดหมุนด้วย
+              that.$refs.successavebill.open();
+              that.view = "createBill9"; //หน้าโชว์และมีเลขที่บิลส่งกลับมาพร้อมพิมพ์ใบเสร็จ
+              that.isDisabledInsertPOS = false;
+              console.log("มีเลขบิล");
+              that.billNo = responseBillNo.data.billing_no;
+              that.$cookie.set("billNo", that.billNo, 1);
+            } else {
+              that.isLoading = false;
+              // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+              that.$refs.supererror.open();
+              //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
+              // ลบของ POS
+              that.$cookie.delete("billNo");
+              localStorage.removeItem("datalistPOS");
+              localStorage.removeItem("finalDataSave");
+              localStorage.removeItem("dataCount");
+            }
+            return that.billNo;
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      } else {
+        that.isLoading = false;
+        // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+        that.$refs.supererror.open();
         // ลบของ POS
         that.$cookie.delete("billNo");
         localStorage.removeItem("datalistPOS");
         localStorage.removeItem("finalDataSave");
         localStorage.removeItem("dataCount");
       }
-         setTimeout(function(){
+      setTimeout(
+        function() {
           that.$refs.successavebill.close();
           that.$refs.errorsavebill.close();
           that.isDisabledInsertPOS = false;
-      }.bind(that),3000); 
+        }.bind(that),
+        3000
+      );
     },
 
     deleteEvent: function(index) {
@@ -3962,7 +4232,7 @@ export default {
     quicklinkSizeBox(size) {
       var valueSize = size;
       var sizeName = valueSize.replace("Plus", "+");
-      console.log("sizeName =>",sizeName);
+      console.log("sizeName =>", sizeName);
       this.quickLinkSelectSize = sizeName;
       this.quickLinkBtnAdd = true;
       this.quickLinkBtnRe = true;
@@ -4033,9 +4303,9 @@ export default {
   },
 
   computed: {
-   reverseItems() {
-        return this.quickLinkAddData.slice().reverse();
-      },
+    reverseItems() {
+      return this.quickLinkAddData.slice().reverse();
+    },
     quickLinkTotalSum: function() {
       return this.quickLinkAddData.reduce(function(quickLinkTotal, item) {
         return quickLinkTotal + item.size_price;

@@ -19,7 +19,7 @@ app.get("/checkZipcode", (req, res) => {
   });
 });
 app.get("/checktest", (req, res) => {
-  var billing_no=req.query.billing_no
+  var billing_no = req.query.billing_no;
   billingPosService.checkBillingNoItem(billing_no).then(function(data) {
     if (data == false) {
       res.send(false);
@@ -92,33 +92,59 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                 });
               } else {
 
-                billingPosService.saveDataBilling(user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url).then(function(resBilling) {
+                var billingInfo = {
+                  user_id: user_id,
+                  mer_authen_level: mer_authen_level,
+                  member_code: member_code,
+                  carrier_id: carrier_id,
+                  branch_id: branch_id,
+                  total: total,
+                  img_url: img_url
+                };
 
-                  let saveItem = async () => {
-                    await listTracking.forEach(async val => {
-                      let track = val.tracking;
-                      let size_id = val.size_id;
-                      let size_price = val.size_price;
-                      let parcel_type = val.parcel_type.toUpperCase();
-                      let cod_value = val.cod_value;
-                      let address = val.address;
-  
-                      await billingPosService.saveDataBillingItem(resBilling,track,size_id,size_price,parcel_type,cod_value,source,address);
-                    });
-                    return true;
-                  };
-                  saveItem().then(result => {
-                    if (result) {
-                      quicklinkService.updateStatusBilling(resBilling).then(function(resBilling) {
-                        if (resBilling.affectedRows > 0) {
-                          res.json({
-                            status: "success",
-                            billing_no: billing_no
-                          });
-                        }
-                      });
-                    } 
+                  console.log("begin",billing_no);
+                async function saveItem() {
+                  var resItem = [];
+                  await listTracking.forEach(async val => {
+                    let track = val.tracking;
+                    let size_id = val.size_id;
+                    let size_price = val.size_price;
+                    let parcel_type = val.parcel_type.toUpperCase();
+                    let cod_value = val.cod_value;
+                    let address = val.address;
+
+                      resItem.push(billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address,billingInfo))
                   });
+
+                var resultArr = await Promise.all(resItem);
+                  return resultArr[0];
+                }
+                saveItem().then(function(result){
+                  async function dataProcess(t) {
+                    if(typeof t == "undefined") {
+                      return false;
+                    } else {
+                      let resultBilling = await billingPosService.saveDataBilling(t,user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url)
+                      return resultBilling
+                    }
+                  }
+                  dataProcess(result).then((data)=>{
+                    if(data===false){
+                      res.json({
+                        status: "error"
+                      });
+                  } else{
+                    quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
+                      if (resBilling.affectedRows > 0) {
+                        res.json({
+                          status: "success",
+                          billing_no: billing_no
+                        });
+                      }
+                    });
+                  }
+                  
+                  })
                 })
               }
             }

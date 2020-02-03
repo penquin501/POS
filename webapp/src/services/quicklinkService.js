@@ -22,7 +22,7 @@ module.exports = {
     },
     updateStatusBilling:(billing_no)=>{
         var status='complete'
-        var updateStatusBilling="UPDATE billing SET status=? WHERE billing_no=?"
+        var updateStatusBilling="UPDATE billing_test SET status=? WHERE billing_no=?"
         var dataStatusBilling=[status,billing_no];
         return new Promise(function(resolve, reject) {
             connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
@@ -32,13 +32,13 @@ module.exports = {
     },
 
     checkTrackingBillingItem: (billing_no,sender_name,sender_phone,sender_address,source,tracking,zipcode,parcel_type,size_price,cod_value,size_id) => {
-        var updateBillingItem = "UPDATE billing_item SET billing_no=?,zipcode=?,size_id=?,size_price=?,parcel_type=?,cod_value=?,source=? WHERE tracking=?"
+        var updateBillingItem = "UPDATE billing_item_test SET billing_no=?,zipcode=?,size_id=?,size_price=?,parcel_type=?,cod_value=?,source=? WHERE tracking=?"
         var dataUpdateBillingItem=[billing_no,zipcode,size_id,size_price,parcel_type,cod_value,source,tracking];  
 
-        var updateReceiver = "UPDATE billing_receiver_info SET sender_name=?,sender_phone=?,sender_address=? WHERE tracking=?"
+        var updateReceiver = "UPDATE billing_receiver_info_test SET sender_name=?,sender_phone=?,sender_address=? WHERE tracking=?"
         var dataUpdateReceiver=[sender_name,sender_phone,sender_address,tracking];    
 
-        var updateBillNoBillingItem="UPDATE billing_item SET billing_no=? WHERE tracking=?"
+        var updateBillNoBillingItem="UPDATE billing_item_test SET billing_no=? WHERE tracking=?"
         var dataUpdateBillingNoBillingItem=[billing_no,tracking];
 
         return new Promise(function(resolve, reject) {
