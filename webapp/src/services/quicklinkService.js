@@ -42,7 +42,19 @@ module.exports = {
             });
         })
     },
-
+    checkItem:(tracking)=>{
+        var updateStatusBilling="SELECT tracking FROM billing_item WHERE tracking=? AND source is null"
+        var dataStatusBilling=[tracking];
+        return new Promise(function(resolve, reject) {
+            connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
+                if(results.length>0) {
+                    resolve(results);
+                } else {
+                    resolve();
+                }
+            });
+        })
+    },
     checkTrackingBillingItem: (billing_no,sender_name,sender_phone,sender_address,source,tracking,zipcode,parcel_type,size_price,cod_value,size_id) => {
         var updateBillingItem = "UPDATE billing_item SET billing_no=?,zipcode=?,size_id=?,size_price=?,parcel_type=?,cod_value=?,source=? WHERE tracking=?"
         var dataUpdateBillingItem=[billing_no,zipcode,size_id,size_price,parcel_type,cod_value,source,tracking];  
