@@ -22,6 +22,7 @@ app.post("/quickLink", jsonParser, (req, res) => {
   let items = req.body.items;
   var source = "QUICKLINK";
   let trackings = [];
+  var c_total=0;
 
   if (user_id === null || user_id === undefined || user_id === "") {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
@@ -53,7 +54,7 @@ app.post("/quickLink", jsonParser, (req, res) => {
     total === null ||
     total === undefined ||
     total === "" ||
-    total === 0
+    parseInt(total) === 0
   ) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
   } else if (img_url === null || img_url === undefined || img_url === "") {
@@ -96,46 +97,49 @@ app.post("/quickLink", jsonParser, (req, res) => {
         var item_valid = true;
         for (i = 0; i < items.length; i++) {
           if (
-            items[i].tracking === undefined || 
-            items[i].tracking === null ||
+            items[i].tracking === undefined && 
+            items[i].tracking === null &&
             items[i].tracking === ""
           ) {
             item_valid = false;
           }
           if (
-            items[i].parcel_type === undefined ||
-            items[i].parcel_type === null ||
-            items[i].parcel_type === ""
+            items[i].parcel_type === undefined &&
+            items[i].parcel_type === null &&
+            items[i].parcel_type === "" &&
+            items[i].parcel_type.toUpperCase() !== "NORMAL" &&
+            items[i].parcel_type.toUpperCase() !== "COD"
           ) {
             item_valid = false;
           }
           if (
-            items[i].zipcode === undefined ||
-            items[i].zipcode === null ||
+            items[i].zipcode === undefined &&
+            items[i].zipcode === null &&
             items[i].zipcode === ""
           ) {
             item_valid = false;
           }
           if (
-            items[i].size_price === undefined ||
-            items[i].size_price === null ||
-            items[i].size_price === "" ||
+            items[i].size_price === undefined &&
+            items[i].size_price === null &&
+            items[i].size_price === "" &&
             parseInt(items[i].size_price) === 0
           ) {
             item_valid = false;
+          } else {
+            c_total+=parseInt(items[i].size_price);
           }
           if (
-            items[i].cod_value === undefined || 
-            items[i].cod_value === null ||
-            items[i].cod_value === "" ||
-            parseInt(items[i].cod_value) === 0
+            items[i].cod_value === undefined &&
+            items[i].cod_value === null &&
+            items[i].cod_value === "" 
           ) {
             item_valid = false;
           }
           if (
-            items[i].size_id === undefined || 
-            items[i].size_id === null ||
-            items[i].size_id === "" ||
+            items[i].size_id === undefined &&
+            items[i].size_id === null &&
+            items[i].size_id === "" &&
             parseInt(items[i].size_id) === 0
           ) {
             item_valid = false;
@@ -148,18 +152,22 @@ app.post("/quickLink", jsonParser, (req, res) => {
           }
           if (
             items[i].parcel_type.toUpperCase() == "COD" &&
-            parseInt(items[i].cod_value) === 0
+            (parseInt(items[i].cod_value) <= 0 || parseInt(items[i].cod_value) > 30000)
           ) {
             item_valid = false;
           }
+          
         }
+
         if (item_valid == false) {
           res.json({ status: "error_validate_tracking" });
+        } else if(c_total !== total){
+          res.json({ status: "error_total_wrong" });
         } else {
           var responseCheckItem = [];
           async function checkItem() {
             await items.forEach(async val => {
-              responseCheckItem.push(quicklinkService.checkItem(val.tracking));
+              responseCheckItem.push(quicklinkService.checkItem(val.tracking,val.zipcode));
             });
             return await Promise.all(responseCheckItem);
           }
@@ -170,7 +178,6 @@ app.post("/quickLink", jsonParser, (req, res) => {
                 item_pass = false;
               }
             }
-            // console.log(item_pass);
             if (item_pass == false) {
               res.json({ status: "error_no_data" });
             } else {

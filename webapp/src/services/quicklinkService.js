@@ -42,17 +42,23 @@ module.exports = {
             });
         })
     },
-    checkItem:(tracking)=>{
+    checkItem:(tracking,zipcode)=>{
+        var checkZipcode="SELECT zipcode FROM postinfo_zipcodes WHERE zipcode=?"
+        var dataZipcode=[zipcode];
+
         var updateStatusBilling="SELECT tracking FROM billing_item WHERE tracking=? AND source is null"
         var dataStatusBilling=[tracking];
         return new Promise(function(resolve, reject) {
-            connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
-                if(results.length>0) {
-                    resolve(results);
-                } else {
-                    resolve();
-                }
-            });
+
+            connection.query(checkZipcode,dataZipcode, (error, resultsZipcode, fields) => {
+                connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
+                    if(results.length > 0 && resultsZipcode.length > 0) {
+                        resolve(results);
+                    } else {
+                        resolve();
+                    }
+                });
+        });
         })
     },
     checkTrackingBillingItem: (billing_no,sender_name,sender_phone,sender_address,source,tracking,zipcode,parcel_type,size_price,cod_value,size_id) => {

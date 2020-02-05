@@ -1766,6 +1766,10 @@
                               id="quickLinkInputCOD"
                               v-bind:readonly="is_cod_readonly"
                             />
+                             <h5 v-show="errorCOD" style="color:red;">**กรอกมูลค่า COD ให้ถูกต้อง</h5>
+                             <h5 v-show="erroroverCOD" style="color:red;">**มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง</h5>
+                           
+                       
                           </div>
                         </div>
                       </div>
@@ -2247,7 +2251,11 @@ export default {
       trackingPhoneNotMatch: false,
       trackingCannotuse: false,
       isDisabledInsertQuiklink: false,
-      isDisabledInsertPOS: false
+      isDisabledInsertPOS: false,
+      // errorCOD
+      errorCOD:false,
+      erroroverCOD:false,
+
     };
   },
   created: function() {
@@ -2596,13 +2604,17 @@ export default {
         });
     },
     selectTypeQuicklink(parcelType) {
+      this.errorCOD = false;
+      this.erroroverCOD = false;
       if (parcelType == "NORMAL") {
+        this.quickLinkTypeTransport = "NORMAL";
         // this.isSendingTypeQuicklink = true;
         this.quickLinkInputCod = false;
         this.quickLinkProduct = true;
         this.is_cod_readonly = false;
         this.quickLinkCodValue = "";
       } else {
+        this.quickLinkTypeTransport = "COD";
         $(document).ready(function() {
           $("#quickLinkInputCOD").focus();
         });
@@ -2615,17 +2627,23 @@ export default {
     },
     addquickLinkSize() {
       this.intPriceCod = parseInt(this.quickLinkCodValue);
-      if (this.intPriceCod == 0 || this.quickLinkCodValue == "") {
-        alert("กรอกมูลค่า COD ให้ถูกต้อง");
+      if (this.intPriceCod == 0 || this.quickLinkCodValue == "" || this.intPriceCod == null) {
+        this.erroroverCOD = false;
+        this.errorCOD = true;
+        this.quickLinkCodValue = "";
+        // alert("กรอกมูลค่า COD ให้ถูกต้อง");
         this.is_cod_readonly = false;
         this.state.isSending = false;
         //  เลข track รหัสปณ.
         this.is_track_readonly = true;
         this.is_readonly = true;
       } else if (this.intPriceCod > 30000) {
-        alert(
-          "มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง"
-        );
+        this.errorCOD = false;
+        this.erroroverCOD = true;
+        this.quickLinkCodValue = "";
+        // alert(
+        //   "มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง"
+        // );
         this.quickLinkCodValue = "";
         this.quickLinkBtnRe = true;
         this.is_cod_readonly = false;
@@ -2633,9 +2651,9 @@ export default {
         //  เลข track รหัสปณ.
         this.is_track_readonly = true;
         this.is_readonly = true;
-        // this.quickLinkProduct = true;
-        // this.is_cod_readonly = true;
       } else if (this.intPriceCod >= 10000) {
+        this.errorCOD = false;
+        this.erroroverCOD = false;
         alert("มูลค่า COD มีมูลค่าที่สูงมาก ยืนยันการกรอกมูลค่า");
         this.quickLinkProduct = true;
         this.is_cod_readonly = true;
@@ -2644,6 +2662,8 @@ export default {
         this.is_track_readonly = true;
         this.is_readonly = true;
       } else {
+        this.errorCOD = false;
+        this.erroroverCOD = false;
         this.quickLinkProduct = true;
         this.is_cod_readonly = true;
         this.state.isSending = false;
@@ -2668,7 +2688,6 @@ export default {
         this.is_readonly = false;
         this.quickLinkBtnRe = false;
         this.state.isSending = false;
-
         // Clear Data
         this.quickLinkTracking = "";
         this.quickLinkZipcode = "";
@@ -2709,7 +2728,7 @@ export default {
         this.quickLinkBtnAdd = false;
         this.quickLinkInputCod = false;
         this.$refs.barcode.focus();
-      } else if (!this.quickLinkTypeTransport) {
+      } else if (!this.quickLinkTypeTransport || this.quickLinkTypeTransport == null ) {
         alert("กรอกข้อมูลให้ครบถ้วน");
         this.is_track_readonly = false;
         this.is_readonly = false;
@@ -2732,7 +2751,7 @@ export default {
         this.quickLinkBtnAdd = false;
         this.quickLinkInputCod = false;
         this.$refs.barcode.focus();
-      } else if (!this.quickLinkSelectSize) {
+      } else if (!this.quickLinkSelectSize || this.quickLinkSelectSize == null) {
         alert("กรอกข้อมูลให้ครบถ้วน");
         this.is_track_readonly = false;
         this.is_readonly = false;
@@ -2756,9 +2775,11 @@ export default {
         this.quickLinkInputCod = false;
         this.$refs.barcode.focus();
       } else if (this.quickLinkTypeTransport == "NORMAL") {
+        this.quickLinkTypeTransport = "NORMAL";
         this.quickLinkCodValue = 0;
         this.addQuiklink();
       } else if (this.quickLinkTypeTransport == "COD") {
+        this.quickLinkTypeTransport = "COD";
         if (this.intPriceCod == 0) {
           alert("กรอกมูลค่า COD");
           this.quickLinkBtnRe = true;
@@ -2770,7 +2791,6 @@ export default {
           alert("กรอกมูลค่า COD");
           this.quickLinkBtnRe = true;
           this.state.isSending = false;
-
           //  เลข track รหัสปณ.
           this.is_track_readonly = true;
           this.is_readonly = true;

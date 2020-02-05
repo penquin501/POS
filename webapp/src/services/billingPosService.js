@@ -57,6 +57,27 @@ module.exports = {
       });
     });
   },
+  checkItem:(tracking,district_id,amphur_id,province_id,zipcode)=>{
+    var checkZipcode="SELECT z.zipcode FROM postinfo_district d "+
+    "JOIN postinfo_zipcodes z ON d.DISTRICT_CODE=z.district_code "+
+    "WHERE d.DISTRICT_ID=? AND d.AMPHUR_ID=? AND d.PROVINCE_ID=?"
+    var dataAddress=[district_id,amphur_id,province_id];
+
+    var updateStatusBilling="SELECT tracking FROM billing_item WHERE tracking=?"
+    var dataStatusBilling=[tracking];
+    return new Promise(function(resolve, reject) {
+      connection.query(checkZipcode,dataAddress, (error, resultsZipcode, fields) => {
+        connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
+          
+            if(results.length<=0 && (resultsZipcode[0].zipcode === zipcode)) {
+                resolve(tracking);
+            } else {
+                resolve();
+            }
+        });
+      })
+    })
+},
   saveDataBilling: (resBillingNo,user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url) => {
 
     var dateTimestamp = new Date();
