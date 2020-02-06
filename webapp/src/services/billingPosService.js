@@ -57,7 +57,10 @@ module.exports = {
       });
     });
   },
-  checkItem:(tracking,district_id,amphur_id,province_id,zipcode)=>{
+  checkItem:(tracking,size_id,size_price,district_id,amphur_id,province_id,zipcode)=>{
+    var checkSizeId="SELECT parcel_price FROM size_info WHERE size_id=?"
+    var dataSizeId=[size_id];
+
     var checkZipcode="SELECT z.zipcode FROM postinfo_district d "+
     "JOIN postinfo_zipcodes z ON d.DISTRICT_CODE=z.district_code "+
     "WHERE d.DISTRICT_ID=? AND d.AMPHUR_ID=? AND d.PROVINCE_ID=?"
@@ -66,16 +69,18 @@ module.exports = {
     var updateStatusBilling="SELECT tracking FROM billing_item WHERE tracking=?"
     var dataStatusBilling=[tracking];
     return new Promise(function(resolve, reject) {
+      connection.query(checkSizeId,dataSizeId, (error, resultsSizePrice, fields) => {
       connection.query(checkZipcode,dataAddress, (error, resultsZipcode, fields) => {
         connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
           
-            if(results.length<=0 && (resultsZipcode[0].zipcode === zipcode)) {
+            if(results.length<=0 && (resultsZipcode[0].zipcode === zipcode) && resultsSizePrice[0].parcel_price===size_price) {
                 resolve(tracking);
             } else {
                 resolve();
             }
         });
       })
+    })
     })
 },
   saveDataBilling: (resBillingNo,user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url) => {

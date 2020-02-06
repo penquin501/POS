@@ -2519,6 +2519,7 @@ export default {
             quickLinkTrackingKey
         )
         .then(response => {
+         
           if (response.data.status == "Error_Not_In_Capture_Data") {
             this.is_track_readonly = false;
             this.quickLinkTracking = "";
@@ -2544,10 +2545,14 @@ export default {
             this.quickLinkTracking = "";
             this.$refs.barcode.focus();
             this.trackingNoFormat = true;
+          } else if (response.data.status == "ERROR_DUPLICATE_TRACKING_IN_DB") {
+            this.is_track_readonly = false;
+            this.quickLinkTracking = "";
+            this.$refs.barcode.focus();
+            this.trackingDuplicated = true;
           } else if (response.data.status == "Success") {
             if (!this.quickLinkTracking) {
               this.is_track_readonly = false;
-
               this.nulltracking = false;
               this.trackingNoFormat = false;
               this.trackingNoCapture = false;
@@ -2561,7 +2566,6 @@ export default {
               this.trackingDuplicated = false;
               this.trackingPhoneNotMatch = false;
               this.trackingCannotuse = false;
-
               this.is_track_readonly = true;
               this.is_readonly = false;
               this.quickLinkZipcode = true;
@@ -3055,7 +3059,7 @@ export default {
           .then(response => {
             // console.log("response---เลขบิลกลับมา", response.data);
             this.quickLinkBillingNo = response.data.billing_no;
-            if (this.quickLinkBillingNo) {
+            if (response.data.status == "success") {
               this.isLoading = false; //ได้เลขบิลแล้วหยุดหมุนด้วย
               this.view = "quickLinkDataPrint";
               this.isDisabledInsertQuiklink = false;
@@ -3521,7 +3525,7 @@ export default {
 
     btnNextInputTDZ() {
       this.state.isSending = true;
-      console.log("listTracking", this.listTracking.inputTracking);
+      // console.log("listTrackingis.listTracking.inputTracking);
       if (this.listTracking.inputTracking == null) {
         this.nulltracking = false;
         this.trackingNoFormat = false;
@@ -3583,6 +3587,8 @@ export default {
                 this.listTracking.inputTracking.toUpperCase()
             )
             .then(resultsCheckTracking => {
+            console.log("resultsCheckTracking กรณีเช็คในตารางแล้ว =>",resultsCheckTracking);
+
               if (resultsCheckTracking.data == true) {
                 this.nulltracking = false;
                 this.trackingNoFormat = false;
@@ -3781,6 +3787,8 @@ export default {
               this.listTracking.inputTracking.toUpperCase()
           )
           .then(resultsCheckTracking => {
+            console.log("resultsCheckTracking เข้ามาครั้งแรก =>",resultsCheckTracking);
+            console.log("resultsCheckTracking เข้ามาครั้งแรก =>",resultsCheckTracking.data);
             if (resultsCheckTracking.data == true) {
               this.nulltracking = false;
               this.trackingNoFormat = false;
@@ -3966,7 +3974,7 @@ export default {
 
     successCreateBill() {
       var that = this;
-      // console.log("finaldata", this.finalDataSave);
+      // console.log("finaldata", JSON.stringify(this.finalDataSave));
       that.isDisabledInsertPOS = true;
       if (that.view == "createBill8") {
         that.view = "createBill8A";
@@ -3977,8 +3985,10 @@ export default {
             that.finalDataSave
           )
           .then(responseBillNo => {
-            console.log("DATABILL", responseBillNo.data);
-            if (responseBillNo.data) {
+            // console.log("responseBillNo", responseBillNo);
+            // console.log("responseBillNo Status", responseBillNo.data.status);
+            // console.log("DATABILL", responseBillNo.data);
+            if (responseBillNo.data.status == "success") {
               that.isLoading = false; //ได้เลขบิลแล้วหยุดหมุนด้วย
               that.$refs.successavebill.open();
               that.view = "createBill9"; //หน้าโชว์และมีเลขที่บิลส่งกลับมาพร้อมพิมพ์ใบเสร็จ

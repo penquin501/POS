@@ -22,7 +22,9 @@ app.post("/quickLink", jsonParser, (req, res) => {
   let items = req.body.items;
   var source = "QUICKLINK";
   let trackings = [];
-  var c_total=0;
+  var c_total = 0;
+  var regexPhone = /^0\d{9}$/;
+  var regex_img = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
   if (user_id === null || user_id === undefined || user_id === "") {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
@@ -57,7 +59,12 @@ app.post("/quickLink", jsonParser, (req, res) => {
     parseInt(total) === 0
   ) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
-  } else if (img_url === null || img_url === undefined || img_url === "") {
+  } else if (
+    img_url === null ||
+    img_url === undefined ||
+    img_url === "" ||
+    img_url.match(regex_img) === null
+  ) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
   } else if (
     sender_name === null ||
@@ -68,7 +75,8 @@ app.post("/quickLink", jsonParser, (req, res) => {
   } else if (
     sender_phone === null ||
     sender_phone === undefined ||
-    sender_phone === ""
+    sender_phone === "" ||
+    sender_phone.match(regexPhone) === null
   ) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
   } else if (
@@ -96,52 +104,70 @@ app.post("/quickLink", jsonParser, (req, res) => {
 
         var item_valid = true;
         for (i = 0; i < items.length; i++) {
-          if (
-            items[i].tracking === undefined && 
-            items[i].tracking === null &&
-            items[i].tracking === ""
-          ) {
+          if (items[i].tracking === undefined) {
+            item_valid = false;
+          }
+          if (items[i].tracking === null) {
+            item_valid = false;
+          }
+          if (items[i].tracking === "") {
+            item_valid = false;
+          }
+          if (items[i].parcel_type === undefined) {
+            item_valid = false;
+          }
+          if (items[i].parcel_type === null) {
+            item_valid = false;
+          }
+          if (items[i].parcel_type === "") {
             item_valid = false;
           }
           if (
-            items[i].parcel_type === undefined &&
-            items[i].parcel_type === null &&
-            items[i].parcel_type === "" &&
             items[i].parcel_type.toUpperCase() !== "NORMAL" &&
             items[i].parcel_type.toUpperCase() !== "COD"
           ) {
             item_valid = false;
           }
-          if (
-            items[i].zipcode === undefined &&
-            items[i].zipcode === null &&
-            items[i].zipcode === ""
-          ) {
+          if (items[i].zipcode === undefined) {
             item_valid = false;
           }
-          if (
-            items[i].size_price === undefined &&
-            items[i].size_price === null &&
-            items[i].size_price === "" &&
-            parseInt(items[i].size_price) === 0
-          ) {
-            item_valid = false;
-          } else {
-            c_total+=parseInt(items[i].size_price);
-          }
-          if (
-            items[i].cod_value === undefined &&
-            items[i].cod_value === null &&
-            items[i].cod_value === "" 
-          ) {
+          if (items[i].zipcode === null) {
             item_valid = false;
           }
-          if (
-            items[i].size_id === undefined &&
-            items[i].size_id === null &&
-            items[i].size_id === "" &&
-            parseInt(items[i].size_id) === 0
-          ) {
+          if (items[i].zipcode === "") {
+            item_valid = false;
+          }
+          if (items[i].size_price === undefined) {
+            item_valid = false;
+          }
+          if (items[i].size_price === null) {
+            item_valid = false;
+          }
+          if (items[i].size_price === "") {
+            item_valid = false;
+          }
+          if (parseInt(items[i].size_price) === 0) {
+            item_valid = false;
+          }
+          if (items[i].cod_value === undefined) {
+            item_valid = false;
+          }
+          if (items[i].cod_value === null) {
+            item_valid = false;
+          }
+          if (items[i].cod_value === "") {
+            item_valid = false;
+          }
+          if (items[i].size_id === undefined) {
+            item_valid = false;
+          }
+          if (items[i].size_id === null) {
+            item_valid = false;
+          }
+          if (items[i].size_id === "") {
+            item_valid = false;
+          }
+          if (parseInt(items[i].size_id) === 0) {
             item_valid = false;
           }
           if (
@@ -152,22 +178,27 @@ app.post("/quickLink", jsonParser, (req, res) => {
           }
           if (
             items[i].parcel_type.toUpperCase() == "COD" &&
-            (parseInt(items[i].cod_value) <= 0 || parseInt(items[i].cod_value) > 30000)
+            (parseInt(items[i].cod_value) <= 0 ||
+              parseInt(items[i].cod_value) > 30000)
           ) {
             item_valid = false;
           }
-          
         }
 
         if (item_valid == false) {
           res.json({ status: "error_validate_tracking" });
-        } else if(c_total !== total){
-          res.json({ status: "error_total_wrong" });
         } else {
           var responseCheckItem = [];
           async function checkItem() {
             await items.forEach(async val => {
-              responseCheckItem.push(quicklinkService.checkItem(val.tracking,val.zipcode));
+              responseCheckItem.push(
+                quicklinkService.checkItem(
+                  val.tracking,
+                  val.zipcode,
+                  val.size_id,
+                  val.size_price
+                )
+              );
             });
             return await Promise.all(responseCheckItem);
           }
@@ -179,82 +210,120 @@ app.post("/quickLink", jsonParser, (req, res) => {
               }
             }
             if (item_pass == false) {
+              /* error tracking ซ้ำ/ข้อมูล zipcode ผิด/size id กับราคาผิด  */
               res.json({ status: "error_no_data" });
             } else {
-              for (q = 0; q < result.length; q++) {
-                trackings.push(result[q][0]);
+              let c_total = 0;
+              for (r = 0; r < items.length; r++) {
+                c_total += items[r].size_price;
               }
-              var data2 = {
-                trackingList: trackings
-              };
-              request(
-                {
-                  url: "https://www.945api.com/parcel/check/tracking/list/api",
-                  method: "POST",
-                  body: data2,
-                  json: true
-                },
-                (err, res3, body) => {
+              if (c_total !== total) {
+                res.json({ status: "error_total_size_price" });
+              } else {
+                for (q = 0; q < result.length; q++) {
+                  trackings.push(result[q][0]);
+                }
+                var data2 = {
+                  member_code: member_code,
+                  user_id: user_id,
+                  branch_id: branch_id,
+                  carrier_id: carrier_id,
+                  trackingList: trackings
+                };
+                request(
+                  {
+                    url: "https://www.945api.com/parcel/validate/tracking/api",
+                    method: "POST",
+                    body: data2,
+                    json: true
+                  },
+                  (err, res3, body) => {
+                    if (err === null) {
+                      if (res3.body.status != true) {
+                        res.json({ status: res3.body.status });
+                      } else {
+                        console.log("pass begin", billing_no);
 
-                  if (err === null) {
-                    if (res3.body.status != true) {
-                      res.json({ status: res3.body.status });
-                    } else {
-                      console.log("pass begin", billing_no);
+                        async function updateItem() {
+                          var resItem = [];
 
-                      async function updateItem() {
-                        var resItem = [];
+                          await items.forEach(async val => {
+                            var trackingItem = val.tracking;
+                            var zipcodeItem = val.zipcode;
+                            var parcelTypeItem = val.parcel_type.toUpperCase();
+                            var sizePriceItem = val.size_price;
+                            var codValueItem = val.cod_value;
+                            var sizeIdItem = val.size_id;
 
-                        await items.forEach(async val => {
-                          var trackingItem = val.tracking;
-                          var zipcodeItem = val.zipcode;
-                          var parcelTypeItem = val.parcel_type.toUpperCase();
-                          var sizePriceItem = val.size_price;
-                          var codValueItem = val.cod_value;
-                          var sizeIdItem = val.size_id;
-
-                          resItem.push(quicklinkService.checkTrackingBillingItem(billing_no,sender_name,sender_phone,sender_address,source,trackingItem,zipcodeItem,parcelTypeItem,sizePriceItem,codValueItem,sizeIdItem));
-                        });
-                        var resultArr = await Promise.all(resItem);
-                        return resultArr;
-                      }
-                      updateItem().then(function(result) {
-                        async function dataProcess(rtArr) {
-                          let c_pass = true;
-                          for (i = 0; i < rtArr.length; i++) {
-                            if (typeof rtArr[i] == "undefined") {
-                              c_pass = false;
+                            resItem.push(
+                              quicklinkService.checkTrackingBillingItem(
+                                billing_no,
+                                sender_name,
+                                sender_phone,
+                                sender_address,
+                                source,
+                                trackingItem,
+                                zipcodeItem,
+                                parcelTypeItem,
+                                sizePriceItem,
+                                codValueItem,
+                                sizeIdItem
+                              )
+                            );
+                          });
+                          var resultArr = await Promise.all(resItem);
+                          return resultArr;
+                        }
+                        updateItem().then(function(result) {
+                          async function dataProcess(rtArr) {
+                            let c_pass = true;
+                            for (i = 0; i < rtArr.length; i++) {
+                              if (typeof rtArr[i] == "undefined") {
+                                c_pass = false;
+                              }
+                            }
+                            if (c_pass) {
+                              let resultBilling = await quicklinkService.saveQuicklinkBilling(
+                                rtArr[0],
+                                user_id,
+                                mer_authen_level,
+                                member_code,
+                                carrier_id,
+                                billing_no,
+                                branch_id,
+                                total,
+                                img_url
+                              );
+                              return resultBilling;
+                            } else {
+                              return false;
                             }
                           }
-                          if (c_pass) {
-                            let resultBilling = await quicklinkService.saveQuicklinkBilling(rtArr[0],user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url);
-                            return resultBilling;
-                          } else {
-                            return false;
-                          }
-                        }
 
-                        dataProcess(result).then(data => {
-                          if (data === false) {
-                            res.json({
-                              status: "error"
-                            });
-                          } else {
-                            quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
-                                if (resBilling.affectedRows > 0) {
-                                  res.json({
-                                    status: "success",
-                                    billing_no: billing_no
-                                  });
-                                }
+                          dataProcess(result).then(data => {
+                            if (data === false) {
+                              res.json({
+                                status: "error"
                               });
-                          }
+                            } else {
+                              quicklinkService
+                                .updateStatusBilling(billing_no)
+                                .then(function(resBilling) {
+                                  if (resBilling.affectedRows > 0) {
+                                    res.json({
+                                      status: "success",
+                                      billing_no: billing_no
+                                    });
+                                  }
+                                });
+                            }
+                          });
                         });
-                      });
+                      }
                     }
                   }
-                }
-              );
+                );
+              }
             }
           });
         }

@@ -42,7 +42,10 @@ module.exports = {
             });
         })
     },
-    checkItem:(tracking,zipcode)=>{
+    checkItem:(tracking,zipcode,size_id,size_price)=>{
+        var checkSizeId="SELECT parcel_price FROM size_info WHERE size_id=?"
+        var dataSizeId=[size_id];
+
         var checkZipcode="SELECT zipcode FROM postinfo_zipcodes WHERE zipcode=?"
         var dataZipcode=[zipcode];
 
@@ -50,15 +53,17 @@ module.exports = {
         var dataStatusBilling=[tracking];
         return new Promise(function(resolve, reject) {
 
+            connection.query(checkSizeId,dataSizeId, (error, resultsSizePrice, fields) => {
             connection.query(checkZipcode,dataZipcode, (error, resultsZipcode, fields) => {
                 connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
-                    if(results.length > 0 && resultsZipcode.length > 0) {
+                    if(results.length > 0 && resultsZipcode.length > 0 && resultsSizePrice[0].parcel_price==size_price) {
                         resolve(results);
                     } else {
                         resolve();
                     }
                 });
         });
+    });
         })
     },
     checkTrackingBillingItem: (billing_no,sender_name,sender_phone,sender_address,source,tracking,zipcode,parcel_type,size_price,cod_value,size_id) => {

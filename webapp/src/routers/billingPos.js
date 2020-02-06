@@ -41,7 +41,9 @@ app.post("/addReceiver", jsonParser, (req, res) => {
   let listTracking = req.body.listTracking;
   var source = "POS";
   let trackings = [];
-  let c_total = 0;
+
+  var regexPhone = /^0\d{9}$/;
+  var regex_img = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
   if (user_id === null || user_id === undefined || user_id === "") {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
@@ -69,7 +71,12 @@ app.post("/addReceiver", jsonParser, (req, res) => {
     carrier_id === ""
   ) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
-  } else if (img_url === null || img_url === undefined || img_url === "") {
+  } else if (
+    img_url === null ||
+    img_url === undefined ||
+    img_url === "" ||
+    img_url.match(regex_img) === null
+  ) {
     res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
   } else if (
     total === null ||
@@ -101,45 +108,50 @@ app.post("/addReceiver", jsonParser, (req, res) => {
         for (i = 0; i < listTracking.length; i++) {
           // tracking = listTracking[i].tracking;
           address = listTracking[i].address;
-
-          if (
-            listTracking[i].tracking === null &&
-            listTracking[i].tracking === undefined &&
-            listTracking[i].tracking === ""
-          ) {
+          if (listTracking[i].tracking === null) {
             var item_valid = false;
           }
-          if (
-            listTracking[i].size_id === null &&
-            listTracking[i].size_id === undefined &&
-            listTracking[i].size_id === ""
-          ) {
+          if (listTracking[i].tracking === undefined) {
             var item_valid = false;
           }
-          if (
-            listTracking[i].size_price === null &&
-            listTracking[i].size_price === undefined &&
-            listTracking[i].size_price === ""
-          ) {
+          if (listTracking[i].tracking === "") {
             var item_valid = false;
           }
-          if (
-            listTracking[i].parcel_type === null &&
-            listTracking[i].parcel_type === undefined &&
-            listTracking[i].parcel_type === "" &&
-            listTracking[i].parcel_type.toUpperCase() !== "NORMAL" &&
-            listTracking[i].parcel_type.toUpperCase() !== "COD"
-          ) {
+          if (listTracking[i].size_id === null) {
             var item_valid = false;
           }
-          if (
-            listTracking[i].cod_value === null &&
-            listTracking[i].cod_value === undefined &&
-            listTracking[i].cod_value === ""
-          ) {
+          if (listTracking[i].size_id === undefined) {
             var item_valid = false;
-          } else {
-            c_total += parseInt(listTracking[i].size_price);
+          }
+          if (listTracking[i].size_id === "") {
+            var item_valid = false;
+          }
+          if (listTracking[i].size_price === null) {
+            var item_valid = false;
+          }
+          if (listTracking[i].size_price === undefined) {
+            var item_valid = false;
+          }
+          if (listTracking[i].size_price === "") {
+            var item_valid = false;
+          }
+          if (listTracking[i].parcel_type === null) {
+            var item_valid = false;
+          }
+          if (listTracking[i].parcel_type === undefined) {
+            var item_valid = false;
+          }
+          if (listTracking[i].parcel_type === "") {
+            var item_valid = false;
+          }
+          if (listTracking[i].cod_value === null) {
+            var item_valid = false;
+          }
+          if (listTracking[i].cod_value === undefined) {
+            var item_valid = false;
+          }
+          if (listTracking[i].cod_value === "") {
+            var item_valid = false;
           }
           if (
             listTracking[i].parcel_type.toUpperCase() == "NORMAL" &&
@@ -154,110 +166,139 @@ app.post("/addReceiver", jsonParser, (req, res) => {
           ) {
             item_valid = false;
           }
-          if (
-            address.sender_name === null ||
-            address.sender_name === undefined ||
-            address.sender_name === ""
-          ) {
+          if (address.sender_name === null) {
             var item_valid = false;
           }
-          if (
-            address.sender_phone === null ||
-            address.sender_phone === undefined ||
-            address.sender_phone === ""
-          ) {
+          if (address.sender_name === undefined) {
             var item_valid = false;
           }
-          if (
-            address.sender_address === null ||
-            address.sender_address === undefined ||
-            address.sender_address === ""
-          ) {
+          if (address.sender_name === "") {
             var item_valid = false;
           }
-          if (
-            address.receiver_name === null ||
-            address.receiver_name === undefined ||
-            address.receiver_name === ""
-          ) {
+          if (address.sender_phone === null) {
             var item_valid = false;
           }
-          if (
-            address.phone === null ||
-            address.phone === undefined ||
-            address.phone === ""
-          ) {
+          if (address.sender_phone === undefined) {
             var item_valid = false;
           }
-          if (
-            address.receiver_address === null ||
-            address.receiver_address === undefined ||
-            address.receiver_address === ""
-          ) {
+          if (address.sender_phone === "") {
             var item_valid = false;
           }
-          if (
-            address.district_id === null ||
-            address.district_id === undefined ||
-            address.district_id === ""
-          ) {
+          if (address.sender_phone.match(regexPhone) === null) {
             var item_valid = false;
           }
-          if (
-            address.district_name === null ||
-            address.district_name === undefined ||
-            address.district_name === ""
-          ) {
+          if (address.sender_address === null) {
             var item_valid = false;
           }
-          if (
-            address.amphur_id === null ||
-            address.amphur_id === undefined ||
-            address.amphur_id === ""
-          ) {
+          if (address.sender_address === undefined) {
             var item_valid = false;
           }
-          if (
-            address.amphur_name === null ||
-            address.amphur_name === undefined ||
-            address.amphur_name === ""
-          ) {
+          if (address.sender_address === "") {
             var item_valid = false;
           }
-          if (
-            address.province_id === null ||
-            address.province_id === undefined ||
-            address.province_id === ""
-          ) {
+          if (address.receiver_name === null) {
             var item_valid = false;
           }
-          if (
-            address.province_name === null ||
-            address.province_name === undefined ||
-            address.province_name === ""
-          ) {
+          if (address.receiver_name === undefined) {
             var item_valid = false;
           }
-          if (
-            address.zipcode === null ||
-            address.zipcode === undefined ||
-            address.zipcode === ""
-          ) {
+          if (address.receiver_name === "") {
             var item_valid = false;
           }
-          if (
-            address.remark === null ||
-            address.remark === undefined ||
-            address.remark === ""
-          ) {
+          if (address.phone === null) {
+            var item_valid = false;
+          }
+          if (address.phone === undefined) {
+            var item_valid = false;
+          }
+          if (address.phone === "") {
+            var item_valid = false;
+          }
+          if (address.phone.match(regexPhone) === null) {
+            var item_valid = false;
+          }
+          if (address.receiver_address === null) {
+            var item_valid = false;
+          }
+          if (address.receiver_address === undefined) {
+            var item_valid = false;
+          }
+          if (address.receiver_address === "") {
+            var item_valid = false;
+          }
+          if (address.district_id === null) {
+            var item_valid = false;
+          }
+          if (address.district_id === undefined) {
+            var item_valid = false;
+          }
+          if (address.district_id === "") {
+            var item_valid = false;
+          }
+          if (address.district_name === null) {
+            var item_valid = false;
+          }
+          if (address.district_name === undefined) {
+            var item_valid = false;
+          }
+          if (address.district_name === "") {
+            var item_valid = false;
+          }
+          if (address.amphur_id === null) {
+            var item_valid = false;
+          }
+          if (address.amphur_id === undefined) {
+            var item_valid = false;
+          }
+          if (address.amphur_id === "") {
+            var item_valid = false;
+          }
+          if (address.amphur_name === null) {
+            var item_valid = false;
+          }
+          if (address.amphur_name === undefined) {
+            var item_valid = false;
+          }
+          if (address.amphur_name === "") {
+            var item_valid = false;
+          }
+          if (address.province_id === null) {
+            var item_valid = false;
+          }
+          if (address.province_id === undefined) {
+            var item_valid = false;
+          }
+          if (address.province_id === "") {
+            var item_valid = false;
+          }
+          if (address.province_name === null) {
+            var item_valid = false;
+          }
+          if (address.province_name === undefined) {
+            var item_valid = false;
+          }
+          if (address.province_name === "") {
+            var item_valid = false;
+          }
+          if (address.zipcode === null) {
+            var item_valid = false;
+          }
+          if (address.zipcode === undefined) {
+            var item_valid = false;
+          }
+          if (address.zipcode === "") {
+            var item_valid = false;
+          }
+          if (address.remark === null) {
+            var item_valid = false;
+          }
+          if (address.remark === undefined) {
             var item_valid = false;
           }
         }
 
         if (item_valid == false) {
           res.json({ status: "error_validate_tracking" });
-        } else if (c_total !== total) {
-          res.json({ status: "error_total_wrong" });
         } else {
           var responseCheckItem = [];
           async function checkItem() {
@@ -266,6 +307,8 @@ app.post("/addReceiver", jsonParser, (req, res) => {
               responseCheckItem.push(
                 billingPosService.checkItem(
                   val.tracking,
+                  val.size_id,
+                  val.size_price,
                   c_address.district_id,
                   c_address.amphur_id,
                   c_address.province_id,
@@ -276,113 +319,124 @@ app.post("/addReceiver", jsonParser, (req, res) => {
             return await Promise.all(responseCheckItem);
           }
           checkItem().then(function(result) {
-            
+            console.log(result);
             var item_pass = true;
             for (j = 0; j < result.length; j++) {
               if (result[j] == undefined) {
                 item_pass = false;
               }
             }
-            
+
             if (item_pass == false) {
-              /* error tracking ซ้ำ/ข้อมูล zipcode ผิด  */
+              /* error tracking ซ้ำ/ข้อมูล zipcode ผิด/size id กับราคาผิด  */
               res.json({ status: "error_tracking" });
             } else {
-              for (q = 0; q < result.length; q++) {
-                let tracking = {
-                  tracking: result[q]
-                };
-                trackings.push(tracking);
+              let c_total = 0;
+              for (r = 0; r < listTracking.length; r++) {
+                c_total += listTracking[r].size_price;
               }
-              var data2 = {
-                trackingList: trackings
-              };
+              if (c_total !== total) {
+                res.json({ status: "error_total_size_price" });
+              } else {
+                for (q = 0; q < result.length; q++) {
+                  let tracking = {
+                    tracking: result[q]
+                  };
+                  trackings.push(tracking);
+                }
+                var data2 = {
+                  member_code: member_code,
+                  user_id: user_id,
+                  branch_id: branch_id,
+                  carrier_id: carrier_id,
+                  trackingList: trackings
+                };
 
-              request(
-                {
-                  url: "https://www.945api.com/parcel/check/tracking/list/api",
-                  method: "POST",
-                  body: data2,
-                  json: true
-                },
-                (err, res3, body) => {
-                  
-                  if (err === null) {
-                    if (res3.body.status != true) {
-                      res.json({
-                        status: res3.body.status
-                      });
-                    } else {
-                      console.log("begin", billing_no);
-                      async function saveItem() {
-                        var resItem = [];
-                        await listTracking.forEach(async val => {
-                          let track = val.tracking;
-                          let size_id = val.size_id;
-                          let size_price = val.size_price;
-                          let parcel_type = val.parcel_type.toUpperCase();
-                          let cod_value = val.cod_value;
-                          let address = val.address;
-
-                          resItem.push(
-                            billingPosService.saveDataBillingItem(
-                              billing_no,
-                              track,
-                              size_id,
-                              size_price,
-                              parcel_type,
-                              cod_value,
-                              source,
-                              address
-                            )
-                          );
+                request(
+                  {
+                    url: "https://www.945api.com/parcel/validate/tracking/api",
+                    method: "POST",
+                    body: data2,
+                    json: true
+                  },
+                  (err, res3, body) => {
+                    if (err === null) {
+                      if (res3.body.status != true) {
+                        res.json({
+                          status: res3.body.status
                         });
+                      } else {
+                        console.log("begin", billing_no);
+                        async function saveItem() {
+                          var resItem = [];
+                          await listTracking.forEach(async val => {
+                            let track = val.tracking;
+                            let size_id = val.size_id;
+                            let size_price = val.size_price;
+                            let parcel_type = val.parcel_type.toUpperCase();
+                            let cod_value = val.cod_value;
+                            let address = val.address;
 
-                        var resultArr = await Promise.all(resItem);
-                        return resultArr[0];
-                      }
-                      saveItem().then(function(result) {
-                        async function dataProcess(t) {
-                          if (typeof t == "undefined") {
-                            return false;
-                          } else {
-                            let resultBilling = await billingPosService.saveDataBilling(
-                              t,
-                              user_id,
-                              mer_authen_level,
-                              member_code,
-                              carrier_id,
-                              billing_no,
-                              branch_id,
-                              total,
-                              img_url
+                            resItem.push(
+                              billingPosService.saveDataBillingItem(
+                                billing_no,
+                                track,
+                                size_id,
+                                size_price,
+                                parcel_type,
+                                cod_value,
+                                source,
+                                address
+                              )
                             );
-                            return resultBilling;
-                          }
+                          });
+
+                          var resultArr = await Promise.all(resItem);
+                          return resultArr[0];
                         }
-                        dataProcess(result).then(data => {
-                          if (data === false) {
-                            res.json({
-                              status: "error"
-                            });
-                          } else {
-                            quicklinkService
-                              .updateStatusBilling(billing_no)
-                              .then(function(resBilling) {
-                                if (resBilling.affectedRows > 0) {
-                                  res.json({
-                                    status: "success",
-                                    billing_no: billing_no
-                                  });
-                                }
-                              });
+                        saveItem().then(function(result) {
+                          async function dataProcess(t) {
+                            if (typeof t == "undefined") {
+                              return false;
+                            } else {
+                              let resultBilling = await billingPosService.saveDataBilling(
+                                t,
+                                user_id,
+                                mer_authen_level,
+                                member_code,
+                                carrier_id,
+                                billing_no,
+                                branch_id,
+                                total,
+                                img_url
+                              );
+                              return resultBilling;
+                            }
                           }
+                          dataProcess(result).then(data => {
+                            if (data === false) {
+                              res.json({
+                                status: "error"
+                              });
+                            } else {
+                              quicklinkService
+                                .updateStatusBilling(billing_no)
+                                .then(function(resBilling) {
+                                  if (resBilling.affectedRows > 0) {
+                                    res.json({
+                                      status: "success",
+                                      billing_no: billing_no
+                                    });
+                                  }
+                                });
+                            }
+                          });
                         });
-                      });
+                      }
                     }
                   }
-                }
-              );
+                );
+              }
             }
           });
         }
