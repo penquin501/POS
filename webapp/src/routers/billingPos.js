@@ -377,18 +377,7 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                             let cod_value = val.cod_value;
                             let address = val.address;
 
-                            resItem.push(
-                              billingPosService.saveDataBillingItem(
-                                billing_no,
-                                track,
-                                size_id,
-                                size_price,
-                                parcel_type,
-                                cod_value,
-                                source,
-                                address
-                              )
-                            );
+                            resItem.push(billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address));
                           });
 
                           var resultArr = await Promise.all(resItem);
