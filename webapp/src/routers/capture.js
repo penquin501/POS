@@ -17,8 +17,17 @@ app.post("/addCapture", jsonParser, (req, res) => {
   let phoneNumber = data.phoneNumber;
   let barcodes = data.barcodes;
 
+  codes = {}
+  barcodes.forEach((value)=>{
+    console.log(value.code);
+    if (! (value.code in codes)) {
+      codes[String(value.code)] = value;
+    }
+  })
+  var objCodes=Object.values(codes);
+
   let saveItem = async () => {
-    await barcodes.forEach(async val => {
+    await objCodes.forEach(async val => {
       let imageUrl = val.imageUrl;
       let imagePath = val.imagePath;
       let code = val.code;
