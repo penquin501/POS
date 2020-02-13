@@ -11,7 +11,7 @@ moment.locale("th");
 app.get("/checkZipcode", (req, res) => {
   let zipcode = req.query.zipcode;
   if(zipcode==""){
-    res.json({status:"ERROR_NOT_COMPLETE"});
+    res.json({status:"ERROR_DATA_NOT_COMPLETE"});
   } else {
   billingPosService.getZipcode(zipcode).then(function(data) {
     if (data == false) {

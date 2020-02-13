@@ -167,6 +167,9 @@ app.get("/getReceipt", (req, res) => {
 
 app.get("/checkZipcode", (req, res) => {
   let zipcode = req.query.zipcode;
+  if(zipcode==""){
+    res.json({status:"ERROR_DATA_NOT_COMPLETE"});
+  } else{
   genBillingNoServices.checkZipcode(zipcode).then(function(data) {
     if (data == false) {
       res.send(false);
@@ -174,6 +177,7 @@ app.get("/checkZipcode", (req, res) => {
       res.json(data);
     }
   });
+}
 });
 
 app.post("/status/bill/no/api", (req, res) => {
