@@ -1687,6 +1687,10 @@
                           style="color:red;"
                         >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งถูกใช้งานไปแล้ว</h5>
                         <h5
+                          v-show="trackingDuplicatedInTable"
+                          style="color:red;"
+                        >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, เลขจัดส่งอยู่ในรายการแล้ว</h5>
+                        <h5
                           v-show="trackingPhoneNotMatch"
                           style="color:red;"
                         >**ไม่สามารถใช้เลขที่จัดส่งนี้ได้, ใส่รหัสผู้ส่งไม่ถูกต้อง</h5>
@@ -1766,10 +1770,11 @@
                               id="quickLinkInputCOD"
                               v-bind:readonly="is_cod_readonly"
                             />
-                             <h5 v-show="errorCOD" style="color:red;">**กรอกมูลค่า COD ให้ถูกต้อง</h5>
-                             <h5 v-show="erroroverCOD" style="color:red;">**มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง</h5>
-                           
-                       
+                            <h5 v-show="errorCOD" style="color:red;">**กรอกมูลค่า COD ให้ถูกต้อง</h5>
+                            <h5
+                              v-show="erroroverCOD"
+                              style="color:red;"
+                            >**มูลค่า COD มีมูลค่ามากกว่า 30000 ไม่สามารถทำรายการได้ กรุณากรอกมูลค่าใหม่อีกครั้ง</h5>
                           </div>
                         </div>
                       </div>
@@ -2248,14 +2253,14 @@ export default {
       trackingNoFormat: false,
       trackingNoCapture: false,
       trackingDuplicated: false,
+      trackingDuplicatedInTable:false,
       trackingPhoneNotMatch: false,
       trackingCannotuse: false,
       isDisabledInsertQuiklink: false,
       isDisabledInsertPOS: false,
       // errorCOD
-      errorCOD:false,
-      erroroverCOD:false,
-
+      errorCOD: false,
+      erroroverCOD: false
     };
   },
   created: function() {
@@ -2431,6 +2436,7 @@ export default {
       this.trackingNoFormat = false;
       this.trackingNoCapture = false;
       this.trackingDuplicated = false;
+      this.trackingDuplicatedInTable = false;
       this.trackingPhoneNotMatch = false;
       this.trackingCannotuse = false;
       this.quickLinkDataDetail = false;
@@ -2467,7 +2473,7 @@ export default {
           this.is_track_readonly = false;
           this.quickLinkTracking = "";
           this.$refs.barcode.focus();
-          this.trackingDuplicated = true;
+          this.trackingDuplicatedInTable = true;
           this.quickLinkZipcode = false;
 
           this.is_track_readonly = false;
@@ -2476,7 +2482,7 @@ export default {
           this.nulltracking = false;
           this.trackingNoFormat = false;
           this.trackingNoCapture = false;
-          this.trackingDuplicated = false;
+          this.trackingDuplicatedInTable = false;
           this.trackingPhoneNotMatch = false;
           this.trackingCannotuse = false;
           this.checkQuickLinkTrackingApi(
@@ -2494,6 +2500,7 @@ export default {
       this.trackingDuplicated = false;
       this.trackingPhoneNotMatch = false;
       this.trackingCannotuse = false;
+      this.trackingDuplicatedInTable = false;
 
       var quickLinkTrackingKey = this.quickLinkTracking.toUpperCase();
       //ดึงmemberData ขึ้นมาเอาเบอร์โทร
@@ -2519,7 +2526,6 @@ export default {
             quickLinkTrackingKey
         )
         .then(response => {
-         
           if (response.data.status == "Error_Not_In_Capture_Data") {
             this.is_track_readonly = false;
             this.quickLinkTracking = "";
@@ -2557,6 +2563,7 @@ export default {
               this.trackingNoFormat = false;
               this.trackingNoCapture = false;
               this.trackingDuplicated = false;
+              this.trackingDuplicatedInTable = false;
               this.trackingPhoneNotMatch = false;
               this.trackingCannotuse = false;
             } else {
@@ -2564,6 +2571,7 @@ export default {
               this.trackingNoFormat = false;
               this.trackingNoCapture = false;
               this.trackingDuplicated = false;
+              this.trackingDuplicatedInTable = false;
               this.trackingPhoneNotMatch = false;
               this.trackingCannotuse = false;
               this.is_track_readonly = true;
@@ -2580,6 +2588,7 @@ export default {
         });
     },
     addquickLinkZipcode(qlZipcode) {
+      this.is_readonly = true; //ปิดกล่องเพื่อเช็ค
       axios
         .get(
           "https://pos.945.report/genBillNo/checkZipcode?zipcode=" +
@@ -2612,6 +2621,7 @@ export default {
       this.erroroverCOD = false;
       if (parcelType == "NORMAL") {
         this.quickLinkTypeTransport = "NORMAL";
+
         // this.isSendingTypeQuicklink = true;
         this.quickLinkInputCod = false;
         this.quickLinkProduct = true;
@@ -2631,7 +2641,11 @@ export default {
     },
     addquickLinkSize() {
       this.intPriceCod = parseInt(this.quickLinkCodValue);
-      if (this.intPriceCod == 0 || this.quickLinkCodValue == "" || this.intPriceCod == null) {
+      if (
+        this.intPriceCod == 0 ||
+        this.quickLinkCodValue == "" ||
+        this.intPriceCod == null
+      ) {
         this.erroroverCOD = false;
         this.errorCOD = true;
         this.quickLinkCodValue = "";
@@ -2732,7 +2746,10 @@ export default {
         this.quickLinkBtnAdd = false;
         this.quickLinkInputCod = false;
         this.$refs.barcode.focus();
-      } else if (!this.quickLinkTypeTransport || this.quickLinkTypeTransport == null ) {
+      } else if (
+        !this.quickLinkTypeTransport ||
+        this.quickLinkTypeTransport == null
+      ) {
         alert("กรอกข้อมูลให้ครบถ้วน");
         this.is_track_readonly = false;
         this.is_readonly = false;
@@ -2755,7 +2772,10 @@ export default {
         this.quickLinkBtnAdd = false;
         this.quickLinkInputCod = false;
         this.$refs.barcode.focus();
-      } else if (!this.quickLinkSelectSize || this.quickLinkSelectSize == null) {
+      } else if (
+        !this.quickLinkSelectSize ||
+        this.quickLinkSelectSize == null
+      ) {
         alert("กรอกข้อมูลให้ครบถ้วน");
         this.is_track_readonly = false;
         this.is_readonly = false;
@@ -3057,7 +3077,7 @@ export default {
             this.dataSaveQuickLink
           )
           .then(response => {
-            // console.log("response---เลขบิลกลับมา", response.data);
+            console.log("response---เลขบิลกลับมา1", response.data);
             this.quickLinkBillingNo = response.data.billing_no;
             if (response.data.status == "success") {
               this.isLoading = false; //ได้เลขบิลแล้วหยุดหมุนด้วย
@@ -3077,6 +3097,14 @@ export default {
               localStorage.removeItem("quickLinkdataCount");
               localStorage.removeItem("quickLinkAddData");
               localStorage.removeItem("quickLinkCountAllinTable");
+
+              // window.location.reload();
+              // ลบของ POS
+              this.$cookie.delete("billNo");
+              localStorage.removeItem("datalistPOS");
+              localStorage.removeItem("finalDataSave");
+              localStorage.removeItem("dataCount");
+              localStorage.removeItem("memberData");
             }
             return this.quickLinkBillingNo;
           })
@@ -3091,6 +3119,14 @@ export default {
         localStorage.removeItem("quickLinkdataCount");
         localStorage.removeItem("quickLinkAddData");
         localStorage.removeItem("quickLinkCountAllinTable");
+
+        // window.location.reload();
+        // ลบของ POS
+        this.$cookie.delete("billNo");
+        localStorage.removeItem("datalistPOS");
+        localStorage.removeItem("finalDataSave");
+        localStorage.removeItem("dataCount");
+        localStorage.removeItem("memberData");
       }
       setTimeout(
         function() {
@@ -3531,6 +3567,7 @@ export default {
         this.trackingNoFormat = false;
         this.trackingNoCapture = false;
         this.trackingDuplicated = false;
+        this.trackingDuplicatedInTable = false;
         this.trackingPhoneNotMatch = false;
         this.trackingCannotuse = false;
         this.nulltracking = true;
@@ -3546,6 +3583,7 @@ export default {
         this.trackingNoFormat = false;
         this.trackingNoCapture = false;
         this.trackingDuplicated = false;
+        this.trackingDuplicatedInTable = false;
         this.trackingPhoneNotMatch = false;
         this.trackingCannotuse = false;
         this.nulltracking = true;
@@ -3556,6 +3594,7 @@ export default {
         this.trackingNoFormat = false;
         this.trackingNoCapture = false;
         this.trackingDuplicated = false;
+        this.trackingDuplicatedInTable = false;
         this.trackingPhoneNotMatch = false;
         this.trackingCannotuse = false;
         this.listTracking.inputTracking = "";
@@ -3575,6 +3614,7 @@ export default {
           this.trackingNoFormat = false;
           this.trackingNoCapture = false;
           this.trackingDuplicated = false;
+          this.trackingDuplicatedInTable = false;
           this.trackingPhoneNotMatch = false;
           this.trackingCannotuse = false;
           this.trackingDuplicated = true;
@@ -3587,13 +3627,17 @@ export default {
                 this.listTracking.inputTracking.toUpperCase()
             )
             .then(resultsCheckTracking => {
-            console.log("resultsCheckTracking กรณีเช็คในตารางแล้ว =>",resultsCheckTracking);
+              console.log(
+                "resultsCheckTracking กรณีเช็คในตารางแล้ว =>",
+                resultsCheckTracking
+              );
 
               if (resultsCheckTracking.data == true) {
                 this.nulltracking = false;
                 this.trackingNoFormat = false;
                 this.trackingNoCapture = false;
                 this.trackingDuplicated = false;
+                this.trackingDuplicatedInTable = false;
                 this.trackingPhoneNotMatch = false;
                 this.trackingCannotuse = false;
 
@@ -3763,6 +3807,7 @@ export default {
                 this.trackingNoFormat = false;
                 this.trackingNoCapture = false;
                 this.trackingDuplicated = false;
+                this.trackingDuplicatedInTable = false;
                 this.trackingPhoneNotMatch = false;
                 this.trackingCannotuse = false;
                 this.listTracking.inputTracking = "";
@@ -3787,13 +3832,20 @@ export default {
               this.listTracking.inputTracking.toUpperCase()
           )
           .then(resultsCheckTracking => {
-            console.log("resultsCheckTracking เข้ามาครั้งแรก =>",resultsCheckTracking);
-            console.log("resultsCheckTracking เข้ามาครั้งแรก =>",resultsCheckTracking.data);
+            console.log(
+              "resultsCheckTracking เข้ามาครั้งแรก =>",
+              resultsCheckTracking
+            );
+            console.log(
+              "resultsCheckTracking เข้ามาครั้งแรก =>",
+              resultsCheckTracking.data
+            );
             if (resultsCheckTracking.data == true) {
               this.nulltracking = false;
               this.trackingNoFormat = false;
               this.trackingNoCapture = false;
               this.trackingDuplicated = false;
+              this.trackingDuplicatedInTable = false;
               this.trackingPhoneNotMatch = false;
               this.trackingCannotuse = false;
               //ข้อมูลอยุ่ในตารางเตรียมบันทึก
@@ -3958,6 +4010,7 @@ export default {
               this.trackingNoFormat = false;
               this.trackingNoCapture = false;
               this.trackingDuplicated = false;
+              this.trackingDuplicatedInTable = false;
               this.trackingPhoneNotMatch = false;
               this.trackingCannotuse = false;
               this.trackingDuplicated = true;
@@ -4001,11 +4054,19 @@ export default {
               // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
               that.$refs.supererror.open();
               //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
+              // ลบของ QuickLink
+              this.$cookie.delete("quickLinkBillingNo");
+              localStorage.removeItem("quickLinkdataCount");
+              localStorage.removeItem("quickLinkAddData");
+              localStorage.removeItem("quickLinkCountAllinTable");
+
+              window.location.reload();
               // ลบของ POS
-              that.$cookie.delete("billNo");
+              this.$cookie.delete("billNo");
               localStorage.removeItem("datalistPOS");
               localStorage.removeItem("finalDataSave");
               localStorage.removeItem("dataCount");
+              localStorage.removeItem("memberData");
             }
             return that.billNo;
           })
@@ -4016,11 +4077,19 @@ export default {
         that.isLoading = false;
         // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
         that.$refs.supererror.open();
+        // ลบของ QuickLink
+        this.$cookie.delete("quickLinkBillingNo");
+        localStorage.removeItem("quickLinkdataCount");
+        localStorage.removeItem("quickLinkAddData");
+        localStorage.removeItem("quickLinkCountAllinTable");
+
+        window.location.reload();
         // ลบของ POS
-        that.$cookie.delete("billNo");
+        this.$cookie.delete("billNo");
         localStorage.removeItem("datalistPOS");
         localStorage.removeItem("finalDataSave");
         localStorage.removeItem("dataCount");
+        localStorage.removeItem("memberData");
       }
       setTimeout(
         function() {
@@ -4281,6 +4350,7 @@ export default {
       }
     },
     nextBill() {
+      // ลบของ POS
       this.$cookie.delete("billNo");
       localStorage.removeItem("datalistPOS");
       localStorage.removeItem("finalDataSave");
@@ -4299,7 +4369,14 @@ export default {
     },
 
     notNextBill() {
+      // ลบของ QuickLink
+      this.$cookie.delete("quickLinkBillingNo");
+      localStorage.removeItem("quickLinkdataCount");
+      localStorage.removeItem("quickLinkAddData");
+      localStorage.removeItem("quickLinkCountAllinTable");
+
       window.location.reload();
+      // ลบของ POS
       this.$cookie.delete("billNo");
       localStorage.removeItem("datalistPOS");
       localStorage.removeItem("finalDataSave");

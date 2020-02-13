@@ -10,6 +10,9 @@ moment.locale("th");
 
 app.get("/checkZipcode", (req, res) => {
   let zipcode = req.query.zipcode;
+  if(zipcode==""){
+    res.json({status:"ERROR_NOT_COMPLETE"});
+  } else {
   billingPosService.getZipcode(zipcode).then(function(data) {
     if (data == false) {
       res.send(false);
@@ -17,6 +20,7 @@ app.get("/checkZipcode", (req, res) => {
       res.json(data);
     }
   });
+}
 });
 app.get("/checktest", (req, res) => {
   var billing_no = req.query.billing_no;

@@ -12,7 +12,7 @@ module.exports = {
       "JOIN postinfo_district d ON z.district_code=d.DISTRICT_CODE " +
       "JOIN postinfo_amphur a ON d.AMPHUR_ID=a.AMPHUR_ID " +
       "JOIN postinfo_province p ON d.PROVINCE_ID=p.PROVINCE_ID " +
-      "WHERE z.zipcode LIKE ?";
+      "WHERE z.zipcode LIKE ? AND z.zipcode!='00000'";
 
     var data = [zipcode + "%"];
 
