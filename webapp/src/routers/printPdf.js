@@ -23,16 +23,19 @@ app.get("/printBillPdf", (req, res) => {
       (err, res2, body) => {
         if (err === null) {
           genBillingNoServices.getType(bill).then(function(data2) {
-            var timestamp = momentTimezone(data.billingInfo[0].billing_date)
-              .tz("Asia/Bangkok")
-              .format("YYYY-MM-DD HH:mm:ss", true);
+            var timestamp = momentTimezone(data.billingInfo[0].billing_date).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss", true);
             var dateConvert = formatDateToThai(timestamp);
+            var total =0
+
+            for(i=0;i<data.billingItem.length;i++){
+              total+=data.billingItem[i].size_price;
+            }
+
             var datatest = {
               data: data,
+              total:total,
               member_code:
-                res2.body.memberInfo.firstname +
-                " " +
-                res2.body.memberInfo.lastname,
+                res2.body.memberInfo.firstname + " " +res2.body.memberInfo.lastname,
               datatime: dateConvert,
               data2: data2
             };

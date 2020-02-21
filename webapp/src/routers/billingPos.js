@@ -10,17 +10,17 @@ moment.locale("th");
 
 app.get("/checkZipcode", (req, res) => {
   let zipcode = req.query.zipcode;
-  if(zipcode==""){
-    res.json({status:"ERROR_DATA_NOT_COMPLETE"});
+  if (zipcode == "") {
+    res.json({ status: "ERROR_DATA_NOT_COMPLETE" });
   } else {
-  billingPosService.getZipcode(zipcode).then(function(data) {
-    if (data == false) {
-      res.send(false);
-    } else {
-      res.json(data);
-    }
-  });
-}
+    billingPosService.getZipcode(zipcode).then(function(data) {
+      if (data == false) {
+        res.send(false);
+      } else {
+        res.json(data);
+      }
+    });
+  }
 });
 app.get("/checktest", (req, res) => {
   var billing_no = req.query.billing_no;
@@ -381,7 +381,18 @@ app.post("/addReceiver", jsonParser, (req, res) => {
                             let cod_value = val.cod_value;
                             let address = val.address;
 
-                            resItem.push(billingPosService.saveDataBillingItem(billing_no,track,size_id,size_price,parcel_type,cod_value,source,address));
+                            resItem.push(
+                              billingPosService.saveDataBillingItem(
+                                billing_no,
+                                track,
+                                size_id,
+                                size_price,
+                                parcel_type,
+                                cod_value,
+                                source,
+                                address
+                              )
+                            );
                           });
 
                           var resultArr = await Promise.all(resItem);
@@ -586,11 +597,12 @@ app.get("/checkTracking", (req, res) => {
 
 app.get("/listBillngNo", (req, res) => {
   let branchId = req.query.branch_id;
+
   billingPosService.listBilling(branchId).then(function(data) {
     if (data == false) {
       res.send(false);
     } else {
-      res.json(data);
+      res.send(data);
     }
   });
 });

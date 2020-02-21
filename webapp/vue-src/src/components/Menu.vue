@@ -204,7 +204,7 @@
             </div>
             <div class="modal-body" style="height:800px;">
               <div class="row" style="text-align:center; font-size:16px;">
-                <b style="font-size:22px;">รายการย้อนหลัง 3 เดือน</b>
+                <b style="font-size:22px;">รายการย้อนหลัง 1 เดือน</b>
               </div>
 
               <div class="row" style="text-align:center; font-size:16px;">
@@ -803,28 +803,6 @@ export default {
       sortInvioce(a, b){
         return b - a;
       },
-
-    checkInvioce() {
-      // const data = {
-      //   bill_no: bill,
-      // };
-      //   axios
-      //   .post("https://www.945api.com/parcel/tax/bill/api" , JSON.stringify(data))
-      //   .then((res) => {
-      //     if(res.data.status == "ERROR_NO_TAX_BILL"){
-      //        this.$refs.processprintTax.open();
-      //     }else{
-      //      var link = res.data.peak_url_receipt_webview;
-      //      window.open(link);
-      //     }
-      //    setTimeout(function(){
-      //     this.$refs.processprintTax.close();
-      //    }.bind(this),3000);
-      //     })
-      //   .catch((err) => {
-      //     console.log("AXIOS ERROR: ", err);
-      //   })
-    },
     listlistMember() {
       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       if (localStorage.dataLogin || dataLogin != null) {
@@ -1125,6 +1103,7 @@ export default {
         axios
           .get(
             "https://pos.945.report/billingPos/listBillngNo?branch_id=" +
+            // "http://127.0.0.1:3100/billingPos/listBillngNo?branch_id=" +
               branchId
           )
           .then(resultList => {
@@ -1136,8 +1115,10 @@ export default {
               };
               axios
                 .post(
-                  "https://www.945api.com/parcel/tax/bill/api",
-                  JSON.stringify(data)
+                  // "https://www.945api.com/parcel/tax/bill/api",
+                  // JSON.stringify(data)
+                  "https://service.945parcel.com/parcel/tax/bill/api",
+                  data
                 )
                 .then(res => {                  
               var memberJson = {
@@ -1145,8 +1126,10 @@ export default {
               };
               axios
                 .post(
-                  "https://www.945api.com/parcel/select/member/api",
-                  JSON.stringify(memberJson)
+                  // "https://www.945api.com/parcel/select/member/api",
+                  // JSON.stringify(memberJson)
+                  "https://service.945parcel.com/parcel/select/member/api",
+                  memberJson
                 )
                 .then(res2 => {
                   let firstname;
@@ -1161,8 +1144,8 @@ export default {
                   }
 
                   if (res2.data.status == "SUCCESS") {
-                    firstname = res2.data.memberInfo.firstname;
-                    lastname = res2.data.memberInfo.lastname;
+                    firstname = res2.data.member_code[0].firstname;
+                    lastname = res2.data.member_code[0].lastname;
                   } else {
                     firstname = "";
                     lastname = "";
@@ -1179,19 +1162,10 @@ export default {
                 })
                 })
             }   
-            // console.log("data all", this.listBill);
           })
-        //  setTimeout(() => {
-        //           this.isLoading = false
-        //         },10000)
-        
       } else {
         window.location.reload();
       }
-
-    
-
-
     },
     printBillHistory(bill) {
       this.$refs.processprint.open();
