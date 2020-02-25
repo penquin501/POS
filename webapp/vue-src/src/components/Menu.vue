@@ -1141,8 +1141,12 @@ export default {
                       }
 
                       if (res2.data.status == "SUCCESS") {
-                        firstname = res2.data.member_code[0].firstname;
-                        lastname = res2.data.member_code[0].lastname;
+                        /* php ver ver */
+                        firstname = res2.data.memberInfo.firstname;
+                        lastname = res2.data.memberInfo.lastname;
+                        /* node ver */
+                        // firstname = res2.data.member_code[0].firstname;
+                        // lastname = res2.data.member_code[0].lastname;
                       } else {
                         firstname = "";
                         lastname = "";
