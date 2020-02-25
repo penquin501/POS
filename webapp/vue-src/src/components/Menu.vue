@@ -181,11 +181,9 @@
       </div>
 
       <div id="printModal" class="modal modal-wide fade">
-           <div class="vld-parent">
-        <loading :active.sync="isLoading" 
-        :is-full-page="fullPage"></loading>
-       </div>
-
+        <div class="vld-parent">
+          <loading :active.sync="isLoading" :is-full-page="fullPage"></loading>
+        </div>
 
         <div class="modal-dialog">
           <div class="modal-content">
@@ -691,9 +689,6 @@
     </div>
     <router-view />
 
-
-
-
     <!-- Modal HTML -->
     <sweet-modal icon="success" ref="processprint">กำลังดำเนินการพิมพ์ใบเสร็จ</sweet-modal>
     <sweet-modal icon="error" ref="processprintTax">ไม่มีใบกำกับภาษี</sweet-modal>
@@ -707,8 +702,8 @@ const queryString = require("query-string");
 import QueryString from "query-string";
 import { SweetModal, SweetModalTab } from "sweet-modal-vue";
 import momentTimezone from "moment-timezone";
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 export default {
   props: ["value"],
   components: {
@@ -800,9 +795,9 @@ export default {
   },
 
   methods: {
-      sortInvioce(a, b){
-        return b - a;
-      },
+    sortInvioce(a, b) {
+      return b - a;
+    },
     listlistMember() {
       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       if (localStorage.dataLogin || dataLogin != null) {
@@ -811,14 +806,14 @@ export default {
         const data = {
           branch_id: merid
         };
-        console.log("Datacheckmember",data);
+        console.log("Datacheckmember", data);
         axios
           .post(
             "https://www.945api.com/parcel/list/member/api",
             JSON.stringify(data)
           )
           .then(function(response) {
-             console.log(response.data);
+            console.log(response.data);
             console.log(response.data.listMember);
             that.memberList = response.data.listMember;
             //  console.log("list", response.data.listMember);
@@ -837,10 +832,10 @@ export default {
     },
     changePhonemember(phone) {
       var phonechange;
-      if(phone == null){
+      if (phone == null) {
         phonechange = "-";
-      }else{
-         phonechange = phone.replace("66", "0");
+      } else {
+        phonechange = phone.replace("66", "0");
       }
       // var phonechange = phone.replace("66", "0");
       return phonechange;
@@ -1082,7 +1077,9 @@ export default {
       window.open("https://zip.945.report/", "_blank");
     },
     timeCon(date) {
-      var datatime = momentTimezone(date).tz('Asia/Bangkok').format("YYYY-MM-DD HH:mm:ss", true);
+      var datatime = momentTimezone(date)
+        .tz("Asia/Bangkok")
+        .format("YYYY-MM-DD HH:mm:ss", true);
       var year = moment(datatime).format("YYYY");
       var year2 = parseInt(year) + 543;
       return moment(datatime).format(" Do MMMM " + year2 + " " + "H:mm");
@@ -1095,15 +1092,15 @@ export default {
       );
     },
     listBillPre() {
-    //  this.isLoading = true;
-         var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
+      //  this.isLoading = true;
+      var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       if (localStorage.dataLogin || dataLogin != null) {
-           this.listBill = [];
-           var branchId = dataLogin.merid;
+        this.listBill = [];
+        var branchId = dataLogin.merid;
         axios
           .get(
             "https://pos.945.report/billingPos/listBillngNo?branch_id=" +
-            // "http://127.0.0.1:3100/billingPos/listBillngNo?branch_id=" +
+              // "http://127.0.0.1:3100/billingPos/listBillngNo?branch_id=" +
               branchId
           )
           .then(resultList => {
@@ -1115,54 +1112,53 @@ export default {
               };
               axios
                 .post(
-                  // "https://www.945api.com/parcel/tax/bill/api",
-                  // JSON.stringify(data)
-                  "https://service.945parcel.com/parcel/tax/bill/api",
-                  data
+                  "https://www.945api.com/parcel/tax/bill/api",
+                  JSON.stringify(data)
+                  // "https://service.945parcel.com/parcel/tax/bill/api",
+                  // data
                 )
-                .then(res => {                  
-              var memberJson = {
-                member_code: myData[i].member_code
-              };
-              axios
-                .post(
-                  // "https://www.945api.com/parcel/select/member/api",
-                  // JSON.stringify(memberJson)
-                  "https://service.945parcel.com/parcel/select/member/api",
-                  memberJson
-                )
-                .then(res2 => {
-                  let firstname;
-                  let lastname;
-                  if (
-                    res.data.status == "SUCCESS" &&
-                    res.data.peak_url_receipt_webview != ""
-                  ) {
-                    this.taxLink = res.data.peak_url_receipt_webview;
-                  } else {
-                    this.taxLink = "no link";
-                  }
-
-                  if (res2.data.status == "SUCCESS") {
-                    firstname = res2.data.member_code[0].firstname;
-                    lastname = res2.data.member_code[0].lastname;
-                  } else {
-                    firstname = "";
-                    lastname = "";
-                  }
-                var dataLine = {
-                    bill_no: myData[i],
-                    firstname: firstname,
-                    lastname: lastname,
-                    taxLink: this.taxLink
+                .then(res => {
+                  var memberJson = {
+                    member_code: myData[i].member_code
                   };
+                  axios
+                    .post(
+                      "https://www.945api.com/parcel/select/member/api",
+                      JSON.stringify(memberJson)
+                      // "https://service.945parcel.com/parcel/select/member/api",
+                      // memberJson
+                    )
+                    .then(res2 => {
+                      let firstname;
+                      let lastname;
+                      if (
+                        res.data.status == "SUCCESS" &&
+                        res.data.peak_url_receipt_webview != ""
+                      ) {
+                        this.taxLink = res.data.peak_url_receipt_webview;
+                      } else {
+                        this.taxLink = "no link";
+                      }
 
-                  this.listBill.push(dataLine);
-    
-                })
-                })
-            }   
-          })
+                      if (res2.data.status == "SUCCESS") {
+                        firstname = res2.data.member_code[0].firstname;
+                        lastname = res2.data.member_code[0].lastname;
+                      } else {
+                        firstname = "";
+                        lastname = "";
+                      }
+                      var dataLine = {
+                        bill_no: myData[i],
+                        firstname: firstname,
+                        lastname: lastname,
+                        taxLink: this.taxLink
+                      };
+
+                      this.listBill.push(dataLine);
+                    });
+                });
+            }
+          });
       } else {
         window.location.reload();
       }
@@ -1355,7 +1351,7 @@ export default {
       if (this.searchQuery) {
         return this.memberList.filter(item => {
           var re = item.phoneregis;
-          if(!re){
+          if (!re) {
             re = "";
           }
           var phone = re.replace("66", "0");
@@ -1370,7 +1366,7 @@ export default {
             firstname = "";
           } else if (phone == null) {
             phone = "";
-          } 
+          }
           return (
             !this.searchQuery ||
             citizenId.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
@@ -1381,7 +1377,7 @@ export default {
         });
       } else {
         return this.memberList;
-        console.log("this.memberList",this.memberList);
+        console.log("this.memberList", this.memberList);
       }
     },
 
@@ -1409,17 +1405,16 @@ export default {
             items.firstname
               .toLowerCase()
               .includes(this.searchBill.toLowerCase()) ||
-            items.lastname
-              .toLowerCase()
-              .includes(this.searchBill.toLowerCase())
+            items.lastname.toLowerCase().includes(this.searchBill.toLowerCase())
           );
         });
-      
       } else {
-        return this.listBill.sort((a, b) => a.bill_no.timestamp - b.bill_no.timestamp).slice().reverse();
-          //  return dataBill;
-          // return this.listBill.bill_no.sort((a, b) => a.timestamp - b.timestamp);    
-
+        return this.listBill
+          .sort((a, b) => a.bill_no.timestamp - b.bill_no.timestamp)
+          .slice()
+          .reverse();
+        //  return dataBill;
+        // return this.listBill.bill_no.sort((a, b) => a.timestamp - b.timestamp);
       }
     }
   }
