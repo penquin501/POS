@@ -6,6 +6,21 @@ const moment = require("moment");
 moment.locale("th");
 
 module.exports = {
+  checkLastBillingData:()=>{
+    var sql = "SELECT MAX(id) as max_id FROM billing";
+    return new Promise(function(resolve, reject) {
+      connection.query(sql, (err, results) => {
+        if(err===null){
+          console.log("check id billing",results);
+          resolve(results);
+        } else {
+          console.log("check err",err);
+        }
+        
+      });
+    });
+
+  },
   checkDistrict: zipcode => {
     var sql = "SELECT district_code FROM postinfo_zipcodes WHERE zipcode = ?";
     var data = [zipcode];

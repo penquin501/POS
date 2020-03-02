@@ -8,6 +8,13 @@ const bodyParser = require("body-parser");
 var jsonParser = bodyParser.json();
 moment.locale("th");
 
+app.get("/last-id",(req, res)=>{
+  genBillingNoServices.checkLastBillingData().then(function(data, error){
+
+  res.json({id:data});
+  })
+})
+
 app.post("/parcelPrice", (req, res) => {
   let zipcode = req.body.zipcode;
   let size_name = req.body.size_name;
