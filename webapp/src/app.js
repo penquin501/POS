@@ -1,8 +1,15 @@
+require('dotenv').config()
 const express = require('express');
 const twig = require('twig');
 const app = express();
-const port = process.env.PORT || 3100;
+const port = process.env.PORT || 3000;
 const path = require('path');
+
+if (process.env.NODE_ENV === 'production') {
+    console.log('In production mode');
+} else {
+    console.log('In development mode');
+}
 app.use(express.static("public"));
 
 
@@ -38,13 +45,4 @@ app.get("/*", function(req, res) {
     res.sendFile(path.resolve("public/index.html"));
 });
 
-
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
-
-// This section is optional and used to configure twig.
-app.set("twig options", {
-    allow_async: true, // Allow asynchronous compiling
-    strict_variables: false
-});
-app.listen(9999);

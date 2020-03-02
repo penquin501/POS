@@ -1,4 +1,4 @@
-let path = require("path");
+// let path = require("path");
 module.exports = {
-    outputDir: path.resolve(__dirname, "../src/public"),
-  }
+  // outputDir: path.resolve(__dirname, "../src/public")
+};
