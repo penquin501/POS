@@ -5,10 +5,15 @@
     # docker-compose.yml
     version: "3.0"
     services:
-    mysql:
+      mysql:
         image: mysql
-    webapp:
+      webapp:
         build:
-        context: ./parcel_2019
+          context: ./parcel_2019
+        environment:
+          - MYSQL_HOST=mysql
+          - MYSQL_USERNAME=root
+          - MYSQL_PASSWORD=password
+          - MYSQL_DATABASE_NAME=parcel
         ports:
-        - "3355:3000"
+          - "3355:3000"
