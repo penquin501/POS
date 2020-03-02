@@ -574,7 +574,7 @@ export default {
         zipcode = inputZipcode;
         axios
           .get(
-            "https://pos.945.report/billingPos/checkZipcode/?zipcode=" +
+            "/billingPos/checkZipcode/?zipcode=" +
               zipcode
           )
           .then(resultsZipCode => {
@@ -679,7 +679,7 @@ export default {
       axios
         .get(
           // "http://206.189.85.185:8100/member/checkPhoneNo/?phoneNo=",
-          "https://pos.945.report/member/checkPhoneNo/?phoneNo=" + phoneNO
+          "/member/checkPhoneNo/?phoneNo=" + phoneNO
         )
         .then(response => {
           if (response.data == false) {

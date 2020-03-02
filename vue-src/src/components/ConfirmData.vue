@@ -328,7 +328,7 @@ export default {
     },
     getAllTDZ() {
       axios
-        .get("http://206.189.85.185:8100/adminCare/trackingAllCare")
+        .get("/adminCare/trackingAllCare")
         .then(resultGetAllTDZ => {
           this.TrackingAll = resultGetAllTDZ.data;
           this.numberTracking = resultGetAllTDZ.data.tracking;
@@ -342,7 +342,7 @@ export default {
       this.view = 2;
       console.log(this.TrackingAll[index].tracking);
       axios(
-        "http://206.189.85.185:8100/adminCare/trackingAllCarekeyin?tracking=" +
+        "/adminCare/trackingAllCarekeyin?tracking=" +
           this.TrackingAll[index].tracking
       )
         .then(resultDataDetailTracking => {
@@ -419,7 +419,7 @@ export default {
       console.log("first get");
       axios
         .get(
-          "http://206.189.85.185:8100/billingPos/checkZipcode/?zipcode=" +
+          "/billingPos/checkZipcode/?zipcode=" +
             this.dataZipCodeInput
         )
         .then(resultsFirstGetZipCode => {
@@ -443,7 +443,7 @@ export default {
       ) {
         axios
           .get(
-            "http://206.189.85.185:8100/billingPos/checkZipcode/?zipcode=101"
+            "/billingPos/checkZipcode/?zipcode=101"
           )
           .then(resultsDataNewGetZipCode => {
             this.dataFirstGetZipCode = resultsDataNewGetZipCode.data;
@@ -455,7 +455,7 @@ export default {
       } else {
         axios
           .get(
-            "http://206.189.85.185:8100/billingPos/checkZipcode/?zipcode=" +
+            "/billingPos/checkZipcode/?zipcode=" +
               this.inputNewGetZipCode
           )
           .then(resultsDataNewGetZipCode => {
@@ -473,7 +473,7 @@ export default {
     },
     clickOpen() {
       axios
-        .get("http://206.189.85.185:8100/billingPos/checkZipcode/?zipcode=101")
+        .get("/billingPos/checkZipcode/?zipcode=101")
         .then(resultsDataNewGetZipCode => {
           this.dataFirstGetZipCode = resultsDataNewGetZipCode.data;
           console.log(resultsDataNewGetZipCode);

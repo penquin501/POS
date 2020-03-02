@@ -59,7 +59,7 @@ export default {
     };
     axios
       .post(
-        "https://apidev.whatitems.com/parcel/list/member/api",
+        "https://www945api.com/parcel/list/member/api",
         JSON.stringify(data)
       )
       .then(function(response) {
@@ -75,7 +75,7 @@ export default {
   methods: {
     getDataBank(index) {
       axios
-        .get("https://apidev.whatitems.com/parcel/agent/bank/name")
+        .get("https://www.945api.com/parcel/agent/bank/name")
         .then(resultsDataBank => {
           this.dataBank = resultsDataBank.data;
           // console.log("databank", this.dataBank);

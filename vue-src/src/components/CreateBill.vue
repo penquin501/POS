@@ -2520,7 +2520,7 @@ export default {
       );
       axios
         .get(
-          "https://pos.945.report/genBillNo/checkSendermember?phone=" +
+          "/genBillNo/checkSendermember?phone=" +
             this.memberPhone +
             "&tracking=" +
             quickLinkTrackingKey
@@ -2591,7 +2591,7 @@ export default {
       this.is_readonly = true; //ปิดกล่องเพื่อเช็ค
       axios
         .get(
-          "https://pos.945.report/genBillNo/checkZipcode?zipcode=" +
+          "/genBillNo/checkZipcode?zipcode=" +
             this.qlZipcode
         )
         .then(response => {
@@ -2858,7 +2858,7 @@ export default {
         JSON.stringify(this.quickLinkdataCount)
       );
       axios
-        .post("https://pos.945.report/genBillNo/parcelPrice", {
+        .post("/genBillNo/parcelPrice", {
           zipcode: this.qlZipcode,
           size_name: this.quickLinkSelectSize
         })
@@ -3073,7 +3073,7 @@ export default {
         this.dataSaveQuickLink.items = subQuickLink;
         axios
           .post(
-            "https://pos.945.report/quicklink/quickLink",
+            "/quicklink/quickLink",
             this.dataSaveQuickLink
           )
           .then(response => {
@@ -3141,7 +3141,7 @@ export default {
       var bill = this.quickLinkBillingNo;
       var self = this;
       axios
-        .get("https://pos.945.report/genBillNo/getReceipt?bill=" + bill)
+        .get("/genBillNo/getReceipt?bill=" + bill)
         .then(response => {
           self.quickLinkDataHeadBill = response.data.data;
           self.quickLinkDataFooterBill = response.data.data2;
@@ -3546,7 +3546,7 @@ export default {
     showTDZ() {
       this.view = "createBill7";
       axios
-        .post("https://pos.945.report/genBillNo/parcelPrice", {
+        .post("/genBillNo/parcelPrice", {
           zipcode: this.listTracking.address.zipcode,
           size_name: this.listTracking.sizeBox
         })
@@ -3623,7 +3623,7 @@ export default {
         } else {
           axios
             .get(
-              "https://pos.945.report/billingPos/checkTracking?tracking=" +
+              "/billingPos/checkTracking?tracking=" +
                 this.listTracking.inputTracking.toUpperCase()
             )
             .then(resultsCheckTracking => {
@@ -3793,7 +3793,7 @@ export default {
                 //ส่งข้อมูลเข้าตาราง Temp ยังไม่ได้เวฟลงจริง
                 axios
                   .post(
-                    "https://pos.945.report/billingPos/addReceiverTemp",
+                    "/billingPos/addReceiverTemp",
                     datainTablePOS
                   )
                   .then(function(response) {
@@ -3828,7 +3828,7 @@ export default {
         // console.log("เงื่อนไขครั้งแรก กรณี tracking เข้ามาครั้งแรก");
         axios
           .get(
-            "https://pos.945.report/billingPos/checkTracking?tracking=" +
+            "/billingPos/checkTracking?tracking=" +
               this.listTracking.inputTracking.toUpperCase()
           )
           .then(resultsCheckTracking => {
@@ -3996,7 +3996,7 @@ export default {
               //ส่งข้อมูลเข้าตาราง Temp ยังไม่ได้เวฟลงจริง
               axios
                 .post(
-                  "https://pos.945.report/billingPos/addReceiverTemp",
+                  "/billingPos/addReceiverTemp",
                   datainTablePOS
                 )
                 .then(function(response) {
@@ -4034,7 +4034,7 @@ export default {
         that.isLoading = true; //หมุนรอเลขบิล
         axios
           .post(
-            "https://pos.945.report/billingPos/addReceiver",
+            "/billingPos/addReceiver",
             that.finalDataSave
           )
           .then(responseBillNo => {
@@ -4116,7 +4116,7 @@ export default {
       var deleteTracking = this.datalistPOS[index].listTracking[0].tracking;
       axios
         .get(
-          "https://pos.945.report/billingPos/deleteReceiverTemp?id=" +
+          "/billingPos/deleteReceiverTemp?id=" +
             deleteTracking
         )
         .then(function(response) {
@@ -4184,7 +4184,7 @@ export default {
         zipcode = inputZipcode;
         axios
           .get(
-            "https://pos.945.report/billingPos/checkZipcode/?zipcode=" + zipcode
+            "/billingPos/checkZipcode/?zipcode=" + zipcode
           )
           .then(resultsZipCode => {
             if (resultsZipCode.data == false) {

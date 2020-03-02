@@ -1087,7 +1087,7 @@ export default {
     getListBillPrint(bill) {
       // console.log("..เลขบิล..", bill);
       window.open(
-        "https://pos.945.report/printPdf/printBillPdf?bill=" + bill,
+        "/printPdf/printBillPdf?bill=" + bill,
         "_blank"
       );
     },
@@ -1099,7 +1099,7 @@ export default {
         var branchId = dataLogin.merid;
         axios
           .get(
-            "https://pos.945.report/billingPos/listBillngNo?branch_id=" +
+            "/billingPos/listBillngNo?branch_id=" +
               // "http://127.0.0.1:3100/billingPos/listBillngNo?branch_id=" +
               branchId
           )
