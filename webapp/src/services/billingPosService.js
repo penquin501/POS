@@ -433,7 +433,7 @@ module.exports = {
     });
   },
   checkTrackingTemp: tracking => {
-    var sql = "SELECT tracking FROM billing_item_temp WHERE tracking =  ?";
+    var sql = "SELECT tracking FROM billing_item_temp WHERE tracking = ?";
     var data = [tracking];
 
     return new Promise(function(resolve, reject) {
@@ -450,13 +450,13 @@ module.exports = {
   },
   listBilling: branchId => {
     var today=moment(new Date()).format("YYYY-MM-DD");
-    var monthAgo = moment(new Date()).add(-1, "month").format("YYYY-MM-DD");
+    var monthAgo = moment(new Date()).add(-1, "week").format("YYYY-MM-DD");
     console.log(today,monthAgo);
     var status = "cancel";
     var sql =
       "SELECT b.billing_no,b.timestamp,b.billing_date,b.member_code FROM billing b " +
       // "WHERE (DATE(b.billing_date)>= DATE_ADD(CURRENT_DATE(), INTERVAL -1 WEEK) AND Date(b.billing_date)<= CURRENT_DATE()) AND b.status != ? AND b.branch_id= ?";
-      "WHERE (DATE(b.billing_date)> ? AND Date(b.billing_date)<= ?) AND b.status != ? AND b.branch_id= ?";
+      "WHERE (DATE(b.billing_date)> ? AND Date(b.billing_date)<= ?) AND b.status != ? AND b.branch_id= ? ORDER BY b.id DESC";
     
       var data = [monthAgo,today,status, branchId];
 

@@ -202,7 +202,7 @@
             </div>
             <div class="modal-body" style="height:800px;">
               <div class="row" style="text-align:center; font-size:16px;">
-                <b style="font-size:22px;">รายการย้อนหลัง 1 เดือน</b>
+                <b style="font-size:22px;">รายการย้อนหลัง 1 สัปดาห์</b>
               </div>
 
               <div class="row" style="text-align:center; font-size:16px;">

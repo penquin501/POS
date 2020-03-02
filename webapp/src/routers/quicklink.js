@@ -255,20 +255,7 @@ app.post("/quickLink", jsonParser, (req, res) => {
                             var codValueItem = val.cod_value;
                             var sizeIdItem = val.size_id;
 
-                            resItem.push(
-                              quicklinkService.checkTrackingBillingItem(
-                                billing_no,
-                                sender_name,
-                                sender_phone,
-                                sender_address,
-                                source,
-                                trackingItem,
-                                zipcodeItem,
-                                parcelTypeItem,
-                                sizePriceItem,
-                                codValueItem,
-                                sizeIdItem
-                              )
+                            resItem.push(quicklinkService.checkTrackingBillingItem(billing_no,sender_name,sender_phone,sender_address,source,trackingItem,zipcodeItem,parcelTypeItem,sizePriceItem,codValueItem,sizeIdItem)
                             );
                           });
                           var resultArr = await Promise.all(resItem);
@@ -283,17 +270,7 @@ app.post("/quickLink", jsonParser, (req, res) => {
                               }
                             }
                             if (c_pass) {
-                              let resultBilling = await quicklinkService.saveQuicklinkBilling(
-                                rtArr[0],
-                                user_id,
-                                mer_authen_level,
-                                member_code,
-                                carrier_id,
-                                billing_no,
-                                branch_id,
-                                total,
-                                img_url
-                              );
+                              let resultBilling = await quicklinkService.saveQuicklinkBilling(rtArr[0],user_id,mer_authen_level,member_code,carrier_id,billing_no,branch_id,total,img_url);
                               return resultBilling;
                             } else {
                               return false;
@@ -306,14 +283,11 @@ app.post("/quickLink", jsonParser, (req, res) => {
                                 status: "error"
                               });
                             } else {
-                              quicklinkService
-                                .updateStatusBilling(billing_no)
-                                .then(function(resBilling) {
+                              quicklinkService.updateStatusBilling(billing_no).then(function(resBilling) {
                                   if (resBilling.affectedRows > 0) {
                                     res.json({
                                       status: "success",
-                                      billing_no: billing_no
-                                    });
+                                      billing_no: billing_no});
                                   }
                                 });
                             }

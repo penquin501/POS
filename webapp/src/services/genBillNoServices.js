@@ -107,6 +107,7 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       connection.query(sqlBilling, dataBilling, (err, resultBilling) => {
         if (err === null) {
+          console.log(resultBilling);
           if (resultBilling.length == 0) {
             resolve(false);
           } else {

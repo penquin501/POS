@@ -9,6 +9,7 @@ app.get("/printBillPdf", (req, res) => {
   let bill = req.query.bill;
 
   genBillingNoServices.getReceipt(bill).then(function(data) {
+    console.log(data);
     var dataJson = {
       member_code: data.billingInfo[0].member_code
     };
