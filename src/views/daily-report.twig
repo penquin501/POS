@@ -1,0 +1,34 @@
+<html>
+<head>
+{% block css %}
+<meta charset="utf-8">
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+{% endblock %}
+</head>
+{% block body %}
+<body>
+<h3>รายการบิลประจำวัน {{ date }}</h3>
+    <table width="90%" style="   margin-top:20px;" align="center" border="1" cellspacing="0" cellpadding="0">
+				<thead>
+							<tr>
+								<th>ชื่อสาขา</th>
+								<th>เลขที่บิล</th>
+								<th>ชื่อผู้ส่ง</th>
+								<th>จำนวน</th>
+							</tr>
+						</thead>
+                {% for result in items %}
+                        <tbody>
+						<tr>
+							<td>{{ result.branch_name }}</td>
+							<td>{{ result.billing_no }}</td>
+                            <td>{{ result.sender_name }}</td>
+                            <td>{{ result.cTracking }}</td>
+						</tr>
+					</tbody>
+                    {% endfor %}
+			
+</table>
+</body>
+{% endblock %}
+</html>

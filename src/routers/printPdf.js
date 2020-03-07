@@ -15,7 +15,6 @@ app.get("/printBillPdf", (req, res) => {
     };
     request(
       {
-        // url: "https://apidev.whatitems.com/parcel/select/member/api",
         url: "https://www.945api.com/parcel/select/member/api",
         method: "POST",
         body: dataJson,
@@ -59,7 +58,6 @@ app.get("/printMemberBillPdf", (req, res) => {
       };
       request(
         {
-          // url: "https://apidev.whatitems.com/parcel/select/member/api",
           url: "https://www.945api.com/parcel/select/member/api",
           method: "POST",
           body: dataJson,

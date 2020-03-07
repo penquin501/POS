@@ -54,7 +54,6 @@ app.get("/checkSenderMember", (req, res) => {
   };
   request(
     {
-      // url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
       url: "https://www.945api.com/parcel/check/tracking/list/api",
       method: "POST",
       body: data2,
@@ -123,7 +122,6 @@ app.get("/getReceipt", (req, res) => {
       };
       request(
         {
-          // url: "https://apidev.whatitems.com/parcel/select/member/api",
           url: "https://www.945api.com/parcel/select/member/api",
           method: "POST",
           body: dataJson,
@@ -222,5 +220,23 @@ app.get("/check/last/process", (req, res) => {
       last_process:parseInt(data[0].ts)});
   });
 });
+
+app.get("/daily-report", (req, res) => {
+
+  genBillingNoServices.dailyReport().then(function(data) {
+    var reports={
+      "date":momentTimezone(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD", true),
+      "items":data
+    }
+    res.render("daily-report.twig", reports);
+    // if(data==false){
+    //   res.json([]);
+    // } else{
+    //   res.json(data);
+    // }
+    
+  });
+});
+
 
 module.exports = app;

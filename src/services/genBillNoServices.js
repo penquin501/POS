@@ -309,4 +309,29 @@ module.exports = {
       });
     });
   },
+  dailyReport: () => {
+    var sql = "SELECT bInfo.branch_name,b.billing_no,br.sender_name,count(bi.tracking) as cTracking "+
+    "FROM billing b "+
+    "LEFT JOIN billing_item bi ON b.billing_no=bi.billing_no "+
+    "LEFT JOIN billing_receiver_info br ON bi.tracking=br.tracking "+
+    "LEFT JOIN branch_info bInfo ON b.branch_id=bInfo.branch_id "+
+    "WHERE Date(b.billing_date)=CURRENT_DATE() AND b.status NOT IN ('SUCCESS','cancel') "+
+    "GROUP BY b.member_code,b.branch_id,bInfo.branch_name,b.billing_no,br.sender_name "+
+    "ORDER BY b.branch_id ASC";
+    return new Promise(function(resolve, reject) {
+      connection.query(sql, (err, results) => {
+        if(err===null){
+          if(results.length<=0){
+            resolve(false);
+          } else {
+            resolve(results);
+          }
+          
+        } else {
+          resolve(false);
+        }
+        
+      });
+    });
+  },
 };

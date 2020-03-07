@@ -1105,67 +1105,7 @@ export default {
               branchId
           )
           .then(resultList => {
-            console.log("resultList",resultList.data);
-            // var myData = resultList;
-
             this.listBill=resultList.data;
-            // var taxLink = "";
-            // for (let i = 0; i < myData.length; i++) {
-            //   var data = {
-            //     bill_no: myData[i].billing_no
-            //   };
-            //   axios
-            //     .post(
-            //       "https://www.945api.com/parcel/tax/bill/api",
-            //       JSON.stringify(data)
-            //       // "https://service.945parcel.com/parcel/tax/bill/api",
-            //       // data
-            //     )
-            //     .then(res => {
-            //       var memberJson = {
-            //         member_code: myData[i].member_code
-            //       };
-            //       axios
-            //         .post(
-            //           "https://www.945api.com/parcel/select/member/api",
-            //           JSON.stringify(memberJson)
-            //           // "https://service.945parcel.com/parcel/select/member/api",
-            //           // memberJson
-            //         )
-            //         .then(res2 => {
-            //           let firstname;
-            //           let lastname;
-            //           if (
-            //             res.data.status == "SUCCESS" &&
-            //             res.data.peak_url_receipt_webview != ""
-            //           ) {
-            //             this.taxLink = res.data.peak_url_receipt_webview;
-            //           } else {
-            //             this.taxLink = "no link";
-            //           }
-
-            //           if (res2.data.status == "SUCCESS") {
-            //             /* php ver ver */
-            //             firstname = res2.data.memberInfo.firstname;
-            //             lastname = res2.data.memberInfo.lastname;
-            //             /* node ver */
-            //             // firstname = res2.data.member_code[0].firstname;
-            //             // lastname = res2.data.member_code[0].lastname;
-            //           } else {
-            //             firstname = "";
-            //             lastname = "";
-            //           }
-            //           var dataLine = {
-            //             bill_no: myData[i],
-            //             firstname: firstname,
-            //             lastname: lastname,
-            //             taxLink: this.taxLink
-            //           };
-
-            //           this.listBill.push(dataLine);
-            //         });
-            //     });
-            // }
           });
       } else {
         window.location.reload();
