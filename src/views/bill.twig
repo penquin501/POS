@@ -17,6 +17,9 @@
 				@page land {
 					size: A4 portrait;
 				}
+				.uppercase{
+					text-transform: uppercase;
+				}
 				.land {
 					filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
 				}
@@ -198,8 +201,14 @@
 						height: 0;
 						page-break-after: avoid;
 					}
+						.uppercase{
+					text-transform: uppercase;
+				}
 				}
 				@media print {
+						.uppercase{
+					text-transform: uppercase;
+				}
 					.print-header {
 						font-size: 20px;
 					}
@@ -215,15 +224,12 @@
 						width: 7cm;
 						height: 1.5cm;
 						text-align: left;
-
-
 					}
 					div.b {
 						display: inline-block;
 						width: 2cm;
 						height: 1.5cm;
 						text-align: left;
-
 					}
 					div.c {
 						display: inline-block;
@@ -385,7 +391,7 @@
 							<td style="text-align:center;">{{ loop.index }}</td>
 							<td style="text-transform: uppercase; text-align:center;">{{ result.tracking }}</td>
 							<td>{{ result.receiver_name }}</td>
-							<td style="text-align:center;">{{ result.alias_size }}</td>
+							<td class="uppercase" style="text-align:center;">{{ result.alias_size }}</td>
 							{% if  result.bRzipcode == null  %}
 							<td style="text-align:center;">{{ result.bItemZipcode }}</td>
 							{% else %}
@@ -490,7 +496,7 @@
 							<div class="box-tree">
 								<b>รวมเงินชำระสุทธิ
 									<b>
-										{{ total }}
+										{{ data.billingInfo[0].total }}
 									</b>
 									บาท</b>
 							</div>

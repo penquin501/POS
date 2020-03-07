@@ -602,7 +602,17 @@ app.get("/listBillngNo", (req, res) => {
     if (data == false) {
       res.send(false);
     } else {
-      res.send(data);
+      request(
+        {
+          url: "https://www.945api.com/parcel/list/bill/data/api",
+          method: "POST",
+          body: data,
+          json: true
+        },
+        (err, res2, body) => {
+          res.send(res2.body.status);
+        }
+      );
     }
   });
 });

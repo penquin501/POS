@@ -245,15 +245,15 @@
                       scope="row"
                       value="0"
                       style="text-align:center;"
-                    >{{ item.bill_no.billing_no }}</td>
+                    >{{ item.bill_no }}</td>
                     <td
                       scope="row"
                       style="text-align:center; width:20%"
-                    >{{ timeCon( parseInt(item.bill_no.timestamp)) }}</td>
+                    >{{ timeCon( parseInt(item.timestamp)) }}</td>
                     <td style="text-align:center;">{{ item.firstname }} {{ item.lastname }}</td>
                     <td style="text-align:right;">
                       <button
-                        v-if="item.taxLink != 'no link'"
+                        v-if="item.taxLink != ''"
                         style="margin-bottom: 0px;margin-right: 5px;"
                         type="button btn-success"
                         class="btn btn-success"
@@ -265,12 +265,12 @@
                         type="button btn-primary"
                         class="btn btn-info"
                         :disabled="state.isSending"
-                        v-on:click="printBillHistory(item.bill_no.billing_no)"
+                        v-on:click="printBillHistory(item.bill_no)"
                       >ใบเสร็จสลิป</button>
 
                       <button
                         style="margin-bottom: 0px;margin-right: 5px;"
-                        v-on:click="getListBillPrint(item.bill_no.billing_no)"
+                        v-on:click="getListBillPrint(item.bill_no)"
                         type="button"
                         class="btn btn-warning"
                       >ใบเสร็จ A4</button>
@@ -760,6 +760,7 @@ export default {
       phoneNum: "",
 
       taxLink: "",
+      timestamp: 0,
 
       //show img
       imgBook: "",
@@ -1104,64 +1105,67 @@ export default {
               branchId
           )
           .then(resultList => {
-            var myData = resultList.data;
+            console.log("resultList",resultList.data);
+            // var myData = resultList;
+
+            this.listBill=resultList.data;
             // var taxLink = "";
-            for (let i = 0; i < myData.length; i++) {
-              var data = {
-                bill_no: myData[i].billing_no
-              };
-              axios
-                .post(
-                  "https://www.945api.com/parcel/tax/bill/api",
-                  JSON.stringify(data)
-                  // "https://service.945parcel.com/parcel/tax/bill/api",
-                  // data
-                )
-                .then(res => {
-                  var memberJson = {
-                    member_code: myData[i].member_code
-                  };
-                  axios
-                    .post(
-                      "https://www.945api.com/parcel/select/member/api",
-                      JSON.stringify(memberJson)
-                      // "https://service.945parcel.com/parcel/select/member/api",
-                      // memberJson
-                    )
-                    .then(res2 => {
-                      let firstname;
-                      let lastname;
-                      if (
-                        res.data.status == "SUCCESS" &&
-                        res.data.peak_url_receipt_webview != ""
-                      ) {
-                        this.taxLink = res.data.peak_url_receipt_webview;
-                      } else {
-                        this.taxLink = "no link";
-                      }
+            // for (let i = 0; i < myData.length; i++) {
+            //   var data = {
+            //     bill_no: myData[i].billing_no
+            //   };
+            //   axios
+            //     .post(
+            //       "https://www.945api.com/parcel/tax/bill/api",
+            //       JSON.stringify(data)
+            //       // "https://service.945parcel.com/parcel/tax/bill/api",
+            //       // data
+            //     )
+            //     .then(res => {
+            //       var memberJson = {
+            //         member_code: myData[i].member_code
+            //       };
+            //       axios
+            //         .post(
+            //           "https://www.945api.com/parcel/select/member/api",
+            //           JSON.stringify(memberJson)
+            //           // "https://service.945parcel.com/parcel/select/member/api",
+            //           // memberJson
+            //         )
+            //         .then(res2 => {
+            //           let firstname;
+            //           let lastname;
+            //           if (
+            //             res.data.status == "SUCCESS" &&
+            //             res.data.peak_url_receipt_webview != ""
+            //           ) {
+            //             this.taxLink = res.data.peak_url_receipt_webview;
+            //           } else {
+            //             this.taxLink = "no link";
+            //           }
 
-                      if (res2.data.status == "SUCCESS") {
-                        /* php ver ver */
-                        firstname = res2.data.memberInfo.firstname;
-                        lastname = res2.data.memberInfo.lastname;
-                        /* node ver */
-                        // firstname = res2.data.member_code[0].firstname;
-                        // lastname = res2.data.member_code[0].lastname;
-                      } else {
-                        firstname = "";
-                        lastname = "";
-                      }
-                      var dataLine = {
-                        bill_no: myData[i],
-                        firstname: firstname,
-                        lastname: lastname,
-                        taxLink: this.taxLink
-                      };
+            //           if (res2.data.status == "SUCCESS") {
+            //             /* php ver ver */
+            //             firstname = res2.data.memberInfo.firstname;
+            //             lastname = res2.data.memberInfo.lastname;
+            //             /* node ver */
+            //             // firstname = res2.data.member_code[0].firstname;
+            //             // lastname = res2.data.member_code[0].lastname;
+            //           } else {
+            //             firstname = "";
+            //             lastname = "";
+            //           }
+            //           var dataLine = {
+            //             bill_no: myData[i],
+            //             firstname: firstname,
+            //             lastname: lastname,
+            //             taxLink: this.taxLink
+            //           };
 
-                      this.listBill.push(dataLine);
-                    });
-                });
-            }
+            //           this.listBill.push(dataLine);
+            //         });
+            //     });
+            // }
           });
       } else {
         window.location.reload();
@@ -1389,7 +1393,7 @@ export default {
       // var dataBill = this.listBill.sort((a, b) => a.bill_no.timestamp - b.bill_no.timestamp).slice().reverse();
       if (this.searchBill) {
         return this.listBill.filter(items => {
-          var billingNo = items.bill_no.billing_no;
+          var billingNo = items.bill_no;
           var firstName = items.firstname;
           var lastName = items.lastname;
 
@@ -1414,7 +1418,7 @@ export default {
         });
       } else {
         return this.listBill
-          .sort((a, b) => a.bill_no.timestamp - b.bill_no.timestamp)
+          .sort((a, b) => a.timestamp - b.timestamp)
           .slice()
           .reverse();
         //  return dataBill;

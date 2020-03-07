@@ -449,16 +449,15 @@ module.exports = {
     });
   },
   listBilling: branchId => {
-    var today=moment(new Date()).format("YYYY-MM-DD");
+    var today = moment(new Date()).format("YYYY-MM-DD");
     var monthAgo = moment(new Date()).add(-1, "week").format("YYYY-MM-DD");
-    console.log(today,monthAgo);
+    console.log(today, monthAgo);
     var status = "cancel";
     var sql =
       "SELECT b.billing_no,b.timestamp,b.billing_date,b.member_code FROM billing b " +
-      // "WHERE (DATE(b.billing_date)>= DATE_ADD(CURRENT_DATE(), INTERVAL -1 WEEK) AND Date(b.billing_date)<= CURRENT_DATE()) AND b.status != ? AND b.branch_id= ?";
       "WHERE (DATE(b.billing_date)> ? AND Date(b.billing_date)<= ?) AND b.status != ? AND b.branch_id= ? ORDER BY b.id DESC";
-    
-      var data = [monthAgo,today,status, branchId];
+
+    var data = [monthAgo, today, status, branchId];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
