@@ -2061,7 +2061,7 @@
     <sweet-modal
       icon="supererror"
       ref="supererror"
-    >ติดต่อเจ้าหน้าที่เพื่อทำการแก้ปัญหา หรือ โทร.0914271551</sweet-modal>
+    >ติดต่อเจ้าหน้าที่เพื่อทำการแก้ปัญหา หรือ โทร.0914271551 <p>{{ suppererror }}</p></sweet-modal>
   </div>
 </template>
 
@@ -2260,7 +2260,10 @@ export default {
       isDisabledInsertPOS: false,
       // errorCOD
       errorCOD: false,
-      erroroverCOD: false
+      erroroverCOD: false,
+      // supererror
+      suppererror:"",
+
     };
   },
   created: function() {
@@ -4051,18 +4054,19 @@ export default {
               that.$cookie.set("billNo", that.billNo, 1);
             } else {
               that.isLoading = false;
+              that.suppererror = responseBillNo.data.status;
               // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
               that.$refs.supererror.open();
               //ไม่มีเลขที่บิลส่งกลับมา โชว์หน้า createBill8 อยุ่เหมือนเดิมและแจ้งerrorว่าไม่สามารถบันทึกข้อมูลได้กรุณาตรจสอบเลขจัดส่งพัสดุอีกครั้ง
               // ลบของ QuickLink
-              this.$cookie.delete("quickLinkBillingNo");
+              that.$cookie.delete("quickLinkBillingNo");
               localStorage.removeItem("quickLinkdataCount");
               localStorage.removeItem("quickLinkAddData");
               localStorage.removeItem("quickLinkCountAllinTable");
 
-              window.location.reload();
+              // window.location.reload();
               // ลบของ POS
-              this.$cookie.delete("billNo");
+              that.$cookie.delete("billNo");
               localStorage.removeItem("datalistPOS");
               localStorage.removeItem("finalDataSave");
               localStorage.removeItem("dataCount");
@@ -4076,16 +4080,17 @@ export default {
       } else {
         that.isLoading = false;
         // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+        that.suppererror = responseBillNo.data.status;
         that.$refs.supererror.open();
         // ลบของ QuickLink
-        this.$cookie.delete("quickLinkBillingNo");
+        that.$cookie.delete("quickLinkBillingNo");
         localStorage.removeItem("quickLinkdataCount");
         localStorage.removeItem("quickLinkAddData");
         localStorage.removeItem("quickLinkCountAllinTable");
 
-        window.location.reload();
+        // window.location.reload();
         // ลบของ POS
-        this.$cookie.delete("billNo");
+        that.$cookie.delete("billNo");
         localStorage.removeItem("datalistPOS");
         localStorage.removeItem("finalDataSave");
         localStorage.removeItem("dataCount");
