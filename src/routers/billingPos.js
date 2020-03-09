@@ -323,7 +323,7 @@ app.post("/addReceiver", jsonParser, (req, res) => {
             return await Promise.all(responseCheckItem);
           }
           checkItem().then(function(result) {
-            console.log(result);
+            // console.log(result); 
             var item_pass = true;
             for (j = 0; j < result.length; j++) {
               if (result[j] == undefined) {

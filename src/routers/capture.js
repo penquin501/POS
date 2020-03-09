@@ -19,7 +19,7 @@ app.post("/addCapture", jsonParser, (req, res) => {
 
   codes = {}
   barcodes.forEach((value)=>{
-    console.log(value.code);
+    console.log("save capture =>",value.code);
     if (! (value.code in codes)) {
       codes[String(value.code)] = value;
     }
