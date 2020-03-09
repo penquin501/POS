@@ -3080,7 +3080,7 @@ export default {
             this.dataSaveQuickLink
           )
           .then(response => {
-            console.log("response---เลขบิลกลับมา1", response.data);
+            //console.log("response---เลขบิลกลับมา1", response.data);
             this.quickLinkBillingNo = response.data.billing_no;
             if (response.data.status == "success") {
               this.isLoading = false; //ได้เลขบิลแล้วหยุดหมุนด้วย
@@ -3094,6 +3094,7 @@ export default {
               );
             } else {
               // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+              this.suppererror = response.data.status;
               this.$refs.supererror.open();
               // ลบของ QuickLink
               this.$cookie.delete("quickLinkBillingNo");
@@ -3116,6 +3117,7 @@ export default {
           });
       } else {
         // ติดต่อเจ้าหน้าที่ หรือ โทร.0914271551
+        this.suppererror = response.data.status;
         this.$refs.supererror.open();
         // ลบของ QuickLink
         this.$cookie.delete("quickLinkBillingNo");

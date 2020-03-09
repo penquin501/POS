@@ -75,26 +75,14 @@ module.exports = {
       "WHERE d.DISTRICT_ID=? AND d.AMPHUR_ID=? AND d.PROVINCE_ID=?";
     var dataAddress = [district_id, amphur_id, province_id];
 
-    var updateStatusBilling =
-      "SELECT tracking FROM billing_item WHERE tracking=?";
+    var updateStatusBilling ="SELECT tracking FROM billing_item WHERE tracking=?";
     var dataStatusBilling = [tracking];
     return new Promise(function(resolve, reject) {
-      connection.query(
-        checkSizeId,
-        dataSizeId,
-        (error, resultsSizePrice, fields) => {
-          connection.query(
-            checkZipcode,
-            dataAddress,
-            (error, resultsZipcode, fields) => {
-              connection.query(
-                updateStatusBilling,
-                dataStatusBilling,
-                (error, results, fields) => {
+      connection.query(checkSizeId,dataSizeId,(error, resultsSizePrice, fields) => {
+          connection.query(checkZipcode,dataAddress,(error, resultsZipcode, fields) => {
+              connection.query(updateStatusBilling,dataStatusBilling,(error, results, fields) => {
                   if (
-                    results.length <= 0 &&
-                    resultsZipcode[0].zipcode === zipcode &&
-                    resultsSizePrice[0].parcel_price === size_price
+                    results.length <= 0 && resultsZipcode.length > 0 && resultsSizePrice.length > 0
                   ) {
                     resolve(tracking);
                   } else {
@@ -450,7 +438,7 @@ module.exports = {
   },
   listBilling: branchId => {
     var today = moment(new Date()).format("YYYY-MM-DD");
-    var monthAgo = moment(new Date()).add(-1, "week").format("YYYY-MM-DD");
+    var monthAgo = moment(new Date()).add(-1, "month").format("YYYY-MM-DD");
     console.log(today, monthAgo);
     var status = "cancel";
     var sql =
