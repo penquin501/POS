@@ -438,7 +438,7 @@ module.exports = {
   },
   listBilling: branchId => {
     var today = moment(new Date()).format("YYYY-MM-DD");
-    var monthAgo = moment(new Date()).add(-1, "month").format("YYYY-MM-DD");
+    var monthAgo = moment(new Date()).add(-1, "week").format("YYYY-MM-DD");
     console.log(today, monthAgo);
     var status = "cancel";
     var sql =
