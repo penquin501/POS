@@ -484,6 +484,20 @@
               </button>
             </div>
           </div>
+          <div class="row" style="margin-top: 2%">
+           <div class="col-sm-4">
+            <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('3xl')"
+              >
+                <span style="font-size:16px">3XL</span>
+              </button> 
+           </div>
+              <div class="col-sm-4"></div>
+              <div class="col-sm-4"></div>
+          </div>
+
           <!-- เพิ่มใหม่สินค้าเกษตร -->
           <div class="row" style="margin-top: 2%">
             <div class="col-sm-6">
@@ -1876,7 +1890,6 @@
                               style="padding-left: 5px;"
                             >XL+</button>
                           </div>
-
                           <div class="col-sm-4">
                             <button
                               type="button"
@@ -1886,7 +1899,18 @@
                             >XXL</button>
                           </div>
                         </div>
-
+                        <div class="row">
+                          <div class="col-sm-4">
+                          <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('3xl')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                              style="padding-left: 5px;"
+                            >3XL</button>
+                          </div>
+                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4"></div>
+                        </div>
                         <!-- เพิ่มใหม่ -->
                         <div class="row">
                           <div class="col-sm-6">
@@ -3291,7 +3315,7 @@ export default {
           JSON.stringify(dataCheck)
         )
         .then(resultMember => {
-          console.log("resultMember =>", resultMember.data);
+          // console.log("resultMember ตอนตรวจสอบ =>", resultMember.data);
           if (resultMember.data.status == "ERROR_NOT_FOUND") {
             this.$dialogs.alert(
               "ไม่พบรหัสสมาชิกนี้ในระบบ,กรุณากรอกรหัสสมาชิกที่ลงทะเบียนไว้ให้ถูกต้อง",
