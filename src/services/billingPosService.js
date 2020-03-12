@@ -2,6 +2,7 @@ const connection = require("../common/db.js");
 const bodyParser = require("body-parser");
 const request = require("request");
 const moment = require("moment");
+const momentTimezone = require("moment-timezone");
 moment.locale("th");
 
 module.exports = {
@@ -437,18 +438,21 @@ module.exports = {
     });
   },
   listBilling: branchId => {
-    var today = moment(new Date()).format("YYYY-MM-DD");
-    var monthAgo = moment(new Date()).add(-1, "week").format("YYYY-MM-DD");
-    console.log(today, monthAgo);
+    var today = moment().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
+    var weekAgo = moment().add(-1, "week").tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
+
+    console.log("today => %s , week ago => %s",today, weekAgo);
+
     var status = "cancel";
     var sql =
-      "SELECT b.billing_no,b.timestamp,b.billing_date,b.member_code FROM billing b " +
-      "WHERE (DATE(b.billing_date)> ? AND Date(b.billing_date)<= ?) AND b.status != ? AND b.branch_id= ? ORDER BY b.id DESC";
+      "SELECT billing_no,timestamp,billing_date,member_code FROM billing " +
+      "WHERE (billing_date > ? AND billing_date <= ?) AND status != ? AND branch_id= ? ORDER BY id ASC";
 
-    var data = [monthAgo, today, status, branchId];
+    var data = [weekAgo, today, status, branchId];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
+        console.log(err);
         if (err === null) {
           if (results.length == 0) {
             resolve(false);
@@ -460,11 +464,12 @@ module.exports = {
     });
   },
   listDailyMember: branchId => {
+    var today = moment().calendar();
     var sql =
       "SELECT b.member_code FROM billing b " +
       // "JOIN parcel_member p ON b.member_code=p.member_id " +
-      "WHERE Date(b.billing_date)=CURRENT_DATE() AND b.branch_id= ? GROUP BY b.member_code";
-    var data = [branchId];
+      "WHERE b.billing_date=? AND b.branch_id= ? GROUP BY b.member_code";
+    var data = [today, branchId];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
