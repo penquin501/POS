@@ -122,7 +122,6 @@ module.exports = {
     return new Promise(function(resolve, reject) {
       connection.query(sqlBilling, dataBilling, (err, resultBilling) => {
         if (err === null) {
-          console.log(resultBilling);
           if (resultBilling.length == 0) {
             resolve(false);
           } else {
@@ -262,7 +261,10 @@ module.exports = {
   },
   checkTrackingNo: billing_no => {
     var sql =
-      "SELECT count(tracking) as cTracking FROM billing_item WHERE billing_no=?";
+      // "SELECT count(tracking) as cTracking FROM billing_item WHERE billing_no=?";
+      "SELECT count(bi.tracking) as cTracking FROM billing_item bi "+
+      "LEFT JOIN billing_receiver_info br ON bi.tracking=br.tracking "+
+      "WHERE bi.billing_no=? and (br.status != 'cancel' or br.status is null)";
     var data = [billing_no];
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {

@@ -195,19 +195,13 @@ app.post("/status/bill/no/api", (req, res) => {
       status = "SUCCESS";
       for (i = 0; i < trackingNoList.length; i++) {
         let tracking = trackingNoList[i].trackingNo;
-        genBillingNoServices
-          .updateStatusInReceiver(status, tracking)
-          .then(function(data) {});
+        genBillingNoServices.updateStatusInReceiver(status, tracking).then(function(data) {});
       }
     } else {
       status = "ERROR";
-      genBillingNoServices
-        .updateResponseData(JSON.stringify(req.body), billingNo)
-        .then(function(data) {});
+      genBillingNoServices.updateResponseData(JSON.stringify(req.body), billingNo).then(function(data) {});
     }
-    genBillingNoServices
-      .updateStatusInBilling(status, billingNo)
-      .then(function(data) {});
+    genBillingNoServices.updateStatusInBilling(status, billingNo).then(function(data) {});
     res.end(status);
   });
 });
