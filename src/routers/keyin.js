@@ -9,12 +9,12 @@ moment.locale('th')
 app.post("/keyin", jsonParser, (req, res) => {
   
   let data = req.body;
-  console.log('key In for barcode : %s',data[0].barcode_orig);
+  console.log('key In for barcode : %s',data[0].barcode);
   let rawData = JSON.stringify(data);
   let uid = data[0].uid;
   let ref = data[0].ref;
-  // let barcode = data.barcode;
-  let barcode_orig = data[0].barcode_orig;
+  let barcode = data[0].barcode;
+  // let barcode_orig = data[0].barcode_orig;
   let owner = data[0].owner;
   let phone_number = data[0].phone_number;
   let operator_id = data[0].operator_id;
@@ -32,13 +32,13 @@ app.post("/keyin", jsonParser, (req, res) => {
   let label_zipcode = data[0].label_zipcode;
   var source = "KEYIN";
 
-  keyinService.saveKeyin(uid,ref,barcode_orig,owner,phone_number,operator_id_re,rawData).then(function(data) {});
+  keyinService.saveKeyin(uid,ref,barcode,owner,phone_number,operator_id_re,rawData).then(function(data) {});
 
-  keyinService.checkKeyinTrackingTemp(barcode_orig).then(function(data) {
+  keyinService.checkKeyinTrackingTemp(barcode).then(function(data) {
     if (data == false) {
-      keyinService.saveKeyinTemp(uid,ref,barcode_orig,owner,phone_number,operator_id_re,rawData).then(function(data) {});
+      keyinService.saveKeyinTemp(uid,ref,barcode,owner,phone_number,operator_id_re,rawData).then(function(data) {});
     } else {
-      keyinService.updateKeyinTemp(uid,ref,barcode_orig,owner,phone_number,operator_id,rawData).then(function(data) {});
+      keyinService.updateKeyinTemp(uid,ref,barcode,owner,phone_number,operator_id,rawData).then(function(data) {});
     }
   });
 
@@ -46,12 +46,12 @@ app.post("/keyin", jsonParser, (req, res) => {
       var district_name = data[0].DISTRICT_NAME;
       var amphur_name = data[0].AMPHUR_NAME;
       var province_name = data[0].PROVINCE_NAME;
-      keyinService.checkDataReceiver(barcode_orig).then(function(dataReceiver) {
+      keyinService.checkDataReceiver(barcode).then(function(dataReceiver) {
         
         if (dataReceiver == false) {
-          keyinService.saveBillingReceiverTemp(barcode_orig,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
+          keyinService.saveBillingReceiverTemp(barcode,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
         } else {
-          keyinService.updateReceiver(barcode_orig,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
+          keyinService.updateReceiver(barcode,label_parcel_type,label_name,label_phone_number,label_address,label_district_id,district_name,label_amphur_id,amphur_name,label_province_id,province_name,label_zipcode,source).then(function(data) {});
         }
       });
     });

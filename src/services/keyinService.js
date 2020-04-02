@@ -8,7 +8,7 @@ module.exports = {
   saveKeyin: (
     uid,
     ref,
-    barcode_orig,
+    barcode,
     owner,
     phone_number,
     operator_id_re,
@@ -21,7 +21,7 @@ module.exports = {
     var data = [
       uid,
       ref,
-      barcode_orig,
+      barcode,
       owner,
       phone_number,
       operator_id_re,
@@ -35,9 +35,9 @@ module.exports = {
       });
     });
   },
-  checkKeyinTrackingTemp: barcode_orig => {
+  checkKeyinTrackingTemp: barcode => {
     var sql = "SELECT barcode FROM parcel_keyin_data_temp WHERE barcode = ?";
-    var data = [barcode_orig];
+    var data = [barcode];
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
         if (err === null) {
@@ -55,7 +55,7 @@ module.exports = {
   saveKeyinTemp: (
     uid,
     ref,
-    barcode_orig,
+    barcode,
     owner,
     phone_number,
     operator_id_re,
@@ -68,7 +68,7 @@ module.exports = {
     var data = [
       uid,
       ref,
-      barcode_orig,
+      barcode,
       owner,
       phone_number,
       operator_id_re,
@@ -85,7 +85,7 @@ module.exports = {
   updateKeyinTemp: (
     uid,
     ref,
-    barcode_orig,
+    barcode,
     owner,
     phone_number,
     operator_id,
@@ -98,13 +98,13 @@ module.exports = {
     var data = [
       uid,
       ref,
-      barcode_orig,
+      barcode,
       owner,
       phone_number,
       operator_id,
       rawData,
       new Date(),
-      barcode_orig
+      barcode
     ];
 
     return new Promise(function(resolve, reject) {
@@ -131,7 +131,7 @@ module.exports = {
     });
   },
   updateReceiver: (
-    barcode_orig,
+    barcode,
     label_parcel_type,
     label_name,
     label_phone_number,
@@ -160,7 +160,7 @@ module.exports = {
       province_name,
       label_zipcode,
       source,
-      barcode_orig
+      barcode
     ];
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -169,14 +169,14 @@ module.exports = {
     });
   },
   updateBillingItem: (
-    barcode_orig,
+    barcode,
     label_zipcode,
     label_parcel_type,
     source
   ) => {
     let sql =
       "UPDATE billing_item SET zipcode=?,parcel_type=?,source=? WHERE tracking=?";
-    var data = [label_zipcode, label_parcel_type, source, barcode_orig];
+    var data = [label_zipcode, label_parcel_type, source, barcode];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -184,10 +184,10 @@ module.exports = {
       });
     });
   },
-  checkDataReceiver: barcode_orig => {
+  checkDataReceiver: barcode => {
     let sql =
       "SELECT tracking,parcel_type,zipcode,remark FROM billing_receiver_info WHERE tracking = ?";
-    var data = [barcode_orig];
+    var data = [barcode];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -202,10 +202,10 @@ module.exports = {
     });
   },
 
-  saveBillingItemTemp: (barcode_orig, zipcode, label_parcel_type, source) => {
+  saveBillingItemTemp: (barcode, zipcode, label_parcel_type, source) => {
     var sql =
       "INSERT INTO billing_item_temp (tracking,zipcode,parcel_type,source) VALUES (?,?,?,?)";
-    var data = [barcode_orig, zipcode, label_parcel_type, source];
+    var data = [barcode, zipcode, label_parcel_type, source];
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
@@ -214,7 +214,7 @@ module.exports = {
     });
   },
   saveBillingReceiverTemp: (
-    barcode_orig,
+    barcode,
     label_parcel_type,
     label_name,
     label_phone_number,
@@ -232,7 +232,7 @@ module.exports = {
       "INSERT INTO billing_receiver_info_temp(tracking, parcel_type, receiver_name, phone, receiver_address, district_id, district_name, amphur_id, amphur_name, province_id, province_name, zipcode, remark) " +
       "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
     var data = [
-      barcode_orig,
+      barcode,
       label_parcel_type,
       label_name,
       label_phone_number,
