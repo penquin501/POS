@@ -142,9 +142,7 @@
               <button
                 class="btn btn-success form-control"
                 v-on:click="btnClickCreateBill"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
               >ตรวจสอบ - บันทึก</button>
             </div>
             <div class="col-sm-4"></div>
@@ -244,9 +242,7 @@
                   <b style="font-size:18px">ผู้นำส่งพัสดุ</b>
                 </h1>
               </div>
-              <div class="panel-body" style="
-    height: 280px;
-">
+              <div class="panel-body" style="height: 280px;">
                 <div class="row" style="padding-bottom: 10px;">
                   <div class="col-sm-3 col-md-3">
                     <b>เลขสมาชิก</b>
@@ -293,9 +289,7 @@
               <button
                 class="btn btn-info form-control"
                 v-on:click="selectTypePOS('NORMAL')"
-                style="
-    height: 49px;
-"
+                style="height: 49px;"
               >
                 <span style="font-size:16px">จัดส่งปกติ</span>
               </button>
@@ -756,7 +750,7 @@
                   <div class="col-sm-7">
                     <label
                       style="font-weight: normal;"
-                    >{{listTracking.inputAddress}}&nbsp;{{ dataFirstGetZipCode[0].DISTRICT_NAME + '&nbsp; &nbsp;' + dataFirstGetZipCode[0].AMPHUR_NAME + '&nbsp; &nbsp;' + dataFirstGetZipCode[0].PROVINCE_NAME+ '&nbsp; &nbsp;' + dataFirstGetZipCode[0].zipcode }}</label>
+                    >{{listTracking.inputAddress}}&nbsp;{{ listTracking.address.DISTRICT_NAME + '&nbsp; &nbsp;' + listTracking.address.AMPHUR_NAME + '&nbsp; &nbsp;' + listTracking.address.PROVINCE_NAME+ '&nbsp; &nbsp;' + listTracking.address.zipcode }}</label>
                   </div>
                 </div>
                 <div class="row">
@@ -3196,14 +3190,12 @@ export default {
 
     filterNumber(e) {
       //console.log($event.keyCode); //keyCodes value
-      console.log("idNumber =>", this.idCard);
       this.idCard = this.idCard.slice(0, 13);
       e.target.value = e.target.value.replace(/[^0-9]+/g, "");
     },
 
     filterNumber2(e) {
       //console.log($event.keyCode); //keyCodes value
-      console.log("idNumber2 =>", this.idCard);
       this.idCard = this.idCard.slice(0, 13);
       e.target.value = e.target.value.replace(/[^0-9]+/g, "");
     },
@@ -3861,14 +3853,6 @@ export default {
               this.listTracking.inputTracking.toUpperCase()
           )
           .then(resultsCheckTracking => {
-            console.log(
-              "resultsCheckTracking เข้ามาครั้งแรก =>",
-              resultsCheckTracking
-            );
-            console.log(
-              "resultsCheckTracking เข้ามาครั้งแรก =>",
-              resultsCheckTracking.data
-            );
             if (resultsCheckTracking.data == true) {
               this.nulltracking = false;
               this.trackingNoFormat = false;
@@ -3906,8 +3890,6 @@ export default {
               } else {
                 this.memberPhone = phone;
               }
-              // console.log("phone66", this.memberPhone);
-
               var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
               var merid = parseInt(dataLogin.merid);
               var userid = parseInt(dataLogin.userid);
@@ -3933,7 +3915,6 @@ export default {
                 } else {
                   this.memberPhone = phone;
                 }
-                // console.log("เบอร์", this.memberPhone);
               }
 
               var receiverInfo = {
@@ -3973,7 +3954,6 @@ export default {
                 listTracking: [billItem]
               };
               var that = this;
-              // that.datalistPOS.push({ ...datainTablePOS });
               that.datalistPOS.push(Object.assign({}, datainTablePOS));
 
               localStorage.setItem(
@@ -4067,9 +4047,6 @@ export default {
             that.finalDataSave
           )
           .then(responseBillNo => {
-            // console.log("responseBillNo", responseBillNo);
-            // console.log("responseBillNo Status", responseBillNo.data.status);
-            // console.log("DATABILL", responseBillNo.data);
             if (responseBillNo.data.status == "success") {
               that.isLoading = false; //ได้เลขบิลแล้วหยุดหมุนด้วย
               that.$refs.successavebill.open();
