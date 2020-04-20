@@ -464,11 +464,8 @@ module.exports = {
     });
   },
   listDailyMember: branchId => {
-    var today = moment().calendar();
-    var sql =
-      "SELECT b.member_code FROM billing b " +
-      // "JOIN parcel_member p ON b.member_code=p.member_id " +
-      "WHERE b.billing_date=? AND b.branch_id= ? GROUP BY b.member_code";
+    var today = moment().tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
+    var sql = "SELECT b.member_code FROM billing b WHERE b.billing_date=? AND b.branch_id= ? GROUP BY b.member_code";
     var data = [today, branchId];
 
     return new Promise(function(resolve, reject) {
