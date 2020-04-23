@@ -452,11 +452,11 @@ module.exports = {
 
     return new Promise(function(resolve, reject) {
       connection.query(sql, data, (err, results) => {
-        console.log(err);
         if (err === null) {
           if (results.length == 0) {
             resolve(false);
           } else {
+            console.log('listBilling =>',err);
             resolve(results);
           }
         }

@@ -488,7 +488,15 @@
                 <span style="font-size:16px">3XL</span>
               </button> 
            </div>
-              <div class="col-sm-4"></div>
+              <div class="col-sm-4">
+                <button
+                class="btn btn-success form-control"
+                style="height: 49px;"
+                v-on:click="selectBox('sd')"
+              >
+                <span style="font-size:16px">Same Day</span>
+              </button> 
+              </div>
               <div class="col-sm-4"></div>
           </div>
 
@@ -1902,7 +1910,14 @@
                               style="padding-left: 5px;"
                             >3XL</button>
                           </div>
-                            <div class="col-sm-4"></div>
+                            <div class="col-sm-4">
+                              <button
+                              type="button"
+                              v-on:click="quicklinkSizeBox('sd')"
+                              class="btn btn-warning btn-lg btn-block btn-size"
+                              style="padding-left: 5px;"
+                            >Same Day</button>
+                            </div>
                             <div class="col-sm-4"></div>
                         </div>
                         <!-- เพิ่มใหม่ -->
@@ -4052,7 +4067,7 @@ export default {
               that.$refs.successavebill.open();
               that.view = "createBill9"; //หน้าโชว์และมีเลขที่บิลส่งกลับมาพร้อมพิมพ์ใบเสร็จ
               that.isDisabledInsertPOS = false;
-              console.log("มีเลขบิล");
+              // console.log("มีเลขบิล");
               that.billNo = responseBillNo.data.billing_no;
               that.$cookie.set("billNo", that.billNo, 1);
             } else {
@@ -4339,7 +4354,7 @@ export default {
     quicklinkSizeBox(size) {
       var valueSize = size;
       var sizeName = valueSize.replace("Plus", "+");
-      console.log("sizeName =>", sizeName);
+      // console.log("sizeName =>", sizeName);
       this.quickLinkSelectSize = sizeName;
       this.quickLinkBtnAdd = true;
       this.quickLinkBtnRe = true;
