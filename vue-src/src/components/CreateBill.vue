@@ -488,7 +488,7 @@
                 <span style="font-size:16px">3XL</span>
               </button> 
            </div>
-              <div class="col-sm-4">
+              <div class="col-sm-4" v-if="this.datamerLogin == 47">
                 <button
                 class="btn btn-success form-control"
                 style="height: 49px;"
@@ -1910,7 +1910,7 @@
                               style="padding-left: 5px;"
                             >3XL</button>
                           </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4"  v-if="this.datamerLogin == 47">
                               <button
                               type="button"
                               v-on:click="quicklinkSizeBox('sd')"
@@ -2296,6 +2296,8 @@ export default {
       erroroverCOD: false,
       // supererror
       suppererror:"",
+      //datameridLogin
+      datamerLogin:"",
 
     };
   },
@@ -2455,6 +2457,10 @@ export default {
     }
     this.webcamProps = Object.assign(this.webcamProps, this.webcamProperties);
     this.$refs.memberCode.focus();
+    //getMerId
+    var datalogin = JSON.parse(localStorage.getItem("dataLogin"));
+    this.datamerLogin = datalogin.merid;
+    console.log("merID11111111111111",this.datamerLogin);
   },
 
   methods: {
