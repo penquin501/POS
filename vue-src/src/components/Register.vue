@@ -283,7 +283,7 @@
                     placeholder="รหัสสาขา"
                     class="form-control"
                     type="text"
-                    maxlength="3"
+                    maxlength="4"
                   />
                 </div>
               </div>
@@ -521,21 +521,12 @@ export default {
     },
     showidcard() {
       this.$refs.erroridcard.open();
-      // setTimeout(function() {
-      //   location.reload();
-      // }, 2000);
     },
     showall() {
       this.$refs.errorall.open();
-      // setTimeout(function() {
-      //   location.reload();
-      // }, 2000);
     },
     showphone() {
       this.$refs.errorphone.open();
-      // setTimeout(function() {
-      //   location.reload();
-      // }, 2000);
     },
 
     onlyNumber($event) {
@@ -637,15 +628,19 @@ export default {
       } else if (!this.url) {
         this.$dialogs.alert("กรุณาอัพโหลดภาพถ่ายบัตรประชาชน", options);
       }
-    
+
       // เมื่อเปิด COD
       else if (this.openCOD == true) {
         if (this.codeBank == "เลือกธนาคาร") {
           this.$dialogs.alert("กรุณาเลือกธนาคาร", options);
+        } else if (!this.branchBank) {
+          this.$dialogs.alert("กรุณากรอกรหัสสาขา", options);
+        } else if (this.branchBank.length <3 || this.branchBank.length>4) {
+          this.$dialogs.alert("กรุณากรอกรหัสสาขาให้ถูกต้อง", options);  
         } else if (!this.numberBank) {
           this.$dialogs.alert("กรุณากรอกเลขที่บัญชี", options);
-        }else if (this.numberBank.length != 12) {
-          this.$dialogs.alert("กรุณากรอกเลขที่บัญชีให้ครบ", options);
+        } else if (this.numberBank.length < 10 || this.numberBank.length > 12) {
+          this.$dialogs.alert("กรุณากรอกเลขที่บัญชีให้ถูกต้อง", options);
         }else if (!this.nameBank) {
           this.$dialogs.alert("กรุณากรอกชื่อบัญชี", options);
         } else if (!this.urlBank) {
@@ -653,17 +648,13 @@ export default {
         }
         else {
           this.checkPhoneNo(this.phoneNumber);
-          // this.register = 2;
         }
       } else {
         this.checkPhoneNo(this.phoneNumber);
-        // console.log("data",this.dataPhone);
-        // this.register = 2;
       }
     },
 
     checkPhoneNo(phone) {
-      // console.log("checkPhoneNo เช็คเบอร์มือถือ");
       const options = { okLabel: "ตกลง" };
       var ph = phone;
       if (
@@ -678,7 +669,6 @@ export default {
       }
       axios
         .get(
-          // "http://206.189.85.185:8100/member/checkPhoneNo/?phoneNo=",
           "/member/checkPhoneNo/?phoneNo=" + phoneNO
         )
         .then(response => {
@@ -689,9 +679,7 @@ export default {
             );
           } else {
             // ตรวจสอบเบอร์โทรเสร็จ ทำการอัพโหลดรุปภาพต่อ
-            // alert("ไปอัพโหลดรุปภาพ");
             this.uploadImgRegister();
-            // this.register = 2;
           }
         })
         .catch(function(error) {
@@ -700,7 +688,6 @@ export default {
     },
     uploadImgRegister(){
       if(this.url != null && this.urlBank  == null){
-        // console.log("มีบัตรประชาชน");
         let formDataCitizen = new FormData();
         formDataCitizen.append("file", this.file);
         function main() {
@@ -716,19 +703,15 @@ export default {
       }
       main().then(data => {
         this.imgIdCardCode = data.fileName;
-        // console.log("ชื่อรุปบัตรประชาชน", this.imgIdCardCode);
-        // alert("ส่งไปเซฟ");
         this.saveRegister();
       });
       }else{
-        //  console.log("มีบัตรประชาชน มีหน้าบัญชี");
          this.upLoadImgCitizen();
       }
     },
       saveRegister() {
       var dataLogin = JSON.parse(localStorage.getItem("dataLogin"));
       var branch_id = dataLogin.merid;
-      // console.log("branch_id", branch_id);
       var imgBankPath;
       var alaisName;
       var bankIssue;
@@ -838,7 +821,6 @@ export default {
           JSON.stringify(dataRegister)
         )
         .then(function(response) {
-          // console.log(response.data.status);
           if (response.data.status == "SUCCESS") {
             // ลงข้อมูลสำเร็จ
               $('#showsuccess').click();
@@ -859,19 +841,6 @@ export default {
           console.log(error);
         });
       },
-
-
-
-
-
-
-
-
-
-
-
-
-
     onFileChange(e) {
       const file = e.target.files[0];
       this.url = URL.createObjectURL(file);
@@ -896,23 +865,17 @@ export default {
         this.register = 3;
       }
     },
-
     btnBackToTakeImg() {
       this.register = 2;
     },
-
     handleFileUploadCitizen() {
       this.file = this.$refs.url.files[0];
       this.uploadImg = this.$refs.url.files[0];
-      // console.log(this.$refs.url.files[0].name);
     },
-
     handleFileUploadBookBank() {
       this.fileBank = this.$refs.urlBank.files[0];
       this.uploadImg = this.$refs.urlBank.files[0];
-      // console.log(this.$refs.urlBank.files[0].name);
     },
-
     upLoadImgCitizen() {
       let formDataCitizen = new FormData();
       formDataCitizen.append("file", this.file);
@@ -929,7 +892,6 @@ export default {
       }
       main().then(data => {
         this.imgIdCardCode = data.fileName;
-        // console.log("ชื่อรุปบัตรประชาชน", this.imgIdCardCode);
         this.upLoadImgBookBank();
       });
     },
@@ -951,7 +913,6 @@ export default {
       }
       main().then(data => {
         this.imgBookBank = data.fileName;
-        //  console.log("ชื่อรุปหน้าบัญชี", this.imgBookBank);
         //  alert("ส่งไปเซฟ");
          this.saveRegister();
       });
@@ -963,13 +924,11 @@ export default {
     handleFileUploadBookBank() {
       this.fileBank = this.$refs.urlBank.files[0];
       this.uploadImg = this.$refs.urlBank.files[0];
-      // console.log(this.$refs.urlBank.files[0].name);
     },
     onFileChangeBank(e) {
       const fileBank = e.target.files[0];
       this.urlBank = URL.createObjectURL(fileBank);
     },
-    
   }
 };
 </script>
