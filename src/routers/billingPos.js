@@ -110,7 +110,6 @@ app.post("/addReceiver", jsonParser, (req, res) => {
 
         var item_valid = true;
         for (i = 0; i < listTracking.length; i++) {
-          // tracking = listTracking[i].tracking;
           address = listTracking[i].address;
           if (listTracking[i].tracking === null) {
             var item_valid = false;
@@ -323,7 +322,6 @@ app.post("/addReceiver", jsonParser, (req, res) => {
             return await Promise.all(responseCheckItem);
           }
           checkItem().then(function(result) {
-            // console.log(result); 
             var item_pass = true;
             for (j = 0; j < result.length; j++) {
               if (result[j] == undefined) {
@@ -333,7 +331,7 @@ app.post("/addReceiver", jsonParser, (req, res) => {
 
             if (item_pass == false) {
               /* error tracking ซ้ำ/ข้อมูล zipcode ผิด/size id กับราคาผิด  */
-              res.json({ status: "error_tracking" });
+              res.json({ status: "duplicate_data/wrong_zipcode/wrong_parcel_price/wrong_area_for_sd" });
             } else {
               let c_total = 0;
               for (r = 0; r < listTracking.length; r++) {
@@ -465,7 +463,6 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
   };
   request(
     {
-      // url: "https://apidev.whatitems.com/parcel/check/tracking/list/api",
       url: "https://www.945api.com/parcel/check/tracking/list/api",
       method: "POST",
       body: data2,
@@ -502,38 +499,8 @@ app.post("/addReceiverTemp", jsonParser, (req, res) => {
             let zipcode = address.zipcode;
             let remark = address.remark;
 
-            billingPosService
-              .saveDataBillingItemTemp(
-                billing_no_temp,
-                tracking,
-                zipcode,
-                size_id,
-                size_price,
-                parcel_type,
-                cod_value,
-                source
-              )
-              .then(function(data) {});
-            billingPosService
-              .saveDataBillingReceiverTemp(
-                tracking,
-                parcel_type,
-                sender_name,
-                sender_phone,
-                sender_address,
-                receiver_name,
-                phone,
-                receiver_address,
-                district_id,
-                district_name,
-                amphur_id,
-                amphur_name,
-                province_id,
-                province_name,
-                zipcode,
-                remark
-              )
-              .then(function(data) {});
+            billingPosService.saveDataBillingItemTemp(billing_no_temp,tracking,zipcode,size_id,size_price,parcel_type,cod_value,source).then(function(data) {});
+            billingPosService.saveDataBillingReceiverTemp(tracking,parcel_type,sender_name,sender_phone,sender_address,receiver_name,phone,receiver_address,district_id,district_name,amphur_id,amphur_name,province_id,province_name,zipcode,remark).then(function(data) {});
           }
           res.end("Complete.....");
         }

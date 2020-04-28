@@ -43,27 +43,42 @@ module.exports = {
         })
     },
     checkItem:(tracking,zipcode,size_id,size_price)=>{
-        var checkSizeId="SELECT parcel_price FROM size_info WHERE size_id=?"
+        var checkSizeId="SELECT alias_size,parcel_price FROM size_info WHERE size_id=?"
         var dataSizeId=[size_id];
 
-        var checkZipcode="SELECT zipcode FROM postinfo_zipcodes WHERE zipcode=?"
+        var checkZipcode="SELECT zipcode,district_code FROM postinfo_zipcodes WHERE zipcode=?"
         var dataZipcode=[zipcode];
 
         var updateStatusBilling="SELECT tracking FROM billing_item WHERE tracking=? AND source is null"
         var dataStatusBilling=[tracking];
+        
         return new Promise(function(resolve, reject) {
-
-            connection.query(checkSizeId,dataSizeId, (error, resultsSizePrice, fields) => {
-            connection.query(checkZipcode,dataZipcode, (error, resultsZipcode, fields) => {
-                connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
-                    if(results.length > 0 && resultsZipcode.length > 0 && resultsSizePrice[0].parcel_price==size_price) {
-                        resolve(results);
-                    } else {
-                        resolve();
-                    }
+            connection.query(checkSizeId,dataSizeId, (error, resultsSize, fields) => {
+                connection.query(checkZipcode,dataZipcode, (error, resultsZipcode, fields) => {
+                    connection.query(updateStatusBilling,dataStatusBilling, (error, results, fields) => {
+                        let c_district_code=true;
+                        if(resultsSize[0].alias_size=='sd' && zipcode !== "10530"){
+                            for(i=0;i<resultsZipcode.length;i++){
+                                let district_code=resultsZipcode[i].district_code;
+                                if(resultsSize[0].alias_size=='sd' && district_code[0]+district_code[1] !== '10'){
+                                    c_district_code=false;
+                                }
+                            }
+                            if(c_district_code){
+                                if(results.length > 0 && resultsZipcode.length > 0 && resultsSize[0].parcel_price==size_price) {
+                                    resolve(results);
+                                } else {
+                                    resolve();
+                                }
+                            } else {
+                                resolve();
+                            }
+                        } else {
+                            resolve();
+                        }
+                    });
                 });
-        });
-    });
+            });
         })
     },
     checkTrackingBillingItem: (billing_no,sender_name,sender_phone,sender_address,source,tracking,zipcode,parcel_type,size_price,cod_value,size_id) => {

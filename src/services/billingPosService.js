@@ -58,43 +58,38 @@ module.exports = {
       });
     });
   },
-  checkItem: (
-    tracking,
-    size_id,
-    size_price,
-    district_id,
-    amphur_id,
-    province_id,
-    zipcode
-  ) => {
-    var checkSizeId = "SELECT parcel_price FROM size_info WHERE size_id=?";
+  checkItem: (tracking,size_id,size_price,district_id,amphur_id,province_id,zipcode) => {
+    var checkSizeId = `SELECT alias_size,parcel_price FROM size_info WHERE size_id=?`;
     var dataSizeId = [size_id];
 
     var checkZipcode =
-      "SELECT z.zipcode FROM postinfo_district d " +
-      "JOIN postinfo_zipcodes z ON d.DISTRICT_CODE=z.district_code " +
-      "WHERE d.DISTRICT_ID=? AND d.AMPHUR_ID=? AND d.PROVINCE_ID=?";
+      `SELECT z.zipcode,d.DISTRICT_CODE FROM postinfo_district d 
+      JOIN postinfo_zipcodes z ON d.DISTRICT_CODE=z.district_code 
+      WHERE d.DISTRICT_ID=? AND d.AMPHUR_ID=? AND d.PROVINCE_ID=?`;
     var dataAddress = [district_id, amphur_id, province_id];
 
-    var updateStatusBilling ="SELECT tracking FROM billing_item WHERE tracking=?";
+    var updateStatusBilling =`SELECT tracking FROM billing_item WHERE tracking=?`;
     var dataStatusBilling = [tracking];
+
     return new Promise(function(resolve, reject) {
-      connection.query(checkSizeId,dataSizeId,(error, resultsSizePrice, fields) => {
+
+      connection.query(checkSizeId,dataSizeId,(error, resultsSize, fields) => {
           connection.query(checkZipcode,dataAddress,(error, resultsZipcode, fields) => {
               connection.query(updateStatusBilling,dataStatusBilling,(error, results, fields) => {
-                  if (
-                    results.length <= 0 && resultsZipcode.length > 0 && resultsSizePrice.length > 0
-                  ) {
+                let district_code=resultsZipcode[0].DISTRICT_CODE
+
+                if (resultsSize[0].alias_size == 'sd' && district_code[0] + district_code[1] == "10" && zipcode !== "10530") {
+                  if (results.length <= 0 && resultsZipcode.length > 0 && resultsSize.length > 0) {
                     resolve(tracking);
                   } else {
                     resolve();
                   }
+                } else {
+                  resolve();
                 }
-              );
-            }
-          );
-        }
-      );
+                });
+            });
+        });
     });
   },
   saveDataBilling: (

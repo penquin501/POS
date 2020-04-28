@@ -311,6 +311,14 @@ module.exports = {
       });
     });
   },
+  checkSizeInfo: () => {
+    var sql = `SELECT size_id, size_name, location_zone, parcel_price, parcel_cost, alias_size, sold_to_account_id, pickup_account_id, customer_account_id FROM size_info ORDER BY size_id ASC`;
+    return new Promise(function(resolve, reject) {
+      connection.query(sql, (err, results) => {
+        resolve(results);
+      });
+    });
+  },
   dailyReport: () => {
     var sql = "SELECT bInfo.branch_name,b.billing_no,br.sender_name,count(bi.tracking) as cTracking "+
     "FROM billing b "+

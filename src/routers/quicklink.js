@@ -211,7 +211,7 @@ app.post("/quickLink", jsonParser, (req, res) => {
             }
             if (item_pass == false) {
               /* error tracking ซ้ำ/ข้อมูล zipcode ผิด/size id กับราคาผิด  */
-              res.json({ status: "error_no_data" });
+              res.json({ status: "error_data/no_capture/wrong_zipcode/wrong_parcel_price/wrong_area_for_sd" });
             } else {
               let c_total = 0;
               for (r = 0; r < items.length; r++) {

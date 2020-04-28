@@ -232,5 +232,11 @@ app.get("/daily-report", (req, res) => {
   });
 });
 
+app.get("/check/size-info", (req, res) => {
+  genBillingNoServices.checkSizeInfo().then(function(data) {
+    res.send(data);
+  });
+});
+
 
 module.exports = app;
